@@ -40,3 +40,6 @@ dist-ssr
 # Scratch & local test directories
 scratch/
 
+
+.vercel
+.env*

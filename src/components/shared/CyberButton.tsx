@@ -4,6 +4,7 @@ interface CyberButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
   children: React.ReactNode;
   variant?: 'primary' | 'secondary';
   href?: string;
+  download?: string;
   className?: string;
 }
 
@@ -11,6 +12,7 @@ export const CyberButton: React.FC<CyberButtonProps> = ({
   children,
   variant = 'primary',
   href,
+  download,
   className = '',
   onClick,
   ...props
@@ -21,6 +23,7 @@ export const CyberButton: React.FC<CyberButtonProps> = ({
     return (
       <a 
         href={href} 
+        download={download}
         className={btnClass}
         onClick={onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>}
         target={href.startsWith('http') ? '_blank' : undefined}

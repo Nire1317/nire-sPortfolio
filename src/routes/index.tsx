@@ -28,18 +28,19 @@ function ProfileCard() {
   return (
     <div className="relative rounded-3xl border border-border/60 bg-card p-6 w-full max-w-full shadow-2xl">
       <div className="relative overflow-hidden rounded-2xl aspect-[3/4] bg-secondary">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           <motion.img
             key={formal ? "formal" : "casual"}
             src={formal ? profileFormal : profileCasual}
-            alt={formal ? "Alex — formal portrait" : "Alex — casual portrait"}
+            alt={formal ? "Erin — formal portrait" : "Erin — casual portrait"}
             width={768}
             height={1024}
-            initial={{ opacity: 0, scale: 1.05 }}
+            initial={{ opacity: 0, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="absolute inset-0 h-full w-full object-cover"
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+            style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
+            className="absolute inset-0 h-full w-full object-cover transform-gpu"
           />
         </AnimatePresence>
         <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium bg-background/70 backdrop-blur border border-border/60">
@@ -49,7 +50,7 @@ function ProfileCard() {
 
       <div className="mt-4 flex items-center justify-between">
         <div>
-          <p className="font-display font-semibold">Erin</p>
+          <p className="font-display font-semibold">Erin Tuzon</p>
           <p className="text-xs text-muted-foreground">Software Engineer</p>
         </div>
         <button
@@ -428,28 +429,22 @@ function SectionHeader({ eyebrow, title, kicker }: { eyebrow: string; title: str
 
 const experience = [
   {
-    role: "Freelance Frontend & Backend Engineer",
-    company: "Independent",
-    years: "Jan 2025 — Present",
-    impact: "Philippines (Remote) · Building custom web applications, REST APIs, and database integrations for various clients nationwide."
-  },
-  {
-    role: "Software Engineer",
-    company: "Inoverse Company · Full-time",
+    role: "Associate Software Engineer",
+    company: "Inovers",
     years: "Nov 2025 — Present",
-    impact: "Manila, Philippines (Hybrid) · Designing, building, and scaling robust systems. Collaborating across teams to deliver high-quality, high-performance features."
+    impact: "Isabela, Philippines (Remote/Hybrid) · Developed the DORX Logistics Platform, designed and maintained RESTful APIs, optimized SQL queries, and implemented real-time tracking across 11 interconnected systems."
   },
   {
-    role: "Operations Assistant",
-    company: "Universal Leaf Tobacco Company · Seasonal",
-    years: "Jul 2025 — Nov 2025 (5 mos)",
-    impact: "Reina Mercedes, Cagayan Valley, Philippines (On-site) · Managed seasonal operational logs, inventory, and logistics coordination."
+    role: "Technical Staff",
+    company: "Universal Leaf Philippines, Inc.",
+    years: "Jul 2025 — Nov 2025",
+    impact: "Reina Mercedes, Cagayan Valley, Philippines (On-site) · Prepared invoices, billing records, service reports, maintenance tracking, operational reports, and managed parts inventory documentation."
   },
   {
-    role: "Software Engineer Intern",
-    company: "Frontend & Backend Development · Internship",
-    years: "Feb 2025 — May 2025 (4 mos)",
-    impact: "Philippines (Remote) · Gained hands-on experience developing responsive user interfaces and building backend database operations."
+    role: "Software Developer Intern",
+    company: "Dory Delivery (Food Delivery Service)",
+    years: "Feb 2025 — May 2025",
+    impact: "Isabela, Philippines (Remote/Hybrid) · Developed features for customer and rider apps in React Native, built website modules in React.js, ran manual QA testing, and integrated RESTful APIs."
   }
 ];
 
@@ -465,7 +460,7 @@ const achievements = [
 const skills = [
   {
     group: "Languages & Frontend",
-    items: ["JavaScript", "TypeScript", "HTML5", "CSS3", "React", "Vite", "Tailwind CSS", "Bootstrap", "Chart.js", "CanvasJS"]
+    items: ["JavaScript", "TypeScript", "HTML5", "CSS3", "React", "Tailwind CSS"]
   },
   {
     group: "Backend & Database",
@@ -477,7 +472,7 @@ const skills = [
   },
   {
     group: "DevOps & Tools",
-    items: ["Git", "GitHub", "Docker Desktop", "Postman", "MySQL Workbench", "Vercel", "Netlify", "GitHub Pages", "OSRM"]
+    items: ["Git", "GitHub", "Vite", "WebSocket", "Docker Desktop", "Postman", "MySQL Workbench", "Vercel", "Netlify", "GitHub Pages", "OSRM"]
   },
   {
     group: "AI Tools",
@@ -531,7 +526,7 @@ const hobbies = [
     label: "Taekwondo",
     desc: "Discipline, focus and self-defense",
     sub: "Belt Level",
-    val: "Blue Belt",
+    val: "Black Belt, 1st Dan",
     borderClass: "border-red-500/20 hover:border-red-500 hover:shadow-[0_0_25px_rgba(239,68,68,0.12)]",
     iconClass: "text-red-400 border-red-500/20 bg-red-500/5",
     subClass: "text-red-400/80",
@@ -594,9 +589,9 @@ const hobbies = [
     id: "music",
     icon: "music",
     label: "Listening to Music",
-    desc: "Vibing to rock classics, metal, 2000s pop, and old-school hits",
+    desc: "Curating a soundscape of 60s to 90s classics, from old-school pop to rock",
     sub: "Favs & Genres",
-    val: "Nirvana, Metal, 2000s Pop, Oldies",
+    val: "60s-90s Classics, Elvis Presley to Tom Jones, Nirvana, Metal, OPM Legends",
     borderClass: "border-pink-500/20 hover:border-pink-500 hover:shadow-[0_0_25px_rgba(244,63,94,0.12)]",
     iconClass: "text-pink-400 border-pink-500/20 bg-pink-500/5",
     subClass: "text-pink-400/80",
@@ -654,7 +649,7 @@ const musicProfile = [
     category: "Soft Rock & Classics",
     icon: "❤️",
     artists: ["Air Supply", "Engelbert Humperdinck", "Tom Jones", "America", "Mr. Big"],
-    desc: "Timeless crooners, slow-dance ballads, and vocal legends.",
+    desc: "Classic 60s to 90s vocal legends, timeless crooners, and slow-dance ballads.",
     track: "Making Love Out of Nothing at All",
     artist: "Air Supply",
     album: "Lost in Love",
@@ -675,10 +670,11 @@ const musicProfile = [
 ];
 
 const goals = [
-  "Ship a self-directed product that reaches 10k weekly users.",
-  "Publish a book on the craft of interactive design.",
-  "Mentor 20 designers moving into engineering by end of 2027.",
-  "Give a talk at every conference I once dreamed of attending.",
+  "Become a fully versatile Software Engineer and expand my skills into DevOps within the next 2 years.",
+  "Grow into a Senior Full-Stack Software Engineer capable of designing, building, and scaling impactful systems.",
+  "Build products that solve real-world problems and create meaningful value for people.",
+  "Master modern web, mobile, cloud, and DevOps technologies through continuous learning.",
+  "Build a comfortable and better life for my family through growth, dedication, and hard work.",
 ];
 
 /* ---------- Contact form ---------- */
@@ -687,6 +683,7 @@ function ContactForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [visitorName, setVisitorName] = useState("");
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -699,6 +696,8 @@ function ContactForm() {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const message = formData.get("message") as string;
+
+    setVisitorName(name);
 
     try {
       const response = await fetch("/api/contact", {
@@ -720,7 +719,6 @@ function ContactForm() {
       if (contentType && contentType.includes("application/json")) {
         result = await response.json();
       } else {
-        // If the server returned HTML (like a 404 or index.html fallback), read it as text
         const text = await response.text();
         throw new Error(
           `Server returned a non-JSON response (Status ${response.status}). If you are running locally, make sure to start the project using 'vercel dev' instead of 'npm run dev' so that the serverless functions are active.`
@@ -733,13 +731,36 @@ function ContactForm() {
 
       setSuccess(true);
       target.reset();
-      setTimeout(() => setSuccess(false), 5000);
     } catch (err: any) {
       setError(err.message || "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  if (success) {
+    return (
+      <div className="flex flex-col items-center justify-center py-10 px-6 text-center rounded-2xl bg-emerald-500/5 border border-emerald-500/20 backdrop-blur-md transition-all duration-300">
+        <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mb-5 text-2xl animate-pulse">
+          ✓
+        </div>
+        <h3 className="text-xl font-bold text-foreground mb-2">Thank you, {visitorName}!</h3>
+        <p className="text-sm text-muted-foreground max-w-sm mb-6 leading-relaxed">
+          Your message has been successfully delivered. I'll get back to you within 24 hours.
+        </p>
+        <button
+          onClick={() => {
+            setSuccess(false);
+            setError(null);
+            setVisitorName("");
+          }}
+          className="px-6 py-2.5 rounded-full border border-border bg-secondary/60 text-xs font-semibold hover:bg-secondary transition active:scale-95"
+        >
+          Send another message
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4">
@@ -769,14 +790,13 @@ function ContactForm() {
         disabled={loading}
       />
       {error && (
-        <p className="text-sm text-red-500 font-medium">
-          ❌ {error}
-        </p>
-      )}
-      {success && (
-        <p className="text-sm text-green-500 font-medium">
-          ✅ Message sent successfully!
-        </p>
+        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3">
+          <span className="text-base leading-none">⚠️</span>
+          <div>
+            <p className="font-semibold mb-0.5">Failed to send message</p>
+            <p className="text-xs text-red-400/90 leading-relaxed">{error}</p>
+          </div>
+        </div>
       )}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <p className="text-xs text-muted-foreground">
@@ -785,9 +805,9 @@ function ContactForm() {
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:opacity-90 transition disabled:opacity-50"
+          className="px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:opacity-90 transition disabled:opacity-50 active:scale-95"
         >
-          {loading ? "Sending..." : success ? "Message sent ✓" : "Send message"}
+          {loading ? "Sending..." : "Send message"}
         </button>
       </div>
     </form>
@@ -1165,6 +1185,8 @@ function Portfolio() {
   const { playClick } = useSound();
   const [activeTrackIndex, setActiveTrackIndex] = useState(0);
   const [activeDashboardTab, setActiveDashboardTab] = useState<"music" | "personality">("music");
+  const [activeHobbyIndex, setActiveHobbyIndex] = useState(0);
+  const [swipeDirection, setSwipeDirection] = useState<"left" | "right">("left");
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -1188,6 +1210,16 @@ function Portfolio() {
   };
 
   const isDark = theme === "dark" || theme === "red-black";
+
+  const handleHobbyDragEnd = (event: any, info: any) => {
+    if (info.offset.x < -60) {
+      setSwipeDirection("left");
+      setActiveHobbyIndex((prev) => (prev + 1) % hobbies.length);
+    } else if (info.offset.x > 60) {
+      setSwipeDirection("right");
+      setActiveHobbyIndex((prev) => (prev - 1 + hobbies.length) % hobbies.length);
+    }
+  };
 
   // Notebook styling config based on active theme
   const currentNotebook = {
@@ -1324,6 +1356,14 @@ function Portfolio() {
       </motion.div>
     );
   };
+
+  // Generate the top 3 cards in the visible stack starting from activeHobbyIndex
+  const visibleHobbyCards = [];
+  for (let i = 0; i < 3; i++) {
+    const idx = (activeHobbyIndex + i) % hobbies.length;
+    visibleHobbyCards.push({ ...hobbies[idx], stackIndex: i, originalIndex: idx });
+  }
+  const renderedHobbyCards = [...visibleHobbyCards].reverse();
 
   return (
     <main className="min-h-screen bg-background text-foreground font-body overflow-x-hidden">
@@ -1635,10 +1675,10 @@ function Portfolio() {
             {experience.map((e, i) => (
               <motion.li
                 key={e.role}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
+                initial={{ opacity: 0, x: 100, scale: 0.98 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
                 className="pl-8 pb-10 relative"
               >
                 <span className="absolute -left-[7px] top-2 h-3 w-3 rounded-full bg-primary" />
@@ -1662,10 +1702,10 @@ function Portfolio() {
             {achievements.map((a, i) => (
               <motion.div
                 key={a.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
+                initial={{ opacity: 0, x: -80, scale: 0.94 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
                 className="rounded-2xl border border-border bg-card p-6 hover:border-primary/60 transition"
               >
                 <div className="text-xs uppercase tracking-widest text-primary">{a.year}</div>
@@ -1681,8 +1721,15 @@ function Portfolio() {
         <div className="mx-auto max-w-6xl px-6">
           <SectionHeader eyebrow="06 — Skills" title="Knowledgeable in these tech stack | or tools" />
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {skills.map((s) => (
-              <div key={s.group} className="rounded-2xl border border-border bg-card p-6 flex flex-col justify-between hover:border-primary/40 transition duration-300 animate-in fade-in-50 duration-500 relative overflow-hidden group">
+            {skills.map((s, i) => (
+              <motion.div
+                key={s.group}
+                initial={{ opacity: 0, x: 100, scale: 0.94 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
+                className="rounded-2xl border border-border bg-card p-6 flex flex-col justify-between hover:border-primary/40 transition duration-300 relative overflow-hidden group"
+              >
                 {/* Decorative background grid pattern for premium touch */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="relative z-10">
@@ -1717,7 +1764,7 @@ function Portfolio() {
                     ))}
                   </motion.div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -1726,76 +1773,155 @@ function Portfolio() {
       {/* 7. Hobbies */}
       <section id="hobbies" className="py-32 border-t border-border/40">
         <div className="mx-auto max-w-6xl px-6">
-          <SectionHeader eyebrow="07 — Hobbies" title={<span>Many hobbies, <span className="text-primary italic">but never mastered.</span></span>} />
+          <SectionHeader eyebrow="07 — Hobbies" title={<span>Hobbies & <span className="text-primary italic">Life Telemetry Dashboard.</span></span>} />
           
           <p className="mt-4 text-muted-foreground text-sm max-w-xl">
-            I believe that productivity starts with balance. Taking care of both my body and mind helps me stay focused, creative, and ready to tackle new challenges every day.
+            I believe that peak productivity starts with operational balance. Monitoring my physical and mental loops keeps my creative threads running smoothly.
           </p>
 
-          <motion.div 
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.05
-                }
-              }
-            }}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12"
-          >
-            {hobbies.map((h) => (
-              <motion.div
-                key={h.label}
-                drag
-                dragConstraints={{ left: -30, right: 30, top: -30, bottom: 30 }}
-                dragElastic={0.15}
-                dragTransition={{ bounceStiffness: 400, bounceDamping: 20 }}
-                style={{ rotate: h.rotate, y: h.yOffset }}
-                variants={{
-                  hidden: { opacity: 0, scale: 0.95, y: 30, rotate: h.rotate },
-                  show: { opacity: 1, scale: 1, y: h.yOffset, rotate: h.rotate, transition: { type: "spring", stiffness: 80, damping: 15 } }
-                }}
-                whileHover={{ 
-                  scale: 1.04, 
-                  rotate: 0, 
-                  y: h.yOffset - 10, 
-                  zIndex: 40, 
-                  transition: { type: "spring", stiffness: 300, damping: 20 } 
-                }}
-                whileTap={{ cursor: "grabbing" }}
-                className={`rounded-3xl border bg-card/25 backdrop-blur-sm p-6 flex flex-col justify-between transition-shadow duration-300 relative select-none cursor-grab active:cursor-grabbing group overflow-hidden h-[260px] ${h.borderClass}`}
-              >
-                {/* Arrow up right */}
-                <ArrowUpRight size={16} className="absolute top-5 right-5 text-muted-foreground/40 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
-                
-                {/* Top content */}
-                <div className="flex flex-col gap-4">
-                  {/* Circle Icon wrapper */}
-                  <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-transform duration-300 group-hover:scale-105 ${h.iconClass}`}>
-                    <HobbyIcon name={h.icon} />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-lg font-bold text-foreground">{h.label}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed mt-1">{h.desc}</p>
-                  </div>
-                </div>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-12 mt-12 max-w-4xl mx-auto">
+            {/* Left Column: Description & Indicators */}
+            <div className="flex-1 text-left w-full">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-bold">SYSTEM TELEMETRY</span>
+              <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground mt-2">
+                Hobby Nodes
+              </h3>
+              <p className="mt-4 text-muted-foreground text-sm leading-relaxed max-w-md">
+                Cycle through active nodes to inspect live capacity logs. Drag left or right on the node card stack to navigate nodes, or click the indicators below.
+              </p>
+              
+              {/* Pagination indicators */}
+              <div className="flex flex-wrap items-center gap-2 mt-6">
+                {hobbies.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      playClick('medium');
+                      setActiveHobbyIndex(idx);
+                    }}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${
+                      idx === activeHobbyIndex ? "w-6 bg-primary" : "w-2.5 bg-secondary/40"
+                    }`}
+                    aria-label={`Go to node ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
 
-                {/* Bottom content */}
-                <div className="border-t border-border/30 pt-4 mt-auto">
-                  <span className={`text-[10px] uppercase tracking-wider font-semibold ${h.subClass}`}>
-                    {h.sub}
-                  </span>
-                  <p className="text-sm font-semibold text-foreground mt-0.5">
-                    {h.val}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+            {/* Right Column: Stacked Cards Deck */}
+            <div className="flex flex-col items-center shrink-0 mt-6 md:mt-0">
+              <div className="relative w-[300px] sm:w-[330px] h-[260px]">
+                <AnimatePresence initial={false}>
+                  {renderedHobbyCards.map((h) => {
+                    const isTop = h.stackIndex === 0;
+                    
+                    // Progress values
+                    const progressMap: Record<string, number> = {
+                      "movies-series": 85,
+                      "running": 60,
+                      "cycling": 45,
+                      "taekwondo": 70,
+                      "working-out": 80,
+                      "lifting-weights": 75,
+                      "chess": 65,
+                      "cooking": 100,
+                      "music": 90,
+                    };
+                    const progress = progressMap[h.id] || 70;
+                    const activeCount = Math.floor(progress / 16);
+                    const totalBars = 6;
+
+                    // Define physical visual offset styles for stacked deck look
+                    const offsetStyles = [
+                      { x: 0, y: 0, scale: 1, zIndex: 3, opacity: 1 },
+                      { x: 12, y: 12, scale: 0.96, zIndex: 2, opacity: 0.8 },
+                      { x: 24, y: 24, scale: 0.92, zIndex: 1, opacity: 0.5 },
+                    ][h.stackIndex] || { x: 0, y: 0, scale: 1, zIndex: 0, opacity: 0 };
+
+                    return (
+                      <motion.div
+                        key={h.id}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          zIndex: isTop ? 10 : (3 - h.stackIndex),
+                          backgroundColor: "var(--card)",
+                        }}
+                        initial={{ 
+                          opacity: 0, 
+                          scale: isTop ? 0.95 : 0.9, 
+                          x: isTop ? (swipeDirection === "left" ? 150 : -350) : 24, 
+                          y: isTop ? 0 : 24 
+                        }}
+                        animate={{
+                          x: isTop ? 0 : offsetStyles.x,
+                          y: isTop ? 0 : offsetStyles.y,
+                          scale: offsetStyles.scale,
+                          opacity: offsetStyles.opacity,
+                        }}
+                        exit={{ 
+                          x: swipeDirection === "left" ? -350 : 350, 
+                          opacity: 0, 
+                          scale: 0.9, 
+                          rotate: swipeDirection === "left" ? -15 : 15,
+                          zIndex: 20 
+                        }}
+                        drag={isTop ? "x" : false}
+                        dragConstraints={{ left: 0, right: 0 }}
+                        onDragEnd={isTop ? handleHobbyDragEnd : undefined}
+                        whileDrag={isTop ? { scale: 1.02 } : undefined}
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                        className={`w-full h-full rounded-2xl border border-border/80 bg-card p-6 flex flex-col justify-between shadow-xl relative overflow-hidden ${
+                          isTop ? "cursor-grab active:cursor-grabbing border-primary/20 shadow-2xl" : "shadow-md pointer-events-none"
+                        }`}
+                      >
+                        {/* Decorative background grid pattern for premium touch */}
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none opacity-30" />
+                        
+                        <div className="relative z-10 flex flex-col justify-between h-full w-full">
+                          {/* Top Content: Title & Description */}
+                          <div>
+                            <div className="flex items-center justify-between gap-2 mb-3">
+                              <span className="text-xs uppercase tracking-[0.2em] text-primary font-semibold">
+                                {h.label}
+                              </span>
+                              <div className={`w-7 h-7 rounded-lg border flex items-center justify-center bg-secondary/5 text-muted-foreground shrink-0 border-border/50`}>
+                                <HobbyIcon name={h.icon} />
+                              </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              {h.desc}
+                            </p>
+                          </div>
+
+                          {/* Bottom Content: Pill Badges (matches Skills section layout) */}
+                          <div className="border-t border-border/30 pt-4 mt-auto">
+                            <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block mb-2">
+                              {h.sub}
+                            </span>
+                            <div className="flex flex-wrap gap-2">
+                              {h.val.split(', ').map((valItem) => (
+                                <span 
+                                  key={valItem} 
+                                  className="px-2.5 py-1 rounded-full border border-border text-[10px] bg-secondary/10 text-foreground font-medium select-none"
+                                >
+                                  {valItem}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground/50 mt-5 flex items-center gap-1.5 select-none font-mono">
+                ← Swipe Left or Right →
+              </span>
+            </div>
+          </div>
 
           {/* Music Profile Dashboard Widget */}
           <div className="mt-24 border-t border-border/40 pt-20">
@@ -1977,7 +2103,7 @@ function Portfolio() {
                     <div className="rounded-3xl border border-border bg-gradient-to-r from-primary/5 to-transparent p-6 relative overflow-hidden">
                       <div className="absolute right-4 bottom-2 text-6xl font-serif text-primary/10 select-none">“</div>
                       <p className="text-sm font-semibold italic text-foreground leading-relaxed relative z-10">
-                        "A mix of 90s and 2000s alternative rock, hard rock, classic rock legends, timeless OPM, soft rock classics, and modern chill pop—with the occasional movie soundtrack."
+                        "A rich, curated soundscape spanning 60s to 90s classics—from vintage pop and timeless crooners of the Elvis Presley and Tom Jones eras, to energetic rock anthems, OPM legends, and modern chill vibes—with the occasional movie soundtrack."
                       </p>
                       <div className="mt-4 flex flex-wrap gap-3 border-t border-border/40 pt-4">
                         <span className="text-[10px] bg-secondary/35 text-muted-foreground px-2.5 py-1 rounded-full font-medium">💻 Clean aesthetics</span>
@@ -2025,7 +2151,7 @@ function Portfolio() {
                     <div className="rounded-3xl border border-border bg-card/25 p-6 flex flex-col gap-3">
                       <h4 className="text-xs uppercase tracking-widest text-primary font-semibold">My Philosophy</h4>
                       <p className="text-sm leading-relaxed text-foreground">
-                        "I'm someone who values balance. I enjoy pushing myself through running, cycling, weightlifting, and martial arts, but I also appreciate slowing down with timeless music and meaningful stories. My taste in music ranges from 90s and 2000s rock to classic artists and OPM legends—reflecting both my energetic side and my appreciation for authenticity. Whether I'm building software, training, or listening to my favorite playlists, I believe consistency, discipline, and curiosity are what drive personal growth."
+                        "I'm someone who values balance. I enjoy pushing myself through running, cycling, weightlifting, and martial arts, but I also appreciate slowing down with timeless music and meaningful stories. My taste in music ranges from 90s and 2000s rock to classic artists in the time of Elvis Presley to Tom Jones, and OPM legends—reflecting both my energetic side and my appreciation for authenticity. Whether I'm building software, training, or listening to my favorite playlists, I believe consistency, discipline, and curiosity are what drive personal growth."
                       </p>
                     </div>
 
@@ -2052,10 +2178,10 @@ function Portfolio() {
             {goals.map((g, i) => (
               <motion.li
                 key={g}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
+                initial={{ opacity: 0, x: 100, scale: 0.98 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
                 className="flex gap-6 items-baseline border-b border-border/60 pb-6"
               >
                 <span className="font-display text-2xl text-primary shrink-0 w-12">
@@ -2093,18 +2219,17 @@ function Portfolio() {
           </div>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm">
-            <a href="mailto:hi@alexrivera.dev" className="hover:text-primary transition">hi@alexrivera.dev</a>
+            <a href="mailto:hi@nire.dev" className="hover:text-primary transition">hi@nire.dev</a>
             <span className="text-muted-foreground">·</span>
-            <a href="#" className="hover:text-primary transition">Twitter</a>
-            <a href="#" className="hover:text-primary transition">GitHub</a>
-            <a href="#" className="hover:text-primary transition">Read.cv</a>
-            <a href="#" className="hover:text-primary transition">LinkedIn</a>
+            <a href="https://github.com/Nire1317" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition">GitHub</a>
+            <a href="/cv" className="hover:text-primary transition">Read.cv</a>
+            <a href="https://www.linkedin.com/in/erin-tuzon-541038343" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition">LinkedIn</a>
           </div>
         </div>
 
         <footer className="mt-24 border-t border-border/40 pt-8 pb-6 mx-auto max-w-6xl px-6 flex flex-wrap justify-between gap-4 text-xs text-muted-foreground">
-          <span>© 2026 Alex Rivera</span>
-          <span>Built with care in Portland</span>
+          <span>© 2026 Erin</span>
+          <span>Built with care in the Philippines</span>
         </footer>
       </section>
 

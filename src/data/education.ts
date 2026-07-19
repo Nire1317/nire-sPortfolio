@@ -13,39 +13,38 @@ export interface Education {
 export const education: Education[] = [
   {
     id: 'edu-1',
-    institution: 'University of Technology',
+    institution: 'Saint Ferdinand College',
     degree: 'Bachelor of Science',
-    field: 'Computer Science',
-    startDate: '2020',
-    endDate: '2024',
-    gpa: '3.8 / 4.0',
+    field: 'Information Technology',
+    startDate: '2021',
+    endDate: '2025',
     highlights: [
-      'Dean\'s List — All semesters',
-      'Capstone Project: AI-powered code analysis tool',
-      'Teaching Assistant for Data Structures & Algorithms',
-      'Led university hackathon team to 1st place',
-    ],
-    courses: [
-      'Data Structures & Algorithms',
-      'Computer Graphics',
-      'Machine Learning',
-      'Distributed Systems',
-      'Software Engineering',
-      'Database Systems',
-    ],
+      'Gained deep knowledge in Software Engineering, database systems, and web programming.',
+      'Developed multiple web and mobile applications using modern JavaScript stacks.',
+      'City of Ilagan, Isabela'
+    ]
   },
   {
     id: 'edu-2',
-    institution: 'Online Learning',
-    degree: 'Certifications',
-    field: 'Continuous Education',
-    startDate: '2022',
-    endDate: 'Present',
+    institution: 'Saint Ferdinand College',
+    degree: 'Diploma',
+    field: 'Information Communication and Technology',
+    startDate: '2021',
+    endDate: '2024',
     highlights: [
-      'AWS Cloud Practitioner Certification',
-      'Three.js Journey — Complete Course',
-      'Advanced React Patterns — Frontend Masters',
-      'System Design — Educative.io',
-    ],
+      'Focused on computer hardware, network administration, and databases.',
+      'City of Ilagan, Isabela'
+    ]
   },
+  {
+    id: 'edu-3',
+    institution: 'San Antonino National High School',
+    degree: 'High School Diploma',
+    field: 'General Academic Strand (GAS)',
+    startDate: '2019',
+    endDate: '2021',
+    highlights: [
+      'Burgos, Isabela'
+    ]
+  }
 ];

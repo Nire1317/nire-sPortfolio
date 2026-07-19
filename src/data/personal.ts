@@ -24,7 +24,7 @@ export interface Hobby {
 }
 
 export const personal: PersonalInfo = {
-  name: 'Erin',
+  name: 'Christian Erin J. Tuzon',
   title: 'Full-Stack Developer',
   tagline: 'Building the future, one pixel at a time.',
   bio: [
@@ -33,12 +33,11 @@ export const personal: PersonalInfo = {
     'When I\'m not coding, you\'ll find me exploring new technologies, contributing to open source, or getting lost in a good sci-fi novel. I believe in continuous learning and pushing the boundaries of what\'s possible on the web.',
     'I\'m currently focused on creative frontend development, combining 3D graphics, animation, and modern web technologies to build immersive digital experiences that tell compelling stories.',
   ],
-  location: 'San Francisco, CA',
-  email: 'hello@erin.dev',
+  location: 'Philippines',
+  email: 'hi@nire.dev',
   socials: [
-    { platform: 'GitHub', url: 'https://github.com', icon: '⟨/⟩' },
-    { platform: 'LinkedIn', url: 'https://linkedin.com', icon: 'in' },
-    { platform: 'Twitter', url: 'https://twitter.com', icon: '𝕏' },
+    { platform: 'GitHub', url: 'https://github.com/Nire1317', icon: '⟨/⟩' },
+    { platform: 'LinkedIn', url: 'https://www.linkedin.com/in/erin-tuzon-541038343', icon: 'in' },
     { platform: 'CodePen', url: 'https://codepen.io', icon: '⬡' },
   ],
   hobbies: [
@@ -74,12 +73,11 @@ export const personal: PersonalInfo = {
     },
   ],
   goals: [
-    'Lead a creative engineering team at a forward-thinking tech company',
-    'Build open-source tools that make 3D web development more accessible',
-    'Speak at major web development conferences about creative coding',
-    'Launch a successful SaaS product combining AI with immersive web experiences',
-    'Contribute to the WebGPU ecosystem and push the boundaries of browser graphics',
-    'Mentor the next generation of creative developers',
+    'Become a fully versatile Software Engineer and expand my skills into DevOps within the next 2 years',
+    'Grow into a Senior Full-Stack Software Engineer capable of designing, building, and scaling impactful systems',
+    'Build products that solve real-world problems and create meaningful value for people',
+    'Master modern web, mobile, cloud, and DevOps technologies through continuous learning',
+    'Build a comfortable and better life for my family through growth, dedication, and hard work',
   ],
   resumeUrl: '/resume.pdf',
 };

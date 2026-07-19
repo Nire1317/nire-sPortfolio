@@ -72,9 +72,10 @@ export const AboutPanel: React.FC = () => {
         <CyberButton 
           variant="primary" 
           href={personal.resumeUrl} 
+          download="Christian_Erin_Tuzon_Resume.pdf"
           style={{ width: '100%', marginTop: 'var(--space-sm)' }}
         >
-          DOWNLOAD RESUME (PDF) 📡
+          DOWNLOAD RESUME (PDF) 📥
         </CyberButton>
       </div>
     </div>

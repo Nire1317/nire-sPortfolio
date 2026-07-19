@@ -13,16 +13,28 @@ export interface Skill {
 
 export const skillCategories: SkillCategory[] = [
   {
+    id: 'languages',
+    name: 'Languages',
+    icon: '🔤',
+    skills: [
+      { name: 'JavaScript', level: 92 },
+      { name: 'TypeScript', level: 90 },
+      { name: 'PHP', level: 80 },
+      { name: 'HTML5', level: 95 },
+      { name: 'CSS3', level: 92 },
+      { name: 'SQL', level: 85 }
+    ],
+  },
+  {
     id: 'frontend',
-    name: 'Frontend',
+    name: 'Front-end',
     icon: '🎨',
     skills: [
-      { name: 'React / Next.js', level: 95 },
-      { name: 'TypeScript', level: 90 },
-      { name: 'Three.js / R3F', level: 80 },
-      { name: 'CSS / SCSS', level: 92 },
-      { name: 'Framer Motion', level: 85 },
-      { name: 'Vue.js', level: 75 },
+      { name: 'React', level: 90 },
+      { name: 'React Native', level: 88 },
+      { name: 'Tailwind CSS', level: 92 },
+      { name: 'Redux', level: 82 },
+      { name: 'TanStack Query', level: 85 }
     ],
   },
   {
@@ -30,38 +42,54 @@ export const skillCategories: SkillCategory[] = [
     name: 'Backend',
     icon: '⚙️',
     skills: [
-      { name: 'Node.js', level: 88 },
-      { name: 'Python', level: 82 },
-      { name: 'REST / GraphQL APIs', level: 90 },
-      { name: 'PostgreSQL', level: 78 },
-      { name: 'MongoDB', level: 80 },
-      { name: 'Redis', level: 70 },
+      { name: 'Node.js', level: 85 },
+      { name: 'Express.js', level: 82 },
+      { name: 'Sequelize (ORM)', level: 80 }
     ],
   },
   {
-    id: 'devops',
-    name: 'DevOps & Cloud',
-    icon: '☁️',
+    id: 'databases',
+    name: 'Databases',
+    icon: '💾',
     skills: [
-      { name: 'Docker', level: 82 },
-      { name: 'AWS / GCP', level: 75 },
-      { name: 'CI/CD Pipelines', level: 80 },
-      { name: 'Git / GitHub', level: 95 },
-      { name: 'Linux / Shell', level: 78 },
-      { name: 'Terraform', level: 60 },
+      { name: 'MySQL', level: 85 },
+      { name: 'Supabase', level: 80 },
+      { name: 'Firebase', level: 75 }
+    ],
+  },
+  {
+    id: 'technologies',
+    name: 'Technologies',
+    icon: '📡',
+    skills: [
+      { name: 'RESTful APIs', level: 90 },
+      { name: 'Socket.IO', level: 85 },
+      { name: 'JWT Authentication', level: 88 }
     ],
   },
   {
     id: 'tools',
-    name: 'Tools & Methods',
+    name: 'Tools & Workspace',
     icon: '🛠️',
     skills: [
-      { name: 'Figma / Design', level: 72 },
-      { name: 'Agile / Scrum', level: 85 },
-      { name: 'Testing (Jest, Cypress)', level: 80 },
-      { name: 'Performance Optimization', level: 78 },
-      { name: 'Accessibility (WCAG)', level: 75 },
-      { name: 'Technical Writing', level: 82 },
+      { name: 'Git & GitHub', level: 92 },
+      { name: 'VS Code', level: 90 },
+      { name: 'Postman', level: 88 },
+      { name: 'Docker', level: 80 },
+      { name: 'Expo', level: 85 },
+      { name: 'Android Studio', level: 78 },
+      { name: 'Vite', level: 88 },
+      { name: 'Jira', level: 80 }
+    ],
+  },
+  {
+    id: 'deployment',
+    name: 'Deployment',
+    icon: '☁️',
+    skills: [
+      { name: 'Vercel', level: 90 },
+      { name: 'Nginx (engineX)', level: 80 },
+      { name: 'Railway', level: 85 }
     ],
   },
 ];
