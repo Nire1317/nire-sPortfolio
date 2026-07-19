@@ -1,0 +1,324 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CYBERPUNK PORTFOLIO — DESIGN SYSTEM
+   Palette: "Neon Architect"
+   ═══════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+/* ─── CSS CUSTOM PROPERTIES ──────────────────────────────────────── */
+:root {
+  /* Colors — Lucy & David Light Cyberpunk */
+  --color-bg-deep: #edeaf5;
+  --color-bg-surface: #ffffff;
+  --color-bg-surface-alpha: rgba(255, 255, 255, 0.85);
+  --color-accent-primary: #ff007a;     /* Lucy Pink */
+  --color-accent-secondary: #b39200;   /* David Yellow (Darkened for readability) */
+  --color-accent-tertiary: #8b5cf6;    /* Lucy Purple */
+  --color-text-primary: #180d30;
+  --color-text-muted: #62597d;
+  --color-border: #d3cde6;
+  --color-border-glow: rgba(255, 0, 122, 0.1);
+
+  /* Typography */
+  --font-display: 'Orbitron', sans-serif;
+  --font-body: 'Rajdhani', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.5rem;
+  --text-5xl: 3.5rem;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Effects */
+  --glow-primary: 
+    0 0 5px rgba(255, 0, 122, 0.3),
+    0 0 10px rgba(255, 0, 122, 0.1);
+  --glow-secondary: 
+    0 0 5px rgba(179, 146, 0, 0.3),
+    0 0 10px rgba(179, 146, 0, 0.1);
+  --glow-tertiary:
+    0 0 5px rgba(139, 92, 246, 0.3),
+    0 0 10px rgba(139, 92, 246, 0.1);
+  --glow-text-primary: 
+    0 0 4px rgba(255, 0, 122, 0.4),
+    0 0 8px rgba(255, 0, 122, 0.2);
+  --glow-text-secondary:
+    0 0 4px rgba(179, 146, 0, 0.4),
+    0 0 8px rgba(179, 146, 0, 0.2);
+
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-bg-light: rgba(255, 255, 255, 0.65);
+  --glass-blur: blur(16px);
+  --glass-border: 1px solid rgba(255, 0, 122, 0.15);
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 300ms ease;
+  --transition-slow: 500ms ease;
+
+  /* Z-Index Scale */
+  --z-canvas: 0;
+  --z-hud: 10;
+  --z-panel: 20;
+  --z-nav: 30;
+  --z-boot: 100;
+  --z-loading: 110;
+}
+
+/* ─── GLOBAL RESET ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-deep);
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  line-height: 1.6;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* ─── TYPOGRAPHY ─────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+h1 { font-size: var(--text-5xl); }
+h2 { font-size: var(--text-3xl); }
+h3 { font-size: var(--text-2xl); }
+h4 { font-size: var(--text-xl); }
+
+p {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--color-text-primary);
+  line-height: 1.7;
+}
+
+code, pre, .mono {
+  font-family: var(--font-mono);
+}
+
+a {
+  color: var(--color-accent-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast), text-shadow var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-text-primary);
+  text-shadow: var(--glow-text-primary);
+}
+
+/* ─── UTILITY CLASSES ────────────────────────────────────────────── */
+
+/* Neon glow text */
+.glow-text {
+  text-shadow: var(--glow-text-primary);
+}
+
+.glow-text--secondary {
+  text-shadow: var(--glow-text-secondary);
+}
+
+/* Neon glow box */
+.glow-box {
+  border: 1px solid var(--color-accent-primary);
+  box-shadow: var(--glow-primary);
+}
+
+.glow-box--secondary {
+  border: 1px solid var(--color-accent-secondary);
+  box-shadow: var(--glow-secondary);
+}
+
+/* Glassmorphism panel */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow:
+    0 0 10px rgba(0, 185, 251, 0.05),
+    inset 0 0 30px rgba(0, 185, 251, 0.02);
+}
+
+/* Cut-corner cyberpunk panel */
+.cyber-clip {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 24px) 0,
+    100% 24px,
+    100% 100%,
+    24px 100%,
+    0 calc(100% - 24px)
+  );
+}
+
+/* Scanline overlay */
+.scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.12) 0px,
+    rgba(0, 0, 0, 0.12) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.06;
+}
+
+/* HUD corner brackets */
+.hud-brackets {
+  position: relative;
+}
+
+.hud-brackets::before,
+.hud-brackets::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-color: var(--color-accent-primary);
+  opacity: 0.5;
+}
+
+.hud-brackets::before {
+  top: -2px;
+  left: -2px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.hud-brackets::after {
+  bottom: -2px;
+  right: -2px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/* Monospace metadata label */
+.meta-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* Neon divider */
+.neon-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-accent-primary),
+    var(--color-accent-secondary),
+    transparent
+  );
+  opacity: 0.5;
+  margin: var(--space-lg) 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-primary);
+  box-shadow: var(--glow-primary);
+}
+
+/* Selection */
+::selection {
+  background: rgba(0, 185, 251, 0.3);
+  color: var(--color-text-primary);
+}
+
+/* ─── REDUCED MOTION ─────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .scanlines::before,
+  .crt-flicker {
+    display: none;
+  }
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    --text-5xl: 2rem;
+    --text-4xl: 1.75rem;
+    --text-3xl: 1.5rem;
+    --text-2xl: 1.25rem;
+  }
+}
