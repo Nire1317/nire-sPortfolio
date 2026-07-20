@@ -42,7 +42,7 @@ function CVPage() {
   const isDark = theme === "dark" || theme === "red-black";
 
   return (
-    <div className="min-h-screen transition-colors duration-300 font-sans p-6 sm:p-12 bg-background text-foreground">
+    <div className="min-h-screen transition-colors duration-300 font-sans p-4 sm:p-8 md:p-12 bg-background text-foreground">
       {/* High-fidelity print styles override */}
       <style>{`
         @media print {
@@ -108,10 +108,10 @@ function CVPage() {
 
       <div className="mx-auto max-w-4xl">
         {/* Navigation Toolbar (Hidden on Print) */}
-        <div className="no-print flex items-center justify-between mb-8 pb-4 border-b border-border/40">
+        <div className="no-print flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 sm:mb-8 pb-4 border-b border-border/40">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full border border-border bg-card/45 hover:border-foreground/30 hover:bg-card/85 text-muted-foreground hover:text-foreground transition"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest px-4 py-2.5 rounded-full border border-border bg-card/45 hover:border-foreground/30 hover:bg-card/85 text-muted-foreground hover:text-foreground transition"
           >
             <ArrowLeft size={14} /> Back to Portfolio
           </Link>
@@ -126,7 +126,7 @@ function CVPage() {
             <a
               href="/resume.pdf"
               download="Christian_Erin_Tuzon_Resume.pdf"
-              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest bg-primary text-primary-foreground px-5 py-2.5 rounded-full hover:opacity-90 shadow-md transition"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest bg-primary text-primary-foreground px-4 sm:px-5 py-2.5 rounded-full hover:opacity-90 shadow-md transition"
             >
               <Download size={14} /> Download PDF
             </a>
@@ -134,13 +134,13 @@ function CVPage() {
         </div>
 
         {/* CV Document Container */}
-        <div className="print-container rounded-3xl border border-border bg-card/25 p-8 sm:p-12 shadow-xl backdrop-blur-sm">
+        <div className="print-container rounded-3xl border border-border bg-card/25 p-5 sm:p-8 md:p-12 shadow-xl backdrop-blur-sm">
           {/* Header Section */}
-          <header className="mb-10 text-left">
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+          <header className="mb-8 sm:mb-10 text-left">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
               CHRISTIAN ERIN J. TUZON
             </h1>
-            <p className="text-primary text-sm font-semibold tracking-wider uppercase mt-1">
+            <p className="text-primary text-xs sm:text-sm font-semibold tracking-wider uppercase mt-1">
               Associate Software Engineer / Full-Stack Developer
             </p>
 
@@ -150,9 +150,9 @@ function CVPage() {
                 <Phone size={14} className="text-primary shrink-0" />
                 <span>09060418827</span>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
                 <Mail size={14} className="text-primary shrink-0" />
-                <a href="mailto:Erintuzon01@gmail.com" className="hover:underline hover:text-foreground">
+                <a href="mailto:Erintuzon01@gmail.com" className="hover:underline hover:text-foreground truncate">
                   Erintuzon01@gmail.com
                 </a>
               </div>
@@ -160,16 +160,16 @@ function CVPage() {
                 <MapPin size={14} className="text-primary shrink-0" />
                 <span>Raniag Burgos, Isabela</span>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
                 <Github size={14} className="text-primary shrink-0" />
-                <a href="https://github.com/Nire1317" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-foreground inline-flex items-center gap-1">
-                  github.com/Nire1317 <ExternalLink size={10} className="no-print" />
+                <a href="https://github.com/Nire1317" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-foreground inline-flex items-center gap-1 truncate">
+                  github.com/Nire1317 <ExternalLink size={10} className="no-print shrink-0" />
                 </a>
               </div>
-              <div className="flex items-center gap-2.5 sm:col-span-2">
+              <div className="flex items-center gap-2.5 sm:col-span-2 min-w-0">
                 <Linkedin size={14} className="text-primary shrink-0" />
-                <a href="https://www.linkedin.com/in/erin-tuzon-541038343" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-foreground inline-flex items-center gap-1">
-                  linkedin.com/in/erin-tuzon-541038343 <ExternalLink size={10} className="no-print" />
+                <a href="https://www.linkedin.com/in/erin-tuzon-541038343" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-foreground inline-flex items-center gap-1 truncate">
+                  linkedin.com/in/erin-tuzon-541038343 <ExternalLink size={10} className="no-print shrink-0" />
                 </a>
               </div>
             </div>

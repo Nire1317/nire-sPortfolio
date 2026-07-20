@@ -285,3 +285,113 @@
 .vinyl-spin-active {
   animation: vinyl-spin 4s linear infinite;
 }
+
+/* ──── Portfolio Enhancement Animations ──── */
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes bounce-scroll {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(10px); opacity: 1; }
+}
+
+@keyframes typewriter-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.2); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.15); }
+  56% { transform: scale(1); }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 5px var(--color-primary), 0 0 10px color-mix(in oklab, var(--color-primary) 30%, transparent); }
+  50% { box-shadow: 0 0 15px var(--color-primary), 0 0 30px color-mix(in oklab, var(--color-primary) 20%, transparent); }
+}
+
+@utility pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@utility gradient-shift {
+  animation: gradient-shift 8s ease infinite;
+  background-size: 200% 200%;
+}
+
+@utility bounce-scroll {
+  animation: bounce-scroll 2s ease-in-out infinite;
+}
+
+@utility typewriter-blink {
+  animation: typewriter-blink 1s step-end infinite;
+}
+
+@utility heartbeat {
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+@utility float-gentle {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+@utility shimmer {
+  animation: shimmer 3s linear infinite;
+  background-size: 200% 100%;
+}
+
+@utility glow-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* Glassmorphism utility */
+@utility glass {
+  background: color-mix(in oklab, var(--color-card) 60%, transparent);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid color-mix(in oklab, var(--color-border) 40%, transparent);
+}
+
+@utility glass-strong {
+  background: color-mix(in oklab, var(--color-card) 75%, transparent);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  border: 1px solid color-mix(in oklab, var(--color-border) 50%, transparent);
+}
+
+/* Gradient section divider */
+@utility gradient-divider {
+  border-top: none;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--color-border),
+    var(--color-primary),
+    var(--color-border),
+    transparent
+  );
+  height: 1px;
+}

@@ -1,11 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useRef, type FormEvent } from "react";
+import { useState, useEffect, useRef, useMemo, type FormEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Sun, Moon, Sparkles, ArrowUpRight, SkipForward, SkipBack } from "lucide-react";
+import { Sun, Moon, Sparkles, ArrowUpRight, SkipForward, SkipBack, Menu, X, ChevronLeft, ChevronRight, ChevronDown, ArrowUp, Heart } from "lucide-react";
 import { useSound } from "../hooks/useSound";
 import profileCasual from "../assets/profile-casual.jpg";
 import profileFormal from "../assets/profile-formal.jpg";
-import universeBg from "../assets/universe-bg.jpg";
 import projNebula from "../assets/project-nebula.jpg";
 import projKinetic from "../assets/project-kinetic.jpg";
 import projField from "../assets/project-field.jpg";
@@ -26,7 +25,7 @@ export const Route = createFileRoute("/")({
 function ProfileCard() {
   const [formal, setFormal] = useState(false);
   return (
-    <div className="relative rounded-3xl border border-border/60 bg-card p-6 w-full max-w-full shadow-2xl">
+    <div className="relative rounded-3xl border border-border/60 bg-card p-4 sm:p-6 w-full max-w-[320px] sm:max-w-[400px] mx-auto shadow-2xl">
       <div className="relative overflow-hidden rounded-2xl aspect-[3/4] bg-secondary">
         <AnimatePresence>
           <motion.img
@@ -75,6 +74,8 @@ const projects = [
   {
     title: "Leavely",
     tag: "Product · 2025",
+    category: "fullstack",
+    isLive: true,
     desc: "Automated leave and absence tracking for modern teams.",
     color: "from-[#4f46e5]/40 to-transparent",
     themeColor: "#4f46e5",
@@ -89,6 +90,8 @@ const projects = [
   {
     title: "E-Barangay System",
     tag: "Web App · 2025",
+    category: "fullstack",
+    isLive: true,
     desc: "A digital governance platform for local community management.",
     color: "from-[#0ea5e9]/40 to-transparent",
     themeColor: "#0ea5e9",
@@ -100,26 +103,66 @@ const projects = [
     metrics: [{ k: "5k+", v: "Residents" }, { k: "2 min", v: "Doc Issuance" }, { k: "85%", v: "Response Rate" }],
     liveUrl: "https://e-barangay-system.vercel.app/",
   },
-  { title: "Nebula OS", tag: "Product · 2025", desc: "An AI-native OS with spatial windows.", color: "from-[#5cf0a6]/40 to-transparent", themeColor: "#5cf0a6", image: projNebula,
-    role: "Lead Design Engineer", stack: ["React", "WebGPU", "Rust", "Motion"], year: "2025",
+  { 
+    title: "Nebula OS", 
+    tag: "Product · 2025", 
+    category: "ai-os",
+    isLive: false,
+    desc: "An AI-native OS with spatial windows.", 
+    color: "from-[#5cf0a6]/40 to-transparent", 
+    themeColor: "#5cf0a6", 
+    image: projNebula,
+    role: "Lead Design Engineer", 
+    stack: ["React", "WebGPU", "Rust", "Motion"], 
+    year: "2025",
     details: "A speculative operating system exploring what personal computing looks like when AI is the primary interface. Spatial window management, voice-first workflows, and a shader-driven compositor.",
     metrics: [{ k: "12k", v: "Beta users" }, { k: "4.9", v: "TestFlight" }, { k: "60fps", v: "Compositor" }],
     liveUrl: "",
   },
-  { title: "Kinetic Type", tag: "WebGL · 2024", desc: "Generative typeface reacting to sound.", color: "from-[#ff5a3c]/40 to-transparent", themeColor: "#ff5a3c", image: projKinetic,
-    role: "Creative Developer", stack: ["Three.js", "GLSL", "Tone.js"], year: "2024",
+  { 
+    title: "Kinetic Type", 
+    tag: "WebGL · 2024", 
+    category: "creative",
+    isLive: false,
+    desc: "Generative typeface reacting to sound.", 
+    color: "from-[#ff5a3c]/40 to-transparent", 
+    themeColor: "#ff5a3c", 
+    image: projKinetic,
+    role: "Creative Developer", 
+    stack: ["Three.js", "GLSL", "Tone.js"], 
+    year: "2024",
     details: "A live typographic instrument. Letterforms bend, fracture, and re-form in response to microphone input — used in live performances at Sónar and MUTEK.",
     metrics: [{ k: "SOTD", v: "Awwwards" }, { k: "3", v: "Live shows" }, { k: "180k", v: "Plays" }],
     liveUrl: "",
   },
-  { title: "Lumen", tag: "App · 2023", desc: "A quiet meditation app built for focus.", color: "from-[#ff5a3c]/40 to-transparent", themeColor: "#ff5a3c", image: projLumen,
-    role: "Product Designer", stack: ["Swift", "SwiftUI", "Metal"], year: "2023",
+  { 
+    title: "Lumen", 
+    tag: "App · 2023", 
+    category: "creative",
+    isLive: false,
+    desc: "A quiet meditation app built for focus.", 
+    color: "from-[#ff5a3c]/40 to-transparent", 
+    themeColor: "#ff5a3c", 
+    image: projLumen,
+    role: "Product Designer", 
+    stack: ["Swift", "SwiftUI", "Metal"], 
+    year: "2023",
     details: "An iOS meditation app centered on ambient soundscapes and gentle breath pacing. Built around a single principle: nothing on screen should demand attention.",
     metrics: [{ k: "#3", v: "App Store" }, { k: "220k", v: "Downloads" }, { k: "4.8", v: "Rating" }],
     liveUrl: "",
   },
-  { title: "Prism", tag: "Tool · 2022", desc: "A color system generator for designers.", color: "from-[#a78bfa]/40 to-transparent", themeColor: "#a78bfa", image: projPrism,
-    role: "Solo Maker", stack: ["React", "OKLCH", "Vite"], year: "2022",
+  { 
+    title: "Prism", 
+    tag: "Tool · 2022", 
+    category: "creative",
+    isLive: false,
+    desc: "A color system generator for designers.", 
+    color: "from-[#a78bfa]/40 to-transparent", 
+    themeColor: "#a78bfa", 
+    image: projPrism,
+    role: "Solo Maker", 
+    stack: ["React", "OKLCH", "Vite"], 
+    year: "2022",
     details: "A perceptually-uniform color system generator. Input a brand color, get a token-ready palette with accessible pairings across every surface, mode, and state.",
     metrics: [{ k: "50k", v: "MAU" }, { k: "Open", v: "Source" }, { k: "2.1k", v: "Stars" }],
     liveUrl: "",
@@ -130,297 +173,43 @@ type Project = (typeof projects)[number];
 
 
 
-function ProjectsWheel({ onSelectProject }: { onSelectProject: (p: Project) => void }) {
-  const [paused, setPaused] = useState(false);
-  const [progress, setProgress] = useState(2);
-  const progressRef = useRef(2);
-
-  // Live-responsive sizing from the container's own width via ResizeObserver.
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [dims, setDims] = useState({ spacing: 150, cardW: 220, cardH: 275, containerH: 420 });
-
-  const count = projects.length;
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const compute = (w: number) => {
-      // Derive card width and make it a bit larger (max 320px on desktop)
-      const cardW = Math.max(160, Math.min(320, Math.round(w * 0.22)));
-      const cardH = Math.round(cardW * 1.25);
-      // Spacing between cards in the row (overlapping slightly for Coverflow look)
-      const spacing = Math.round(cardW * 0.65);
-      // Thinner container height
-      const containerH = Math.max(380, cardH + 110);
-      setDims({ spacing, cardW, cardH, containerH });
-    };
-
-    compute(el.clientWidth);
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) compute(entry.contentRect.width);
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const { spacing, cardW, cardH, containerH } = dims;
-
-  // Continuous loop scroll animation (moves cards right to left like a wheel)
-  useEffect(() => {
-    if (paused) return;
-    let frameId: number;
-    let lastTime = performance.now();
-
-    const update = (time: number) => {
-      const delta = time - lastTime;
-      lastTime = time;
-
-      // Speed in progress units per millisecond (approx 6.6 seconds for full loop)
-      const speed = 0.00015;
-      progressRef.current = (progressRef.current + speed * delta) % count;
-      setProgress(progressRef.current);
-
-      frameId = requestAnimationFrame(update);
-    };
-
-    frameId = requestAnimationFrame(update);
-    return () => cancelAnimationFrame(frameId);
-  }, [paused, count]);
-
-  const activeIndex = Math.round(progress) % count;
-
-  const wrapDiff = (diff: number, max: number) => {
-    const half = max / 2;
-    return ((diff + half) % max + max) % max - half;
-  };
-
-  const stars = Array.from({ length: 90 }, (_, i) => {
-    const r1 = ((i * 9301 + 49297) % 233280) / 233280;
-    const r2 = (((i + 7) * 4931 + 12345) % 233280) / 233280;
-    const r3 = (((i + 13) * 7817 + 6151) % 233280) / 233280;
-    return {
-      top: `${r1 * 100}%`,
-      left: `${r2 * 100}%`,
-      size: 1 + r3 * 2,
-      delay: r1 * 4,
-      duration: 2 + r2 * 3,
-      opacity: 0.4 + r3 * 0.6,
-    };
-  });
-
-  return (
-    <div className="w-full" ref={containerRef}>
-      <div className="mx-auto max-w-6xl px-6 flex items-center justify-between mb-4 flex-wrap gap-2">
-        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-          Selected work · hover to slide · click to focus
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {projects[activeIndex] ? projects[activeIndex].title : paused ? "Paused" : "Scrolling"}
-        </p>
-      </div>
-
-      <div
-        className="relative w-full flex items-center justify-center select-none overflow-hidden border-y border-border/40"
-        style={{ perspective: "1400px", height: containerH }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => {
-          setPaused(false);
-        }}
-      >
-        {/* Real universe background image */}
-        <img
-          src={universeBg}
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          width={1920}
-          height={1280}
-          className="absolute inset-0 h-full w-full object-cover opacity-90"
-        />
-        <div className="absolute inset-0 bg-background/40" />
-
-        {/* Twinkling star overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          {stars.map((s, i) => (
-            <span
-              key={i}
-              className="absolute rounded-full bg-white"
-              style={{
-                top: s.top,
-                left: s.left,
-                width: s.size,
-                height: s.size,
-                opacity: s.opacity,
-                boxShadow: `0 0 ${s.size * 3}px rgba(255,255,255,${s.opacity})`,
-                animation: `star-twinkle ${s.duration}s ease-in-out ${s.delay}s infinite`,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* soft ground glow */}
-        <div className="absolute bottom-6 h-24 w-[80%] rounded-[100%] bg-primary/10 blur-3xl" />
-
-
-
-        <div
-          className="relative flex items-center justify-center"
-          style={{
-            width: cardW,
-            height: cardH,
-            transformStyle: "preserve-3d",
-          }}
-        >
-          {projects.map((p, i) => {
-            const diff = wrapDiff(i - progress, count);
-            const isActive = Math.abs(diff) < 0.5;
-
-            // Calculate Coverflow transformations dynamically
-            const xOffset = diff * spacing;
-            const rotateY = diff * -24;
-            const zOffset = -Math.abs(diff) * 110 + (isActive ? 50 : 0);
-            const scale = isActive ? 1.1 - Math.abs(diff) * 0.15 : 0.86;
-            const opacity = Math.abs(diff) > 2 ? 0.3 : 1.0 - Math.abs(diff) * 0.25;
-
-            return (
-              <div
-                key={p.title}
-                className="absolute"
-                style={{
-                  width: cardW,
-                  height: cardH,
-                  transformStyle: "preserve-3d",
-                  zIndex: Math.round(50 - Math.abs(diff) * 10),
-                }}
-              >
-                <motion.button
-                  type="button"
-                  onMouseEnter={() => {
-                    setPaused(true);
-                    setProgress(i);
-                    progressRef.current = i;
-                  }}
-                  onClick={() => {
-                    setPaused(true);
-                    setProgress(i);
-                    progressRef.current = i;
-                    onSelectProject(p);
-                  }}
-                  animate={{
-                    x: xOffset,
-                    rotateY: rotateY,
-                    z: zOffset,
-                    scale: scale,
-                    opacity: opacity,
-                  }}
-                  whileHover={{
-                    scale: isActive ? 1.16 : 0.92,
-                    z: isActive ? 90 : zOffset + 20,
-                  }}
-                  transition={{ type: "spring", stiffness: 110, damping: 22, mass: 0.75 }}
-                  className={`group w-full h-full rounded-3xl border bg-card flex flex-col text-left overflow-hidden`}
-                  style={{
-                    transformStyle: "preserve-3d",
-                    willChange: "transform, opacity",
-                    borderColor: isActive ? p.themeColor : 'rgba(255, 255, 255, 0.1)',
-                    boxShadow: isActive 
-                      ? `0 0 80px ${p.themeColor}73, 0 20px 50px rgba(0,0,0,0.7)` 
-                      : '0 15px 35px rgba(0,0,0,0.55)',
-                  }}
-                >
-                  {/* Project preview image */}
-                  <div className="relative flex-1 overflow-hidden">
-                    <img
-                      src={p.image}
-                      alt={`${p.title} preview`}
-                      loading="lazy"
-                      width={800}
-                      height={600}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
-                    />
-                    <div className={`absolute inset-0 bg-gradient-to-t ${p.color} to-transparent mix-blend-overlay`} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
-                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-background/70 backdrop-blur border border-border/60">
-                      <p className="text-[10px] uppercase tracking-widest text-foreground/80 font-mono">{p.tag}</p>
-                    </div>
-                  </div>
-                  {/* Meta bar */}
-                  <div className="relative p-4 flex items-end justify-between gap-3 bg-card/80 backdrop-blur-sm border-t border-border/50">
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-display text-lg md:text-xl font-semibold truncate">{p.title}</h3>
-                      <p className="text-xs text-muted-foreground truncate">{p.desc}</p>
-                      {p.liveUrl && (
-                        <a
-                          href={p.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-[11px] hover:underline font-mono mt-1 block truncate"
-                          style={{ color: p.themeColor }}
-                        >
-                          {p.liveUrl.replace('https://', '')} ↗
-                        </a>
-                      )}
-                    </div>
-                    <span 
-                      className="text-xl shrink-0 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                      style={{ color: p.themeColor }}
-                    >
-                      ↗
-                    </span>
-                  </div>
-                </motion.button>
-              </div>
-            );
-          })}
-        </div>
-        {/* Left and Right edge fade overlays */}
-        <div className="absolute inset-y-0 left-0 w-20 md:w-36 lg:w-52 bg-gradient-to-r from-background via-background/70 to-transparent pointer-events-none z-10" />
-        <div className="absolute inset-y-0 right-0 w-20 md:w-36 lg:w-52 bg-gradient-to-l from-background via-background/70 to-transparent pointer-events-none z-10" />
-      </div>
-
-
-      {/* orbit dots */}
-      <div className="flex items-center justify-center gap-2 mt-2">
-        {projects.map((p, i) => (
-          <button
-            key={p.title}
-            aria-label={`Focus ${p.title}`}
-            onMouseEnter={() => {
-              setPaused(true);
-              setProgress(i);
-              progressRef.current = i;
-            }}
-            onClick={() => {
-              setPaused(true);
-              setProgress(i);
-              progressRef.current = i;
-            }}
-            className={`h-1.5 rounded-full transition-all ${
-              activeIndex === i ? "w-8 bg-primary" : "w-3 bg-border hover:bg-foreground/40"
-            }`}
-          />
-        ))}
-      </div>
-
-    </div>
-  );
-}
-
-
 /* ---------- Section header ---------- */
 
 function SectionHeader({ eyebrow, title, kicker }: { eyebrow: string; title: string | React.ReactNode; kicker?: string }) {
   return (
-    <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
+    <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-12 gap-3 sm:gap-4">
       <div>
-        <p className="text-sm uppercase tracking-[0.3em] text-primary mb-3">{eyebrow}</p>
-        <h2 className="font-display text-4xl md:text-5xl font-semibold tracking-tight max-w-2xl">
+        <motion.p
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.5 }}
+          className="text-xs sm:text-sm uppercase tracking-[0.3em] text-primary mb-2 sm:mb-3 flex items-center gap-3"
+        >
+          {eyebrow}
+          <span className="hidden sm:inline-block h-px w-12 bg-gradient-to-r from-primary/60 to-transparent" />
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.1 }}
+          className="font-display text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight max-w-2xl leading-tight"
+        >
           {title}
-        </h2>
+        </motion.h2>
       </div>
-      {kicker && <p className="text-sm text-muted-foreground">{kicker}</p>}
+      {kicker && (
+        <motion.p
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-xs sm:text-sm text-muted-foreground"
+        >
+          {kicker}
+        </motion.p>
+      )}
     </div>
   );
 }
@@ -479,6 +268,43 @@ const skills = [
     items: ["Claude Code", "ChatGPT", "Gemini API"]
   }
 ];
+
+const skillMetadata: Record<string, { desc: string; projects: string[]; status: string }> = {
+  JavaScript: { desc: "Core scripting language powering dynamic client & server logic.", projects: ["Leavely", "E-Barangay System", "DORX Platform"], status: "Core Language" },
+  TypeScript: { desc: "Type-safe JavaScript for scalable full-stack applications.", projects: ["Leavely", "E-Barangay System", "Portfolio"], status: "Primary Standard" },
+  HTML5: { desc: "Semantic structural markup & web accessibility standards.", projects: ["All Web Systems"], status: "Standard" },
+  CSS3: { desc: "Responsive layout design, modern flexbox/grid & animations.", projects: ["All Web Systems"], status: "Standard" },
+  React: { desc: "Declarative component-driven frontend user interface library.", projects: ["Leavely", "E-Barangay System", "Dory Delivery"], status: "Primary Framework" },
+  "Tailwind CSS": { desc: "Utility-first CSS framework for rapid design systems & glassmorphism.", projects: ["Leavely", "E-Barangay System", "Portfolio"], status: "Primary Styling" },
+  "Node.js": { desc: "Event-driven asynchronous JavaScript backend server runtime.", projects: ["Leavely Backend", "DORX Logistics", "Express APIs"], status: "Production Backend" },
+  "Express.js": { desc: "Fast minimalist web framework for building Node REST APIs.", projects: ["DORX Platform", "Backend Services"], status: "API Framework" },
+  Supabase: { desc: "Open-source Firebase alternative with PostgreSQL & Realtime Auth.", projects: ["E-Barangay System"], status: "Cloud DB & Auth" },
+  MySQL: { desc: "Relational database management for structured data querying.", projects: ["DORX Platform", "Universal Leaf Systems"], status: "Production RDBMS" },
+  Firebase: { desc: "Realtime NoSQL database, Google Auth, and Cloud Storage.", projects: ["Mobile App Prototype"], status: "Cloud Platform" },
+  Sequelize: { desc: "Promise-based Node.js ORM for relational SQL databases.", projects: ["DORX Backend APIs"], status: "ORM Engine" },
+  Redis: { desc: "In-memory data structure store for caching & pub/sub messaging.", projects: ["Session Cache"], status: "In-Memory Cache" },
+  "Socket.IO": { desc: "Real-time bidirectional event-based communication engine.", projects: ["DORX Realtime Tracking"], status: "Realtime Engine" },
+  JWT: { desc: "Stateless JSON Web Token security for API authentication.", projects: ["Leavely Auth", "DORX Auth"], status: "Security Standard" },
+  "REST API": { desc: "RESTful HTTP API architectural design & contract design.", projects: ["All Microservices"], status: "Architecture" },
+  "Resend API": { desc: "Transactional email API service for automated notifications.", projects: ["Leavely Email Alerts"], status: "Email Gateway" },
+  "React Native": { desc: "Cross-platform mobile application framework for iOS & Android.", projects: ["Dory Delivery App"], status: "Mobile Framework" },
+  Expo: { desc: "Universal React Native toolchain & native device runtime.", projects: ["Dory Delivery App"], status: "Mobile Toolchain" },
+  "Android Studio": { desc: "Android SDK platform & emulator environment.", projects: ["Mobile Builds"], status: "Dev Environment" },
+  Git: { desc: "Distributed version control system for source code tracking.", projects: ["All Repositories"], status: "VCS Standard" },
+  GitHub: { desc: "Cloud repository hosting, code reviews & CI/CD automation.", projects: ["Nire1317 GitHub"], status: "DevOps Host" },
+  Vite: { desc: "Next-generation frontend dev server & bundler.", projects: ["Leavely", "E-Barangay System", "Portfolio"], status: "Primary Bundler" },
+  WebSocket: { desc: "Full-duplex persistent client-server protocol.", projects: ["Realtime Telemetry"], status: "Network Protocol" },
+  "Docker Desktop": { desc: "Containerized app packaging & reproducible environment orchestration.", projects: ["Local Services"], status: "Containerization" },
+  Postman: { desc: "API testing, automated endpoint validation & documentation.", projects: ["API Integration Test Suites"], status: "Testing Suite" },
+  "MySQL Workbench": { desc: "Visual SQL schema design & database administration tool.", projects: ["Database Schemas"], status: "Admin Tool" },
+  Vercel: { desc: "Serverless web application deployment & global CDN hosting.", projects: ["Leavely", "E-Barangay System"], status: "Deployment Platform" },
+  Netlify: { desc: "Automated web application deployment and serverless platform.", projects: ["Web Applications"], status: "Cloud Host" },
+  "GitHub Pages": { desc: "Static website deployment directly from GitHub branches.", projects: ["Static Demos"], status: "Static Host" },
+  OSRM: { desc: "High-performance Open Source Routing Machine for GIS mapping.", projects: ["DORX Route Optimization"], status: "GIS Engine" },
+  "Claude Code": { desc: "Agentic AI CLI assistant for automated coding & refactoring.", projects: ["AI Pair Developer"], status: "AI Tooling" },
+  ChatGPT: { desc: "Conversational AI model for architecture & code optimization.", projects: ["Research Assistant"], status: "AI Tooling" },
+  "Gemini API": { desc: "Google DeepMind multimodal AI API integration.", projects: ["AI Features"], status: "AI Integration" },
+};
 
 const hobbies = [
   {
@@ -1166,6 +992,769 @@ function HobbyIcon({ name }: { name: string }) {
   return null;
 }
 
+/* ---------- Spotlight Project Card Component ---------- */
+
+function ProjectSpotlightCard({ 
+  p, 
+  index, 
+  onSelect 
+}: { 
+  p: Project; 
+  index: number; 
+  onSelect: (p: Project) => void;
+}) {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 30, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.92, y: 20 }}
+      transition={{ type: "spring", stiffness: 90, damping: 20, delay: index * 0.05 }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group rounded-3xl border border-border bg-card/60 backdrop-blur-xl overflow-hidden flex flex-col justify-between transition-all duration-500 hover:shadow-2xl relative"
+      style={{
+        borderColor: isHovered ? `${p.themeColor}88` : undefined,
+        boxShadow: isHovered 
+          ? `0 20px 40px -15px ${p.themeColor}33, 0 0 25px ${p.themeColor}15`
+          : `0 4px 20px rgba(0,0,0,0.15)`,
+      }}
+    >
+      {/* Interactive Mouse Spotlight Gradient Glow */}
+      {isHovered && (
+        <div
+          className="pointer-events-none absolute -inset-px rounded-3xl transition-opacity duration-300 opacity-100 z-10"
+          style={{
+            background: `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, ${p.themeColor}25, transparent 80%)`,
+          }}
+        />
+      )}
+
+      {/* Top Banner / Image Area */}
+      <div className={`relative h-52 sm:h-60 w-full overflow-hidden bg-gradient-to-br ${p.color} border-b border-border/40`}>
+        {p.image && (
+          <img
+            src={p.image}
+            alt={p.title}
+            className="absolute inset-0 h-full w-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-85 transition-all duration-700 pointer-events-none"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/25 to-transparent" />
+        
+        {/* Top Badges */}
+        <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2 z-20">
+          <span 
+            className="px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-widest font-bold bg-background/80 backdrop-blur border border-border/80 text-foreground shadow-sm"
+            style={{ color: p.themeColor }}
+          >
+            {p.tag}
+          </span>
+
+          {p.isLive ? (
+            <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 backdrop-blur flex items-center gap-1.5 shadow-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Live App
+            </span>
+          ) : (
+            <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-secondary/80 text-muted-foreground border border-border/60 backdrop-blur">
+              ✦ Concept
+            </span>
+          )}
+        </div>
+
+        {/* Title Overlay */}
+        <div className="absolute bottom-3.5 left-4.5 right-4.5 z-20">
+          <h3 className="font-display text-2xl sm:text-3xl font-bold text-foreground drop-shadow-md group-hover:text-primary transition-colors flex items-center justify-between">
+            <span>{p.title}</span>
+            <span className="text-xs font-mono font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ color: p.themeColor }}>
+              {p.year}
+            </span>
+          </h3>
+        </div>
+      </div>
+
+      {/* Card Body */}
+      <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between space-y-4 relative z-20">
+        <div>
+          {/* Role Line */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground font-mono mb-2.5">
+            <div>
+              <span className="text-primary font-semibold">Role:</span> {p.role}
+            </div>
+          </div>
+
+          {/* Purpose Box */}
+          <div className="p-3 rounded-xl bg-secondary/15 border border-border/50 text-xs text-foreground/90 leading-relaxed font-medium mb-3">
+            <span className="font-semibold text-primary block mb-0.5 text-[10px] uppercase tracking-wider">Purpose:</span>
+            {p.desc}
+          </div>
+
+          {/* Detailed Overview */}
+          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
+            {p.details}
+          </p>
+        </div>
+
+        <div className="space-y-4 pt-2 border-t border-border/40">
+          {/* Tech Stack Badges */}
+          <div>
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono font-semibold block mb-2">
+              Tech Stack
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {p.stack.map((st) => (
+                <span
+                  key={st}
+                  className={`px-2.5 py-1 rounded-full border border-border text-[10px] bg-secondary/20 text-foreground font-medium select-none flex items-center gap-1 ${getBrandHoverClass(st)}`}
+                >
+                  <SkillIcon name={st} />
+                  {st}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Key Metric Highlights */}
+          <div className="grid grid-cols-3 gap-1.5 bg-secondary/10 border border-border/40 rounded-xl p-2 text-center">
+            {p.metrics.map((m) => (
+              <div key={m.v} className="px-1">
+                <div className="text-xs font-bold font-mono" style={{ color: p.themeColor }}>
+                  {m.k}
+                </div>
+                <div className="text-[9px] uppercase tracking-wider text-muted-foreground truncate">{m.v}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Interactive Action Buttons */}
+          <div className="flex items-center gap-2 pt-1">
+            <button
+              onClick={() => {
+                onSelect(p);
+              }}
+              className="flex-1 py-2.5 px-3 rounded-xl border border-border bg-secondary/30 hover:bg-secondary text-xs font-semibold text-foreground transition active:scale-95 flex items-center justify-center gap-1.5 group/btn"
+            >
+              <span>Inspect Architecture</span>
+              <span className="group-hover/btn:translate-x-1 transition-transform">→</span>
+            </button>
+
+            {p.liveUrl && (
+              <a
+                href={p.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2.5 px-3.5 rounded-xl text-white text-xs font-semibold tracking-wide transition hover:opacity-90 active:scale-95 flex items-center justify-center shrink-0 shadow-md gap-1"
+                style={{ backgroundColor: p.themeColor }}
+              >
+                <span>Demo</span>
+                <span>↗</span>
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ---------- Animated Skills Wheel (Silky Smooth Spring Physics) ---------- */
+
+function SkillsWheel() {
+  const [activeGroup, setActiveGroup] = useState<string>("all");
+  const [paused, setPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [hoveredTech, setHoveredTech] = useState<string | null>(null);
+  const progressRef = useRef(0);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const { playClick } = useSound();
+
+  // Filter tech items based on category
+  const filteredSkills = useMemo(() => {
+    if (activeGroup === "all") {
+      return skills.flatMap((s) => s.items.map((it) => ({ item: it, group: s.group })));
+    }
+    const groupData = skills.find((s) => s.group === activeGroup);
+    return groupData ? groupData.items.map((it) => ({ item: it, group: groupData.group })) : [];
+  }, [activeGroup]);
+
+  const count = filteredSkills.length;
+
+  // Currently active center skill (fallback when not hovering)
+  const activeCenterIndex = count > 0 ? (Math.round(progress) % count + count) % count : 0;
+  const currentSkillItem = hoveredTech || (filteredSkills[activeCenterIndex]?.item ?? "TypeScript");
+  const currentSkillGroup = filteredSkills.find((s) => s.item === currentSkillItem)?.group || "Languages & Frontend";
+  const currentMeta = skillMetadata[currentSkillItem] || {
+    desc: "Production software engineering stack component.",
+    projects: ["Leavely", "E-Barangay System"],
+    status: "Production Tech",
+  };
+
+  // Continuous smooth wheel loop animation
+  useEffect(() => {
+    if (paused || count === 0) return;
+    let frameId: number;
+    let lastTime = performance.now();
+
+    const animate = (time: number) => {
+      const delta = time - lastTime;
+      lastTime = time;
+      
+      const speed = 0.00025; // Smooth speed factor
+      progressRef.current = (progressRef.current + speed * delta) % count;
+      setProgress(progressRef.current);
+
+      frameId = requestAnimationFrame(animate);
+    };
+
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [paused, count]);
+
+  // Touch Swipe Support
+  const touchStartX = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    setPaused(true);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 25) {
+      if (diff > 0) {
+        progressRef.current = (progressRef.current + 1) % count;
+      } else {
+        progressRef.current = (progressRef.current - 1 + count) % count;
+      }
+      setProgress(progressRef.current);
+    }
+    touchStartX.current = null;
+  };
+
+  const wrapDiff = (diff: number, max: number) => {
+    const half = max / 2;
+    return ((diff + half) % max + max) % max - half;
+  };
+
+  return (
+    <div className="w-full relative" ref={containerRef}>
+      {/* Category Filter Pills with Framer Motion layoutId */}
+      <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
+        {[
+          { id: "all", label: "All Tech" },
+          ...skills.map((s) => ({ id: s.group, label: s.group })),
+        ].map((cat) => {
+          const isActive = activeGroup === cat.id;
+          return (
+            <motion.button
+              key={cat.id}
+              onClick={() => {
+                playClick('medium');
+                setActiveGroup(cat.id);
+                setHoveredTech(null);
+                progressRef.current = 0;
+                setProgress(0);
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`relative px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-colors duration-300 select-none flex items-center gap-1.5 ${
+                isActive
+                  ? "text-primary-foreground"
+                  : "bg-secondary/20 hover:bg-secondary/40 text-muted-foreground border border-border/50"
+              }`}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="activeSkillTab"
+                  className="absolute inset-0 bg-primary rounded-full shadow-md"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">{cat.label}</span>
+              <span className={`relative z-10 text-[9px] font-mono px-1.5 py-0.2 rounded-full ${isActive ? "bg-white/20 text-white" : "bg-secondary/40 text-muted-foreground"}`}>
+                {cat.id === "all" ? skills.reduce((acc, s) => acc + s.items.length, 0) : skills.find(s => s.group === cat.id)?.items.length}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* 3D Wheel Stage */}
+      <div
+        className="relative w-full h-[260px] sm:h-[300px] flex items-center justify-center select-none overflow-hidden touch-pan-y"
+        style={{ perspective: "1200px" }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => {
+          setPaused(false);
+          setHoveredTech(null);
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Soft Ambient Center Glow */}
+        <div className="absolute w-72 h-32 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+
+        {/* 3D Orbit Node Container with Framer Motion AnimatePresence */}
+        <AnimatePresence mode="popLayout">
+          <motion.div 
+            key={activeGroup}
+            className="relative w-full h-full flex items-center justify-center" 
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            {filteredSkills.map((st: { item: string; group: string }, i: number) => {
+              const diff = wrapDiff(i - progress, count);
+              const isActive = Math.abs(diff) < 0.5;
+
+              // Compute cylindrical spacing and rotation
+              const spacing = typeof window !== "undefined" && window.innerWidth < 640 ? 120 : 160;
+              const xOffset = diff * spacing;
+              const rotateY = diff * -20;
+              const zOffset = -Math.abs(diff) * 90 + (isActive ? 40 : 0);
+              const scale = isActive ? 1.15 : Math.max(0.75, 1 - Math.abs(diff) * 0.15);
+              const opacity = Math.abs(diff) > 3 ? 0 : Math.max(0.2, 1.0 - Math.abs(diff) * 0.25);
+
+              return (
+                <motion.div
+                  key={`${st.item}-${i}`}
+                  onClick={() => {
+                    playClick('medium');
+                    setPaused(true);
+                    progressRef.current = i;
+                    setProgress(i);
+                    setHoveredTech(st.item);
+                  }}
+                  onMouseEnter={() => {
+                    playClick('low');
+                    setHoveredTech(st.item);
+                  }}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{
+                    x: xOffset,
+                    rotateY: rotateY,
+                    z: zOffset,
+                    scale: scale,
+                    opacity: opacity,
+                  }}
+                  exit={{ opacity: 0, scale: 0.5 }}
+                  whileHover={{ scale: scale * 1.12, zIndex: 100 }}
+                  whileTap={{ scale: scale * 0.95 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 140,
+                    damping: 20,
+                    mass: 0.9,
+                  }}
+                  style={{
+                    position: "absolute",
+                    transformStyle: "preserve-3d",
+                    zIndex: Math.round(50 - Math.abs(diff) * 10),
+                  }}
+                  className={`flex items-center gap-2.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl border backdrop-blur-xl cursor-pointer select-none group transition-colors duration-300 ${
+                    isActive || hoveredTech === st.item
+                      ? "bg-card/95 border-primary text-foreground shadow-[0_10px_30px_rgba(var(--primary-rgb),0.35)] ring-2 ring-primary/40 font-bold"
+                      : "bg-card/40 border-border/60 text-muted-foreground hover:border-primary/60 hover:text-foreground"
+                  }`}
+                >
+                  <div className="text-lg sm:text-xl shrink-0 group-hover:scale-125 transition-transform duration-300">
+                    <SkillIcon name={st.item} />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold tracking-wide whitespace-nowrap font-display">
+                    {st.item}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Live Technology Inspection Card */}
+      <div className="max-w-xl mx-auto my-4 px-4">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSkillItem}
+            initial={{ opacity: 0, y: 10, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.97 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="rounded-2xl glass-strong p-4 sm:p-5 border border-primary/30 shadow-xl relative overflow-hidden"
+          >
+            <div className="flex items-center justify-between gap-3 border-b border-border/60 pb-3 mb-3 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-primary/10 border border-primary/30 text-xl text-primary flex items-center justify-center">
+                  <SkillIcon name={currentSkillItem} />
+                </div>
+                <div>
+                  <h4 className="font-display font-bold text-base sm:text-lg text-foreground flex items-center gap-2">
+                    {currentSkillItem}
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 font-semibold">
+                      {currentSkillGroup}
+                    </span>
+                  </h4>
+                  <p className="text-xs text-muted-foreground font-mono mt-0.5">{currentMeta.status}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">● Active Inspector</span>
+              </div>
+            </div>
+
+            <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed mb-3 font-body">
+              {currentMeta.desc}
+            </p>
+
+            <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground flex-wrap pt-1 border-t border-border/40">
+              <span className="text-primary font-bold text-[11px] uppercase tracking-wider">Used in:</span>
+              {currentMeta.projects.map((proj) => (
+                <span key={proj} className="px-2 py-0.5 rounded-md bg-secondary/40 border border-border/60 text-foreground text-[10px] font-semibold">
+                  {proj}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Wheel Navigation Controls */}
+      <div className="flex items-center justify-between max-w-sm mx-auto mt-3 px-4 text-xs font-mono text-muted-foreground">
+        <button
+          onClick={() => {
+            playClick('medium');
+            setPaused(true);
+            const prev = (Math.ceil(progressRef.current) - 1 + count) % count;
+            progressRef.current = prev;
+            setProgress(prev);
+          }}
+          className="hover:text-primary transition flex items-center gap-1 py-1 px-2.5 rounded-lg border border-border/60 bg-card/60 active:scale-95"
+        >
+          <ChevronLeft size={14} /> Prev Tech
+        </button>
+
+        <button
+          onClick={() => setPaused(!paused)}
+          className="uppercase tracking-widest text-[10px] text-primary font-bold hover:opacity-80 transition"
+        >
+          {paused ? "▶ Resume Orbit" : "❚❚ Pause Orbit"}
+        </button>
+
+        <button
+          onClick={() => {
+            playClick('medium');
+            setPaused(true);
+            const next = (Math.floor(progressRef.current) + 1) % count;
+            progressRef.current = next;
+            setProgress(next);
+          }}
+          className="hover:text-primary transition flex items-center gap-1 py-1 px-2.5 rounded-lg border border-border/60 bg-card/60 active:scale-95"
+        >
+          Next Tech <ChevronRight size={14} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Hero Terminal Console Component (Ultra Glassmorphism & Interactive Terminal Input) ---------- */
+
+function HeroConsole() {
+  const [activeTab, setActiveTab] = useState<"status" | "bio" | "projects" | "stack" | "telemetry">("status");
+  const [cmdInput, setCmdInput] = useState("");
+  const [terminalLog, setTerminalLog] = useState<string | null>(null);
+  const { playClick } = useSound();
+
+  const handleCommandSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const query = cmdInput.trim().toLowerCase();
+    setCmdInput("");
+    if (!query) return;
+
+    playClick('medium');
+
+    if (query === "help") {
+      setTerminalLog("Available commands: status, bio, projects, stack, telemetry, whoami, contact, clear");
+    } else if (query === "status") {
+      setActiveTab("status");
+      setTerminalLog(null);
+    } else if (query === "bio") {
+      setActiveTab("bio");
+      setTerminalLog(null);
+    } else if (query === "projects") {
+      setActiveTab("projects");
+      setTerminalLog("Navigating to Featured Projects...");
+      const el = document.getElementById("projects");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else if (query === "stack" || query === "skills") {
+      setActiveTab("stack");
+      setTerminalLog("Navigating to Skills Orbit...");
+      const el = document.getElementById("skills");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else if (query === "telemetry") {
+      setActiveTab("telemetry");
+      setTerminalLog(null);
+    } else if (query === "whoami") {
+      setTerminalLog("Guest User @ Erin's Software Engineering Portfolio");
+    } else if (query === "contact" || query === "hire") {
+      setTerminalLog("Scrolling to Contact section...");
+      const el = document.getElementById("connect");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else if (query === "clear") {
+      setTerminalLog(null);
+    } else {
+      setTerminalLog(`zsh: command not found: ${query}. Type 'help' for available commands.`);
+    }
+  };
+
+  return (
+    <div className="w-full rounded-2xl border border-primary/30 bg-[#0c0d14]/90 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(var(--primary-rgb),0.15)] relative overflow-hidden text-left font-mono group">
+      {/* Decorative Ambient Radial Glow & Cyber Grid */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/15 via-transparent to-transparent pointer-events-none opacity-80" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+
+      {/* Terminal Header Bar */}
+      <div className="bg-[#141624]/95 backdrop-blur-md px-3.5 sm:px-5 py-2.5 border-b border-white/10 flex items-center justify-between select-none relative z-10 flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-500/90 inline-block" />
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-500/90 inline-block" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/90 inline-block" />
+          <span className="text-[11px] text-zinc-400 font-semibold ml-2 hidden sm:inline tracking-wide">
+            erin@system-terminal:~ (zsh)
+          </span>
+        </div>
+
+        {/* Command Tabs with Motion layoutId */}
+        <div className="flex items-center gap-1 bg-black/60 p-0.5 rounded-xl border border-white/10 backdrop-blur-md">
+          {[
+            { id: "status", cmd: "$ status" },
+            { id: "bio", cmd: "$ bio" },
+            { id: "projects", cmd: "$ projects" },
+            { id: "stack", cmd: "$ stack" },
+            { id: "telemetry", cmd: "$ telemetry" },
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <motion.button
+                key={tab.id}
+                onClick={() => {
+                  playClick('medium');
+                  setActiveTab(tab.id as any);
+                  setTerminalLog(null);
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`relative px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold transition-colors select-none ${
+                  isActive ? "text-primary-foreground" : "text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                {isActive && (
+                  <motion.div
+                    layoutId="activeHeroConsoleTab"
+                    className="absolute inset-0 bg-primary rounded-lg shadow-md"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{tab.cmd}</span>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Terminal Content Body */}
+      <div className="p-4 sm:p-5 text-xs text-zinc-200 min-h-[130px] flex flex-col justify-between relative z-10">
+        <AnimatePresence mode="wait">
+          {activeTab === "status" && (
+            <motion.div
+              key="status"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-3"
+            >
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span>[SYSTEM OK] Production Web Systems Operational</span>
+                </div>
+                {/* Equalizer animation */}
+                <div className="flex items-center gap-0.5 h-4">
+                  {[40, 75, 55, 90, 65, 80, 45, 95, 70].map((h, i) => (
+                    <motion.span
+                      key={i}
+                      animate={{ height: [`${h * 0.35}%`, `${h}%`, `${h * 0.45}%`] }}
+                      transition={{ repeat: Infinity, duration: 1.2 + i * 0.1, ease: "easeInOut" }}
+                      className="w-0.5 rounded-full bg-primary/80 inline-block h-full"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                  <span className="text-zinc-400 block text-[9px] uppercase font-bold tracking-wider mb-0.5">Active Deployments</span>
+                  <span className="text-primary font-bold text-xs block">Leavely & E-Barangay</span>
+                  <span className="text-[9px] text-emerald-400/90 font-semibold block">● Live Production</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                  <span className="text-zinc-400 block text-[9px] uppercase font-bold tracking-wider mb-0.5">Architecture</span>
+                  <span className="text-primary font-bold text-xs block">React, Vite & Supabase</span>
+                  <span className="text-[9px] text-zinc-400 block">Type-Safe System</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+                  <span className="text-zinc-400 block text-[9px] uppercase font-bold tracking-wider mb-0.5">Availability</span>
+                  <span className="text-emerald-400 font-bold text-xs block">Open for Hire</span>
+                  <span className="text-[9px] text-zinc-400 block">Full-Stack / Remote</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "bio" && (
+            <motion.div
+              key="bio"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-1 text-xs text-emerald-300/90 font-mono leading-relaxed"
+            >
+              <p className="text-zinc-400">// Developer Telemetry Data Structure</p>
+              <p><span className="text-primary font-bold">"name"</span>: <span className="text-amber-300">"Erin"</span>,</p>
+              <p><span className="text-primary font-bold">"title"</span>: <span className="text-amber-300">"Software & Full-Stack Systems Developer"</span>,</p>
+              <p><span className="text-primary font-bold">"location"</span>: <span className="text-amber-300">"Philippines (Open for Global Remote & Hybrid Roles)"</span>,</p>
+              <p><span className="text-primary font-bold">"focus"</span>: <span className="text-amber-300">"Full-Stack Web Systems, Realtime Applications & AI Tooling"</span></p>
+            </motion.div>
+          )}
+
+          {activeTab === "projects" && (
+            <motion.div
+              key="projects"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-2.5"
+            >
+              <p className="text-zinc-400 text-xs">// Executable Navigation Triggers:</p>
+              <div className="flex flex-wrap gap-2 pt-0.5">
+                {[
+                  { name: "05 — Featured Projects Showcase", href: "#projects" },
+                  { name: "06 — Interactive Skills Orbit", href: "#skills" },
+                  { name: "04 — Experience & Roles", href: "#experience" },
+                  { name: "08 — Connect & Contact", href: "#connect" },
+                ].map((link) => (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => playClick('low')}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="px-3 py-1.5 rounded-lg border border-primary/40 bg-primary/10 hover:bg-primary hover:text-primary-foreground text-primary text-xs font-semibold transition flex items-center gap-1.5 shadow-sm"
+                  >
+                    <span>{link.name}</span>
+                    <span>→</span>
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "stack" && (
+            <motion.div
+              key="stack"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-2 text-xs"
+            >
+              <p className="text-zinc-400">// Core Stack Matrix:</p>
+              <div className="flex flex-wrap gap-1.5 pt-0.5">
+                {["TypeScript", "React", "Node.js", "Supabase", "React Native", "Tailwind CSS", "Express.js", "MySQL", "Docker", "Claude Code", "Gemini API", "Vite", "Firebase"].map((tech) => (
+                  <span key={tech} className={`px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-zinc-200 text-xs font-medium flex items-center gap-1 select-none ${getBrandHoverClass(tech)}`}>
+                    <SkillIcon name={tech} />
+                    <span>{tech}</span>
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "telemetry" && (
+            <motion.div
+              key="telemetry"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-2 text-xs"
+            >
+              <p className="text-zinc-400">// Live Telemetry Metrics:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5">
+                {[
+                  { k: "Latency", v: "14ms" },
+                  { k: "Frame Rate", v: "60 FPS" },
+                  { k: "Bundle Size", v: "Optimized" },
+                  { k: "CSS Engine", v: "Tailwind v4" },
+                ].map((m) => (
+                  <div key={m.k} className="p-2 rounded-lg bg-white/5 border border-white/10 text-center">
+                    <span className="text-primary font-bold text-xs block">{m.v}</span>
+                    <span className="text-[9px] uppercase tracking-wider text-zinc-400 block">{m.k}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Dynamic Command Output Log */}
+        {terminalLog && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-2.5 p-2 rounded-lg bg-primary/10 border border-primary/30 text-primary font-mono text-xs"
+          >
+            {terminalLog}
+          </motion.div>
+        )}
+
+        {/* Real Interactive Command Prompt Input */}
+        <form onSubmit={handleCommandSubmit} className="pt-3 mt-2.5 border-t border-white/10 flex items-center gap-2 text-xs">
+          <span className="text-primary font-bold select-none">$</span>
+          <input
+            type="text"
+            value={cmdInput}
+            onChange={(e) => setCmdInput(e.target.value)}
+            placeholder="Type 'help', 'whoami', 'projects', 'skills', or 'clear'..."
+            className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-zinc-500 font-mono text-xs"
+          />
+          <button
+            type="submit"
+            className="px-2.5 py-1 rounded-md bg-primary/20 border border-primary/40 hover:bg-primary hover:text-primary-foreground text-primary font-bold text-[10px] transition active:scale-95 shrink-0"
+          >
+            RUN
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- Page ---------- */
 
 type Theme = "white" | "cream" | "dark" | "red-black";
@@ -1187,6 +1776,26 @@ function Portfolio() {
   const [activeDashboardTab, setActiveDashboardTab] = useState<"music" | "personality">("music");
   const [activeHobbyIndex, setActiveHobbyIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right">("left");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const notebookTouchStartX = useRef<number | null>(null);
+
+  const handleNotebookTouchStart = (e: React.TouchEvent) => {
+    notebookTouchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleNotebookTouchEnd = (e: React.TouchEvent) => {
+    if (notebookTouchStartX.current === null) return;
+    const diff = notebookTouchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 35) {
+      if (diff > 0) {
+        setMobilePage((p) => Math.min(philosophyNotes.length - 1, p + 1));
+      } else {
+        setMobilePage((p) => Math.max(0, p - 1));
+      }
+    }
+    notebookTouchStartX.current = null;
+  };
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -1283,6 +1892,7 @@ function Portfolio() {
   }, [customMantra]);
 
   const [modal, setModal] = useState<Project | null>(null);
+  const [projectCategory, setProjectCategory] = useState<string>("all");
 
   const renderNoteCard = (note: typeof philosophyNotes[0]) => {
     if (note.isInteractive) {
@@ -1296,23 +1906,23 @@ function Portfolio() {
           whileDrag={{ scale: 1.05, zIndex: 50, boxShadow: isDark ? "0 30px 60px rgba(0,0,0,0.8)" : "0 30px 60px rgba(0,0,0,0.2)" }}
           initial={{ scale: 0.95, opacity: 0, rotate: note.rotate, boxShadow: isDark ? "0 8px 16px rgba(0,0,0,0.4)" : "0 8px 16px rgba(0,0,0,0.06)" }}
           animate={{ scale: 1, opacity: 1 }}
-          className="relative rounded-2xl border border-black/5 dark:border-white/5 p-8 overflow-hidden cursor-grab active:cursor-grabbing group select-none max-w-[340px] mx-auto w-full"
+          className="relative rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 overflow-hidden cursor-grab active:cursor-grabbing group select-none max-w-full sm:max-w-[340px] mx-auto w-full"
           style={{
             background: `${currentNotebook.lines}, ${currentNotebook.pageBg}`,
             transformStyle: "preserve-3d",
           }}
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 backdrop-blur-sm rotate-1 origin-center shadow-sm pointer-events-none" />
-          <div className={`pl-6 border-l-2 ${note.borderClass} relative`}>
-            <span className="font-mono text-xs uppercase tracking-widest text-primary/80 font-semibold">{note.title}</span>
-            <div className="mt-4 relative">
+          <div className={`pl-4 sm:pl-6 border-l-2 ${note.borderClass} relative`}>
+            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-primary/80 font-semibold">{note.title}</span>
+            <div className="mt-3 sm:mt-4 relative">
               <textarea
                 value={customMantra}
                 onChange={(e) => setCustomMantra(e.target.value)}
                 onMouseDown={(e) => e.stopPropagation()}
                 onTouchStart={(e) => e.stopPropagation()}
                 placeholder="Type your own philosophy here..."
-                className="w-full bg-transparent border-none outline-none font-mono text-sm text-foreground resize-none h-[110px] focus:ring-0 placeholder:text-muted-foreground/30 placeholder:italic select-text cursor-text"
+                className="w-full bg-transparent border-none outline-none font-mono text-xs sm:text-sm text-foreground resize-none h-[90px] sm:h-[110px] focus:ring-0 placeholder:text-muted-foreground/30 placeholder:italic select-text cursor-text"
               />
             </div>
           </div>
@@ -1330,25 +1940,25 @@ function Portfolio() {
         whileDrag={{ scale: 1.05, zIndex: 50, boxShadow: isDark ? "0 30px 60px rgba(0,0,0,0.8)" : "0 30px 60px rgba(0,0,0,0.2)" }}
         initial={{ scale: 0.95, opacity: 0, rotate: note.rotate, boxShadow: isDark ? "0 8px 16px rgba(0,0,0,0.4)" : "0 8px 16px rgba(0,0,0,0.06)" }}
         animate={{ scale: 1, opacity: 1 }}
-        className="relative rounded-2xl border border-black/5 dark:border-white/5 p-8 overflow-hidden cursor-grab active:cursor-grabbing group select-none max-w-[340px] mx-auto w-full"
+        className="relative rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 overflow-hidden cursor-grab active:cursor-grabbing group select-none max-w-full sm:max-w-[340px] mx-auto w-full"
         style={{
           background: `${currentNotebook.lines}, ${currentNotebook.pageBg}`,
           transformStyle: "preserve-3d",
         }}
       >
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 backdrop-blur-sm -rotate-1 origin-center shadow-sm pointer-events-none" />
-        <div className={`pl-6 border-l-2 ${note.borderClass} relative`}>
-          <span className="font-mono text-xs uppercase tracking-widest text-primary/80 font-semibold">{note.title}</span>
+        <div className={`pl-4 sm:pl-6 border-l-2 ${note.borderClass} relative`}>
+          <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-primary/80 font-semibold">{note.title}</span>
           {note.isLatin ? (
             <>
-              <blockquote style={{ fontFamily: "'Caveat', cursive" }} className={`mt-2 text-3xl text-foreground ${note.hoverColor} transition-colors duration-300`}>
+              <blockquote style={{ fontFamily: "'Caveat', cursive" }} className={`mt-2 text-2xl sm:text-3xl text-foreground ${note.hoverColor} transition-colors duration-300`}>
                 "{note.quote}"
               </blockquote>
-              <p className="mt-4 font-mono text-xs text-muted-foreground uppercase tracking-widest">means:</p>
-              <p className="mt-1 font-mono text-sm text-muted-foreground">"{note.translation}"</p>
+              <p className="mt-3 sm:mt-4 font-mono text-[10px] sm:text-xs text-muted-foreground uppercase tracking-widest">means:</p>
+              <p className="mt-1 font-mono text-xs sm:text-sm text-muted-foreground">"{note.translation}"</p>
             </>
           ) : (
-            <blockquote className={`mt-4 font-mono text-base font-semibold leading-relaxed text-foreground ${note.hoverColor} transition-colors duration-300`}>
+            <blockquote className={`mt-3 sm:mt-4 font-mono text-sm sm:text-base font-semibold leading-relaxed text-foreground ${note.hoverColor} transition-colors duration-300`}>
               "{note.quote}"
             </blockquote>
           )}
@@ -1372,68 +1982,159 @@ function Portfolio() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/60 border-b border-border/40"
+        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/40"
       >
-        <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-          <a href="#home" className="font-display text-lg font-semibold tracking-tight">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between">
+          <a 
+            href="#home" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="font-display text-lg sm:text-xl font-semibold tracking-tight focus:outline-none"
+          >
             nire<span className="text-primary">.</span>
           </a>
+          
+          {/* Desktop Navigation Links */}
           <div className="hidden lg:flex items-center gap-6 text-sm text-muted-foreground">
             <a href="#philosophy" className="hover:text-foreground transition">Philosophy</a>
             <a href="#about" className="hover:text-foreground transition">About</a>
             <a href="#experience" className="hover:text-foreground transition">Experience</a>
-            <a href="#achievements" className="hover:text-foreground transition">Achievements</a>
+            <a href="#projects" className="hover:text-foreground transition">Projects</a>
             <a href="#skills" className="hover:text-foreground transition">Skills</a>
             <a href="#hobbies" className="hover:text-foreground transition">Hobbies</a>
             <a href="#goals" className="hover:text-foreground transition">Goals</a>
           </div>
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-2 sm:gap-4">
             <ThemeSelector theme={theme} onChange={toggleTheme} />
             <a
               href="#connect"
-              className="text-sm px-4 py-2 rounded-full bg-primary text-primary-foreground font-medium hover:opacity-90 transition"
+              className="hidden sm:inline-flex text-xs sm:text-sm px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary text-primary-foreground font-medium hover:opacity-90 transition shadow-sm"
             >
               Let's talk
             </a>
+            
+            {/* Mobile / Tablet Menu Button */}
+            <button
+              onClick={() => {
+                playClick('medium');
+                setMobileMenuOpen((v) => !v);
+              }}
+              aria-label="Toggle Navigation Menu"
+              className="lg:hidden p-2 rounded-xl border border-border bg-card/60 text-foreground hover:bg-secondary transition active:scale-95 flex items-center justify-center"
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile & Tablet Drawer Menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="lg:hidden border-t border-border/40 bg-background/95 backdrop-blur-2xl overflow-hidden shadow-2xl"
+            >
+              <div className="px-5 sm:px-6 py-5 flex flex-col gap-4 max-h-[80vh] overflow-y-auto">
+                <div className="grid grid-cols-2 gap-2 text-sm font-medium">
+                  {[
+                    { href: "#philosophy", label: "Philosophy", num: "02" },
+                    { href: "#about", label: "About", num: "03" },
+                    { href: "#experience", label: "Experience", num: "04" },
+                    { href: "#projects", label: "Projects", num: "05" },
+                    { href: "#skills", label: "Skills", num: "06" },
+                    { href: "#hobbies", label: "Hobbies", num: "07" },
+                    { href: "#goals", label: "Goals", num: "08" },
+                    { href: "#connect", label: "Connect", num: "08" },
+                  ].map((item) => (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-between p-3 rounded-2xl border border-border/50 bg-card/40 hover:bg-primary/10 hover:border-primary/40 text-foreground transition active:scale-[0.98]"
+                    >
+                      <span className="font-display font-semibold text-sm">{item.label}</span>
+                      <span className="text-[10px] font-mono text-primary font-bold">{item.num}</span>
+                    </a>
+                  ))}
+                </div>
+
+                <div className="pt-2 border-t border-border/40 flex items-center justify-between">
+                  <a
+                    href="#connect"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center py-3 rounded-2xl bg-primary text-primary-foreground font-medium text-sm shadow-md hover:opacity-90 transition"
+                  >
+                    Let's talk →
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.nav>
 
       {/* 1. Landing / Hero */}
-      <section id="home" className="min-h-screen pt-28 pb-20">
-        <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-16 items-center">
+      <section id="home" className="min-h-screen pt-24 sm:pt-28 pb-16 sm:pb-20 relative overflow-hidden">
+        {/* Animated gradient blob background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div
+            className="absolute -top-1/4 -left-1/4 w-[60vw] h-[60vw] rounded-full opacity-[0.07] gradient-shift"
+            style={{
+              background: "radial-gradient(circle, var(--color-primary), transparent 70%)",
+              filter: "blur(80px)",
+            }}
+          />
+          <div
+            className="absolute -bottom-1/4 -right-1/4 w-[50vw] h-[50vw] rounded-full opacity-[0.05] gradient-shift"
+            style={{
+              background: "radial-gradient(circle, var(--color-accent), transparent 70%)",
+              filter: "blur(100px)",
+              animationDelay: "4s",
+            }}
+          />
+        </div>
+
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-10 sm:gap-16 items-center relative z-10">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm uppercase tracking-[0.3em] text-primary mb-6"
+              className="text-xs sm:text-sm uppercase tracking-[0.3em] text-primary mb-4 sm:mb-6 flex items-center gap-2"
             >
               Portfolio — 2026
+              <span className="inline-block w-[2px] h-4 bg-primary typewriter-blink" />
             </motion.p>
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.2 }}
-              className="font-display text-5xl md:text-7xl font-bold uppercase leading-[1.05] tracking-tight grid grid-cols-[auto_1fr] gap-x-4 md:gap-x-6 gap-y-1"
+              className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold uppercase leading-[1.08] tracking-tight grid grid-cols-[auto_1fr] gap-x-2 sm:gap-x-4 md:gap-x-6 gap-y-1 sm:gap-y-2"
             >
-              <div className="text-primary font-black whitespace-nowrap">E —</div>
-              <div className="text-foreground">Evolve</div>
-              
-              <div className="text-primary font-black whitespace-nowrap">R —</div>
-              <div className="text-foreground">Relentlessly</div>
-              
-              <div className="text-primary font-black whitespace-nowrap">I —</div>
-              <div className="text-foreground">Innovate</div>
-              
-              <div className="text-primary font-black whitespace-nowrap">N —</div>
-              <div className="text-foreground">Never Settle</div>
+              {[
+                { letter: "E", word: "Evolve", delay: 0.3 },
+                { letter: "R", word: "Relentlessly", delay: 0.4 },
+                { letter: "I", word: "Innovate", delay: 0.5 },
+                { letter: "N", word: "Never Settle", delay: 0.6 },
+              ].map((item) => (
+                <motion.div key={item.letter} className="contents"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: item.delay }}
+                >
+                  <div className="text-primary font-black whitespace-nowrap">{item.letter} —</div>
+                  <div className="text-foreground">{item.word}</div>
+                </motion.div>
+              ))}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="mt-8 max-w-xl text-lg text-muted-foreground leading-relaxed"
+              className="mt-6 sm:mt-8 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed"
             >
               I'm <span className="text-foreground font-semibold">Erin</span> — a Frontend & Backend Engineer building <span className="italic text-primary">modern</span> web and mobile applications. I believe great software comes from clean code, continuous learning, and never settling for yesterday's best.
             </motion.p>
@@ -1449,25 +2150,39 @@ function Portfolio() {
           </motion.div>
         </div>
 
-        {/* Projects wheel */}
+        {/* Hero Interactive Terminal Console */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="relative w-screen left-1/2 -translate-x-1/2 px-0 mt-20 overflow-x-hidden"
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-10 sm:mt-12 pt-6 sm:pt-8 relative z-10 max-w-4xl mx-auto px-4"
         >
-          <ProjectsWheel onSelectProject={setModal} />
+          <div className="gradient-divider w-full mb-6 sm:mb-8" />
+          <HeroConsole />
         </motion.div>
+
+        {/* Scroll-down indicator */}
+        <motion.a
+          href="#philosophy"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="mt-10 sm:mt-14 flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors cursor-pointer relative z-10"
+        >
+          <span className="text-[10px] uppercase tracking-[0.3em] font-mono">Scroll to explore</span>
+          <ChevronDown className="w-5 h-5 bounce-scroll" />
+        </motion.a>
       </section>
 
       {/* 2. Philosophy */}
-      <section id="philosophy" className="py-32 border-t border-border/40 bg-background">
-        <div className="mx-auto max-w-6xl px-6">
+      <section id="philosophy" className="py-16 sm:py-24 md:py-32 bg-background relative">
+        <div className="gradient-divider w-full absolute top-0 left-0" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader eyebrow="02 — Philosophy" title={<span>Personal <span className="text-primary italic">Philosophy</span></span>} />
           {/* Notebook Container - Desktop (Side-by-Side Pages) */}
-          <div className="hidden md:flex justify-center mt-12 select-none relative max-w-4xl mx-auto">
+          <div className="hidden md:flex justify-center mt-12 select-none relative max-w-4xl mx-auto px-4 lg:px-0">
             {/* Index Tabs sticking out the right side */}
-            <div className="absolute right-[-45px] top-12 flex flex-col gap-2 z-0">
+            <div className="absolute right-[-35px] lg:right-[-45px] top-12 flex flex-col gap-2 z-0">
               {notebookTabs.map((tab) => (
                 <button
                   key={tab.label}
@@ -1483,7 +2198,7 @@ function Portfolio() {
             </div>
 
             {/* The Notebook itself */}
-            <div className={`w-full aspect-[16/10] rounded-3xl border p-6 relative z-10 flex gap-6 overflow-hidden transition-all duration-300 ${currentNotebook.cover}`}>
+            <div className={`w-full aspect-[16/10] rounded-3xl border p-4 sm:p-6 relative z-10 flex gap-6 overflow-hidden transition-all duration-300 ${currentNotebook.cover}`}>
               
               {/* Spiral Ring Binder down the center */}
               <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-4 flex flex-col justify-between py-6 pointer-events-none z-30">
@@ -1508,17 +2223,17 @@ function Portfolio() {
                   exit={{ rotateY: 10, opacity: 0 }}
                   transition={{ duration: 0.35, ease: "easeInOut" }}
                   style={{ perspective: 1000 }}
-                  className="w-full h-full grid grid-cols-2 gap-8"
+                  className="w-full h-full grid grid-cols-2 gap-4 sm:gap-8"
                 >
                   {/* Left Page */}
                   <div 
-                    className="relative w-full h-full rounded-2xl border border-black/5 dark:border-white/5 p-8 flex flex-col justify-center overflow-hidden transition-colors duration-300"
+                    className="relative w-full h-full rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 flex flex-col justify-center overflow-hidden transition-colors duration-300"
                     style={{
                       background: `${currentNotebook.lines}, ${currentNotebook.pageBg}`,
                     }}
                   >
                     {/* Left Margin Line */}
-                    <div className={`absolute left-8 top-0 bottom-0 w-[1px] ${currentNotebook.margin}`} />
+                    <div className={`absolute left-6 sm:left-8 top-0 bottom-0 w-[1px] ${currentNotebook.margin}`} />
                     
                     {/* Render Note A of Spread */}
                     {renderNoteCard(philosophyNotes[currentSpread * 2])}
@@ -1526,13 +2241,13 @@ function Portfolio() {
 
                   {/* Right Page */}
                   <div 
-                    className="relative w-full h-full rounded-2xl border border-black/5 dark:border-white/5 p-8 flex flex-col justify-center overflow-hidden transition-colors duration-300"
+                    className="relative w-full h-full rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 flex flex-col justify-center overflow-hidden transition-colors duration-300"
                     style={{
                       background: `${currentNotebook.lines}, ${currentNotebook.pageBg}`,
                     }}
                   >
                     {/* Right Margin Line */}
-                    <div className={`absolute right-8 top-0 bottom-0 w-[1px] ${currentNotebook.margin}`} />
+                    <div className={`absolute right-6 sm:right-8 top-0 bottom-0 w-[1px] ${currentNotebook.margin}`} />
                     
                     {/* Render Note B of Spread */}
                     {renderNoteCard(philosophyNotes[currentSpread * 2 + 1])}
@@ -1543,9 +2258,13 @@ function Portfolio() {
           </div>
 
           {/* Notebook Container - Mobile (Single Page View) */}
-          <div className="block md:hidden mt-8 select-none relative max-w-[345px] mx-auto">
+          <div className="block md:hidden mt-6 sm:mt-8 select-none relative max-w-[345px] mx-auto px-1">
             {/* Single Notebook Page */}
-            <div className={`w-full aspect-[4/5] rounded-2xl border p-6 shadow-xl relative overflow-hidden flex flex-col justify-center pl-8 transition-all duration-300 ${currentNotebook.cover}`}>
+            <div 
+              onTouchStart={handleNotebookTouchStart}
+              onTouchEnd={handleNotebookTouchEnd}
+              className={`w-full aspect-[4/5] min-h-[350px] rounded-2xl border p-4 sm:p-6 shadow-xl relative overflow-hidden flex flex-col justify-center pl-6 sm:pl-8 transition-all duration-300 touch-pan-y ${currentNotebook.cover}`}
+            >
               
               {/* Spiral rings on the left side */}
               <div className="absolute left-1.5 top-3 bottom-3 w-3 flex flex-col justify-between py-3 pointer-events-none z-30">
@@ -1559,7 +2278,7 @@ function Portfolio() {
               </div>
 
               {/* Left Margin Line */}
-              <div className={`absolute left-10 top-0 bottom-0 w-[1px] ${currentNotebook.margin}`} />
+              <div className={`absolute left-7 sm:left-10 top-0 bottom-0 w-[1px] ${currentNotebook.margin}`} />
 
               {/* AnimatePresence for Mobile Page Flipping */}
               <AnimatePresence mode="wait">
@@ -1577,13 +2296,13 @@ function Portfolio() {
             </div>
 
             {/* Mobile Navigation Controls */}
-            <div className="flex items-center justify-between mt-6 px-4">
+            <div className="flex items-center justify-between mt-5 px-2">
               <button
                 onClick={() => setMobilePage((p) => Math.max(0, p - 1))}
                 disabled={mobilePage === 0}
-                className="px-4 py-2 rounded-full border border-border text-xs bg-secondary/40 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none"
+                className="px-4 py-2 rounded-full border border-border text-xs font-medium bg-secondary/40 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none min-h-[40px] flex items-center gap-1"
               >
-                ← Prev
+                <ChevronLeft size={14} /> Prev
               </button>
               <span className="font-mono text-xs text-muted-foreground">
                 Note {mobilePage + 1} of {philosophyNotes.length}
@@ -1591,9 +2310,9 @@ function Portfolio() {
               <button
                 onClick={() => setMobilePage((p) => Math.min(philosophyNotes.length - 1, p + 1))}
                 disabled={mobilePage === philosophyNotes.length - 1}
-                className="px-4 py-2 rounded-full border border-border text-xs bg-secondary/40 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none"
+                className="px-4 py-2 rounded-full border border-border text-xs font-medium bg-secondary/40 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none min-h-[40px] flex items-center gap-1"
               >
-                Next →
+                Next <ChevronRight size={14} />
               </button>
             </div>
           </div>
@@ -1601,38 +2320,64 @@ function Portfolio() {
       </section>
 
       {/* 3. About */}
-      <section id="about" className="py-32 border-t border-border/40">
-        <div className="mx-auto max-w-6xl px-6">
+      <section id="about" className="py-16 sm:py-24 md:py-32 relative">
+        <div className="gradient-divider w-full absolute top-0 left-0" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader eyebrow="03 — About me" title="Frontend & Backend Engineer driven by execution." />
-          <div className="grid md:grid-cols-5 gap-10">
-            <div className="md:col-span-3 space-y-6 text-lg text-muted-foreground leading-relaxed animate-in fade-in-50 duration-500">
-              <p className="text-xl font-medium text-foreground italic border-l-4 border-primary pl-4 py-1 bg-primary/5 rounded-r-xl">
+          <div className="grid md:grid-cols-5 gap-8 sm:gap-10">
+            <div className="md:col-span-3 space-y-4 sm:space-y-6 text-base sm:text-lg text-muted-foreground leading-relaxed">
+              <motion.p
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="text-lg sm:text-xl font-medium text-foreground italic border-l-4 border-primary pl-4 py-1.5 bg-primary/5 rounded-r-xl"
+              >
                 "I live by goals, not dreams. Anyone can do the job, but not anyone can be me."
-              </p>
-              <p>
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
                 I am a Frontend & Backend Engineer who believes that great systems are built on systematic progress, not wishful thinking. With this mentality, I ensure all tasks I tackle are driven by absolute focus and strict execution.
-              </p>
-              <p>
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
                 By channeling consistency, discipline, and clear goal alignment, I can achieve any target or milestone I set my mind to plan.
-              </p>
+              </motion.p>
             </div>
-            <div className="md:col-span-2 grid grid-cols-2 gap-4">
+            <div className="md:col-span-2 grid grid-cols-2 gap-3 sm:gap-4">
               {[
                 { k: "Philippines", v: "Based in" },
                 { k: "1 yr", v: "Experience" },
                 { k: "11", v: "Projects & Systems" },
                 { k: "EN · FIL", v: "Languages" },
-              ].map((s) => (
-                <div key={s.v} className="rounded-2xl border border-border bg-card p-5">
-                  <div className="font-display text-2xl text-foreground">{s.k}</div>
-                  <div className="text-xs uppercase tracking-widest mt-2 text-muted-foreground">{s.v}</div>
-                </div>
+              ].map((s, i) => (
+                <motion.div
+                  key={s.v}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ type: "spring", stiffness: 100, damping: 18, delay: i * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -4 }}
+                  className="rounded-2xl glass-strong p-3.5 sm:p-5 group cursor-default hover:shadow-lg hover:shadow-primary/10 transition-shadow duration-300"
+                >
+                  <div className="font-display text-xl sm:text-2xl text-foreground font-semibold group-hover:text-primary transition-colors duration-300">{s.k}</div>
+                  <div className="text-[10px] sm:text-xs uppercase tracking-widest mt-1.5 text-muted-foreground">{s.v}</div>
+                </motion.div>
               ))}
             </div>
           </div>
 
           {/* Three Pillars Section */}
-          <div className="grid md:grid-cols-3 gap-6 mt-16 border-t border-border/40 pt-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-12 sm:mt-16 pt-12 sm:pt-16 relative">
+            <div className="gradient-divider w-full absolute top-0 left-0" />
             {[
               {
                 title: "Consistency",
@@ -1652,15 +2397,18 @@ function Portfolio() {
             ].map((p, i) => (
               <motion.div
                 key={p.title}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="rounded-3xl border border-border bg-card p-6 relative overflow-hidden group hover:border-primary/60 transition-all duration-300"
+                transition={{ type: "spring", stiffness: 80, damping: 18, delay: i * 0.12 }}
+                whileHover={{ y: -6, scale: 1.02 }}
+                className="rounded-3xl glass-strong p-5 sm:p-6 relative overflow-hidden group cursor-default hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
               >
-                <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300 w-fit">{p.icon}</div>
-                <h3 className="font-display text-xl font-semibold text-foreground mb-2">{p.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+                {/* Gradient accent stripe */}
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-primary/40 to-transparent rounded-l-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="text-2xl sm:text-3xl mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300 w-fit">{p.icon}</div>
+                <h3 className="font-display text-lg sm:text-xl font-semibold text-foreground mb-2">{p.title}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -1668,10 +2416,11 @@ function Portfolio() {
       </section>
 
       {/* 4. Experience */}
-      <section id="experience" className="py-32 border-t border-border/40">
-        <div className="mx-auto max-w-6xl px-6">
+      <section id="experience" className="py-16 sm:py-24 md:py-32 relative">
+        <div className="gradient-divider w-full absolute top-0 left-0" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader eyebrow="04 — Experience" title="Where I've spent my hours." />
-          <ol className="relative border-l border-border ml-2">
+          <ol className="relative ml-2 sm:ml-4" style={{ borderLeft: '2px solid transparent', borderImage: 'linear-gradient(to bottom, var(--color-primary), var(--color-border), transparent) 1' }}>
             {experience.map((e, i) => (
               <motion.li
                 key={e.role}
@@ -1679,119 +2428,132 @@ function Portfolio() {
                 whileInView={{ opacity: 1, x: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
-                className="pl-8 pb-10 relative"
+                className="pl-5 sm:pl-8 pb-8 sm:pb-10 relative group"
               >
-                <span className="absolute -left-[7px] top-2 h-3 w-3 rounded-full bg-primary" />
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <h3 className="font-display text-xl font-semibold">{e.role}</h3>
-                  <span className="text-primary">· {e.company}</span>
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground ml-auto">{e.years}</span>
+                {/* Pulsing timeline dot */}
+                <span className="absolute -left-[8px] top-2 h-3.5 w-3.5 rounded-full bg-primary shadow-[0_0_8px_var(--color-primary)] group-hover:shadow-[0_0_16px_var(--color-primary)] transition-shadow duration-300" />
+                <span className="absolute -left-[8px] top-2 h-3.5 w-3.5 rounded-full bg-primary/40 pulse-ring" />
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-3">
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <h3 className="font-display text-lg sm:text-xl font-semibold">{e.role}</h3>
+                    <span className="text-primary font-medium text-sm sm:text-base">· {e.company}</span>
+                  </div>
+                  <span className="text-[11px] sm:text-xs uppercase tracking-widest text-muted-foreground shrink-0 font-mono">{e.years}</span>
                 </div>
-                <p className="mt-2 text-muted-foreground">{e.impact}</p>
+                <p className="mt-2 text-xs sm:text-sm text-muted-foreground leading-relaxed">{e.impact}</p>
               </motion.li>
             ))}
           </ol>
         </div>
       </section>
 
-      {/* 5. Achievements */}
-      <section id="achievements" className="py-32 border-t border-border/40">
-        <div className="mx-auto max-w-6xl px-6">
-          <SectionHeader eyebrow="05 — Achievements" title="Moments the industry noticed." />
-          <div className="grid md:grid-cols-3 gap-4">
-            {achievements.map((a, i) => (
-              <motion.div
-                key={a.title}
-                initial={{ opacity: 0, x: -80, scale: 0.94 }}
-                whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
-                className="rounded-2xl border border-border bg-card p-6 hover:border-primary/60 transition"
-              >
-                <div className="text-xs uppercase tracking-widest text-primary">{a.year}</div>
-                <div className="font-display text-lg mt-2">{a.title}</div>
-              </motion.div>
-            ))}
+      {/* 5. Projects */}
+      <section id="projects" className="py-16 sm:py-24 md:py-32 relative">
+        <div className="gradient-divider w-full absolute top-0 left-0" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <SectionHeader 
+            eyebrow="05 — Projects" 
+            title={<span>Featured Systems & <span className="text-primary italic">Software Works</span></span>} 
+          />
+          
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mt-3 sm:mt-4 mb-8 sm:mb-12">
+            <p className="text-muted-foreground text-xs sm:text-sm max-w-xl leading-relaxed">
+              A showcase of web applications, digital platforms, and software solutions built with clear purpose, scalable architecture, and meticulous detail.
+            </p>
+
+            {/* Category Filter Tabs */}
+            <div className="flex items-center gap-1.5 bg-secondary/15 border border-border/80 p-1.5 rounded-2xl shrink-0 self-start md:self-auto flex-wrap sm:flex-nowrap">
+              {[
+                { id: "all", label: "All Works", count: projects.length },
+                { id: "fullstack", label: "Full-Stack & Web Apps", count: projects.filter(p => p.category === "fullstack").length },
+                { id: "ai-os", label: "AI & Systems", count: projects.filter(p => p.category === "ai-os").length },
+                { id: "creative", label: "Creative & WebGL", count: projects.filter(p => p.category === "creative").length },
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    playClick('medium');
+                    setProjectCategory(cat.id);
+                  }}
+                  className={`relative px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide transition-colors select-none flex items-center gap-1.5 ${
+                    projectCategory === cat.id
+                      ? "text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {projectCategory === cat.id && (
+                    <motion.div
+                      layoutId="projectTabPill"
+                      className="absolute inset-0 bg-primary rounded-xl shadow-md"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10">{cat.label}</span>
+                  <span className={`relative z-10 text-[10px] font-mono px-1.5 py-0.2 rounded-full ${
+                    projectCategory === cat.id ? "bg-white/20 text-white" : "bg-secondary/40 text-muted-foreground"
+                  }`}>
+                    {cat.count}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
+
+          {/* Animated Projects Grid */}
+          <AnimatePresence mode="popLayout">
+            <motion.div 
+              key={projectCategory}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+            >
+              {projects
+                .filter((p) => projectCategory === "all" || p.category === projectCategory)
+                .map((p, i) => (
+                  <ProjectSpotlightCard
+                    key={p.title}
+                    p={p}
+                    index={i}
+                    onSelect={(proj) => setModal(proj)}
+                  />
+                ))}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
       {/* 6. Skills */}
-      <section id="skills" className="py-32 border-t border-border/40">
-        <div className="mx-auto max-w-6xl px-6">
+      <section id="skills" className="py-16 sm:py-24 md:py-32 relative">
+        <div className="gradient-divider w-full absolute top-0 left-0" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader eyebrow="06 — Skills" title="Knowledgeable in these tech stack | or tools" />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {skills.map((s, i) => (
-              <motion.div
-                key={s.group}
-                initial={{ opacity: 0, x: 100, scale: 0.94 }}
-                whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
-                className="rounded-2xl border border-border bg-card p-6 flex flex-col justify-between hover:border-primary/40 transition duration-300 relative overflow-hidden group"
-              >
-                {/* Decorative background grid pattern for premium touch */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative z-10">
-                  <p className="text-xs uppercase tracking-[0.2em] text-primary mb-4 font-semibold">{s.group}</p>
-                  <motion.div 
-                    variants={{
-                      hidden: { opacity: 0 },
-                      show: {
-                        opacity: 1,
-                        transition: {
-                          staggerChildren: 0.04
-                        }
-                      }
-                    }}
-                    initial="hidden"
-                    whileInView="show"
-                    viewport={{ once: true }}
-                    className="flex flex-wrap gap-2"
-                  >
-                    {s.items.map((it) => (
-                      <motion.span
-                        key={it}
-                        variants={{
-                          hidden: { opacity: 0, scale: 0.9, y: 8 },
-                          show: { opacity: 1, scale: 1, y: 0 }
-                        }}
-                        className={`px-3 py-1.5 rounded-full border border-border text-xs bg-secondary/10 transition-all duration-300 cursor-default flex items-center gap-1.5 select-none ${getBrandHoverClass(it)}`}
-                      >
-                        <SkillIcon name={it} />
-                        {it}
-                      </motion.span>
-                    ))}
-                  </motion.div>
-                </div>
-              </motion.div>
-            ))}
+          <div className="mt-8 sm:mt-12">
+            <SkillsWheel />
           </div>
         </div>
       </section>
 
       {/* 7. Hobbies */}
-      <section id="hobbies" className="py-32 border-t border-border/40">
-        <div className="mx-auto max-w-6xl px-6">
+      <section id="hobbies" className="py-16 sm:py-24 md:py-32 relative">
+        <div className="gradient-divider w-full absolute top-0 left-0" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader eyebrow="07 — Hobbies" title={<span>Hobbies & <span className="text-primary italic">Life Telemetry Dashboard.</span></span>} />
           
-          <p className="mt-4 text-muted-foreground text-sm max-w-xl">
+          <p className="mt-3 sm:mt-4 text-muted-foreground text-xs sm:text-sm max-w-xl">
             I believe that peak productivity starts with operational balance. Monitoring my physical and mental loops keeps my creative threads running smoothly.
           </p>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-12 mt-12 max-w-4xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-12 mt-8 sm:mt-12 max-w-4xl mx-auto">
             {/* Left Column: Description & Indicators */}
             <div className="flex-1 text-left w-full">
               <span className="text-[10px] uppercase tracking-[0.2em] text-primary font-bold">SYSTEM TELEMETRY</span>
-              <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground mt-2">
-                Hobby Nodes
+              <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-foreground mt-2">
+                Life & Activities
               </h3>
-              <p className="mt-4 text-muted-foreground text-sm leading-relaxed max-w-md">
-                Cycle through active nodes to inspect live capacity logs. Drag left or right on the node card stack to navigate nodes, or click the indicators below.
+              <p className="mt-3 sm:mt-4 text-muted-foreground text-xs sm:text-sm leading-relaxed max-w-md">
+                Cycle through active pursuits to inspect live capacity logs. Drag left or right on the card stack to navigate activities, or click the indicators below.
               </p>
               
               {/* Pagination indicators */}
-              <div className="flex flex-wrap items-center gap-2 mt-6">
+              <div className="flex flex-wrap items-center gap-2 mt-5 sm:mt-6">
                 {hobbies.map((_, idx) => (
                   <button
                     key={idx}
@@ -1809,34 +2571,30 @@ function Portfolio() {
             </div>
 
             {/* Right Column: Stacked Cards Deck */}
-            <div className="flex flex-col items-center shrink-0 mt-6 md:mt-0">
-              <div className="relative w-[300px] sm:w-[330px] h-[260px]">
+            <div className="flex flex-col items-center shrink-0 mt-4 lg:mt-0 w-full lg:w-auto">
+              <div className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[440px] h-[330px] sm:h-[360px] mx-auto">
                 <AnimatePresence initial={false}>
                   {renderedHobbyCards.map((h) => {
                     const isTop = h.stackIndex === 0;
                     
-                    // Progress values
                     const progressMap: Record<string, number> = {
                       "movies-series": 85,
-                      "running": 60,
-                      "cycling": 45,
-                      "taekwondo": 70,
-                      "working-out": 80,
-                      "lifting-weights": 75,
-                      "chess": 65,
+                      "running": 92,
+                      "cycling": 78,
+                      "taekwondo": 95,
+                      "working-out": 88,
+                      "lifting-weights": 90,
+                      "chess": 82,
                       "cooking": 100,
-                      "music": 90,
+                      "music": 96,
                     };
-                    const progress = progressMap[h.id] || 70;
-                    const activeCount = Math.floor(progress / 16);
-                    const totalBars = 6;
+                    const progress = progressMap[h.id] || 85;
 
-                    // Define physical visual offset styles for stacked deck look
                     const offsetStyles = [
-                      { x: 0, y: 0, scale: 1, zIndex: 3, opacity: 1 },
-                      { x: 12, y: 12, scale: 0.96, zIndex: 2, opacity: 0.8 },
-                      { x: 24, y: 24, scale: 0.92, zIndex: 1, opacity: 0.5 },
-                    ][h.stackIndex] || { x: 0, y: 0, scale: 1, zIndex: 0, opacity: 0 };
+                      { x: 0, y: 0, scale: 1, zIndex: 3, opacity: 1, rotate: 0 },
+                      { x: 16, y: 16, scale: 0.95, zIndex: 2, opacity: 0.85, rotate: 4 },
+                      { x: 32, y: 32, scale: 0.90, zIndex: 1, opacity: 0.6, rotate: -4 },
+                    ][h.stackIndex] || { x: 0, y: 0, scale: 1, zIndex: 0, opacity: 0, rotate: 0 };
 
                     return (
                       <motion.div
@@ -1851,60 +2609,79 @@ function Portfolio() {
                         initial={{ 
                           opacity: 0, 
                           scale: isTop ? 0.95 : 0.9, 
-                          x: isTop ? (swipeDirection === "left" ? 150 : -350) : 24, 
-                          y: isTop ? 0 : 24 
+                          x: isTop ? (swipeDirection === "left" ? 180 : -350) : 24, 
+                          y: isTop ? 0 : 24,
+                          rotate: offsetStyles.rotate
                         }}
                         animate={{
                           x: isTop ? 0 : offsetStyles.x,
                           y: isTop ? 0 : offsetStyles.y,
                           scale: offsetStyles.scale,
                           opacity: offsetStyles.opacity,
+                          rotate: offsetStyles.rotate
                         }}
                         exit={{ 
                           x: swipeDirection === "left" ? -350 : 350, 
                           opacity: 0, 
-                          scale: 0.9, 
-                          rotate: swipeDirection === "left" ? -15 : 15,
+                          scale: 0.88, 
+                          rotate: swipeDirection === "left" ? -18 : 18,
                           zIndex: 20 
                         }}
                         drag={isTop ? "x" : false}
                         dragConstraints={{ left: 0, right: 0 }}
                         onDragEnd={isTop ? handleHobbyDragEnd : undefined}
-                        whileDrag={isTop ? { scale: 1.02 } : undefined}
-                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                        className={`w-full h-full rounded-2xl border border-border/80 bg-card p-6 flex flex-col justify-between shadow-xl relative overflow-hidden ${
-                          isTop ? "cursor-grab active:cursor-grabbing border-primary/20 shadow-2xl" : "shadow-md pointer-events-none"
+                        whileDrag={isTop ? { scale: 1.03, rotate: 2 } : undefined}
+                        transition={{ type: "spring", stiffness: 280, damping: 24 }}
+                        className={`w-full h-full rounded-3xl border bg-card/95 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between shadow-2xl relative overflow-hidden transition-colors duration-300 ${
+                          isTop ? `${h.borderClass} cursor-grab active:cursor-grabbing border-primary/40 shadow-[0_20px_50px_rgba(0,0,0,0.35)]` : "border-border/70 shadow-md pointer-events-none"
                         }`}
                       >
-                        {/* Decorative background grid pattern for premium touch */}
-                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none opacity-30" />
+                        {/* Decorative Radial Grid Glow Header */}
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none opacity-60" />
                         
                         <div className="relative z-10 flex flex-col justify-between h-full w-full">
-                          {/* Top Content: Title & Description */}
+                          {/* Top Header: Node Category Label & Icon */}
                           <div>
-                            <div className="flex items-center justify-between gap-2 mb-3">
-                              <span className="text-xs uppercase tracking-[0.2em] text-primary font-semibold">
+                            <div className="flex items-center justify-between gap-3 mb-3">
+                              <span className="text-xs sm:text-sm uppercase tracking-[0.2em] font-bold text-primary font-mono flex items-center gap-2">
+                                <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                                 {h.label}
                               </span>
-                              <div className={`w-7 h-7 rounded-lg border flex items-center justify-center bg-secondary/5 text-muted-foreground shrink-0 border-border/50`}>
+                              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center shrink-0 shadow-sm ${h.iconClass}`}>
                                 <HobbyIcon name={h.icon} />
                               </div>
                             </div>
-                            <p className="text-xs text-muted-foreground leading-relaxed">
+                            <p className="text-xs sm:text-sm text-foreground/90 font-medium leading-relaxed">
                               {h.desc}
                             </p>
                           </div>
 
-                          {/* Bottom Content: Pill Badges (matches Skills section layout) */}
-                          <div className="border-t border-border/30 pt-4 mt-auto">
-                            <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground block mb-2">
+                          {/* Telemetry Capacity Progress Bar */}
+                          <div className="my-2.5 p-3 rounded-2xl bg-secondary/15 border border-border/40">
+                            <div className="flex items-center justify-between text-xs font-mono mb-1.5">
+                              <span className="text-muted-foreground uppercase tracking-widest font-semibold text-[10px] sm:text-xs">Active Output</span>
+                              <span className="font-bold text-primary">{progress}% Logged</span>
+                            </div>
+                            <div className="w-full h-2 rounded-full bg-secondary/50 overflow-hidden border border-border/30">
+                              <motion.div 
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress}%` }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                className="h-full rounded-full bg-gradient-to-r from-primary/70 via-primary to-primary"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Bottom Badges */}
+                          <div className="border-t border-border/30 pt-3.5 mt-auto">
+                            <span className="text-[10px] sm:text-xs uppercase tracking-wider font-bold font-mono text-muted-foreground block mb-2">
                               {h.sub}
                             </span>
                             <div className="flex flex-wrap gap-2">
                               {h.val.split(', ').map((valItem) => (
                                 <span 
                                   key={valItem} 
-                                  className="px-2.5 py-1 rounded-full border border-border text-[10px] bg-secondary/10 text-foreground font-medium select-none"
+                                  className="px-3 py-1 sm:py-1.5 rounded-full border border-border/80 text-[10px] sm:text-[11px] bg-secondary/25 text-foreground font-semibold select-none shadow-2xs"
                                 >
                                   {valItem}
                                 </span>
@@ -1917,30 +2694,58 @@ function Portfolio() {
                   })}
                 </AnimatePresence>
               </div>
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground/50 mt-5 flex items-center gap-1.5 select-none font-mono">
-                ← Swipe Left or Right →
-              </span>
+
+              {/* Navigation Indicator & Click Controls */}
+              <div className="flex items-center gap-3 mt-5">
+                <button
+                  onClick={() => {
+                    playClick('medium');
+                    setSwipeDirection("right");
+                    setActiveHobbyIndex((prev) => (prev === 0 ? hobbies.length - 1 : prev - 1));
+                  }}
+                  className="p-2 rounded-full border border-border bg-card/60 hover:bg-secondary hover:border-primary/50 text-muted-foreground hover:text-foreground active:scale-95 transition shadow-sm"
+                  title="Previous Activity"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono font-semibold select-none">
+                  ← Swipe or Click →
+                </span>
+
+                <button
+                  onClick={() => {
+                    playClick('medium');
+                    setSwipeDirection("left");
+                    setActiveHobbyIndex((prev) => (prev + 1) % hobbies.length);
+                  }}
+                  className="p-2 rounded-full border border-border bg-card/60 hover:bg-secondary hover:border-primary/50 text-muted-foreground hover:text-foreground active:scale-95 transition shadow-sm"
+                  title="Next Activity"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Music Profile Dashboard Widget */}
-          <div className="mt-24 border-t border-border/40 pt-20">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-              <div className="flex flex-col gap-2">
+          <div className="mt-16 sm:mt-24 border-t border-border/40 pt-14 sm:pt-20">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 sm:mb-8">
+              <div className="flex flex-col gap-1.5">
                 <span className="text-xs uppercase tracking-[0.2em] text-primary font-semibold">🎵 Profile Dashboard</span>
-                <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+                <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
                   {activeDashboardTab === "music" ? "My Read on Your Music Taste" : "Personality & Inner Growth"}
                 </h3>
               </div>
               
               {/* Tab Selector */}
-              <div className="flex items-center gap-1.5 bg-secondary/10 border border-border/85 p-1 rounded-xl shrink-0 self-start md:self-auto">
+              <div className="flex items-center gap-1 bg-secondary/10 border border-border/85 p-1 rounded-xl shrink-0 self-start md:self-auto flex-wrap sm:flex-nowrap">
                 <button
                   onClick={() => {
                     playClick('medium');
                     setActiveDashboardTab("music");
                   }}
-                  className={`px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-semibold tracking-wide transition ${
                     activeDashboardTab === "music"
                       ? "bg-primary text-primary-foreground shadow"
                       : "text-muted-foreground hover:text-foreground"
@@ -1953,7 +2758,7 @@ function Portfolio() {
                     playClick('medium');
                     setActiveDashboardTab("personality");
                   }}
-                  className={`px-4 py-2 rounded-lg text-xs font-semibold tracking-wide transition ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-[11px] sm:text-xs font-semibold tracking-wide transition ${
                     activeDashboardTab === "personality"
                       ? "bg-primary text-primary-foreground shadow"
                       : "text-muted-foreground hover:text-foreground"
@@ -1972,16 +2777,16 @@ function Portfolio() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="grid lg:grid-cols-12 gap-8 items-start"
+                  className="grid lg:grid-cols-12 gap-6 sm:gap-8 items-start"
                 >
                   {/* Record Player Body (Deezer Widget Card) */}
-                  <div className="lg:col-span-5 bg-card/45 border border-border rounded-3xl p-6 flex flex-col items-center shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
-                    <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary mb-4 select-none uppercase tracking-wider">
+                  <div className="lg:col-span-5 bg-card/45 border border-border rounded-3xl p-4 sm:p-6 flex flex-col items-center shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
+                    <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary mb-3 sm:mb-4 select-none uppercase tracking-wider">
                       Interactive Deezer Player
                     </span>
                     
                     {/* Deezer Widget Iframe */}
-                    <div className="w-full h-[220px] rounded-2xl overflow-hidden border border-border/80 bg-zinc-950/80 shadow-inner">
+                    <div className="w-full h-[200px] sm:h-[220px] rounded-2xl overflow-hidden border border-border/80 bg-zinc-950/80 shadow-inner">
                       <iframe
                         title="Deezer Player"
                         src={`https://widget.deezer.com/widget/dark/track/${musicProfile[activeTrackIndex].deezerId}`}
@@ -1995,18 +2800,18 @@ function Portfolio() {
                     </div>
 
                     {/* Cycle control buttons below the player */}
-                    <div className="flex items-center justify-center gap-6 mt-6 w-full pt-4 border-t border-border/20">
+                    <div className="flex items-center justify-center gap-4 sm:gap-6 mt-4 sm:mt-6 w-full pt-3 sm:pt-4 border-t border-border/20">
                       <button 
                         onClick={() => {
                           playClick('medium');
                           setActiveTrackIndex((prev) => (prev === 0 ? musicProfile.length - 1 : prev - 1));
                         }}
-                        className="p-2.5 rounded-full border border-border bg-card hover:border-primary/50 text-muted-foreground hover:text-foreground active:scale-95 transition"
+                        className="p-2 sm:p-2.5 rounded-full border border-border bg-card hover:border-primary/50 text-muted-foreground hover:text-foreground active:scale-95 transition"
                         title="Previous Mixtape"
                       >
-                        <SkipBack size={18} />
+                        <SkipBack size={16} />
                       </button>
-                      <span className="text-xs font-semibold text-muted-foreground select-none">
+                      <span className="text-xs font-semibold text-muted-foreground select-none font-mono">
                         Mixtape {activeTrackIndex + 1} of {musicProfile.length}
                       </span>
                       <button 
@@ -2014,17 +2819,17 @@ function Portfolio() {
                           playClick('medium');
                           setActiveTrackIndex((prev) => (prev === musicProfile.length - 1 ? 0 : prev + 1));
                         }}
-                        className="p-2.5 rounded-full border border-border bg-card hover:border-primary/50 text-muted-foreground hover:text-foreground active:scale-95 transition"
+                        className="p-2 sm:p-2.5 rounded-full border border-border bg-card hover:border-primary/50 text-muted-foreground hover:text-foreground active:scale-95 transition"
                         title="Next Mixtape"
                       >
-                        <SkipForward size={18} />
+                        <SkipForward size={16} />
                       </button>
                     </div>
                   </div>
 
                   {/* Mixtapes and Details panel */}
-                  <div className="lg:col-span-7 flex flex-col gap-6">
-                    <div className="grid grid-cols-2 gap-3">
+                  <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {musicProfile.map((item, idx) => (
                         <button
                           key={item.category}
@@ -2032,13 +2837,13 @@ function Portfolio() {
                             playClick('medium');
                             setActiveTrackIndex(idx);
                           }}
-                          className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all duration-300 ${
+                          className={`p-3 sm:p-4 rounded-2xl border text-left flex items-start gap-3 transition-all duration-300 ${
                             activeTrackIndex === idx 
                               ? `bg-gradient-to-br ${item.color.split(' ')[0]} ${item.color.split(' ')[1]} border-primary shadow-[0_0_15px_rgba(var(--color-primary),0.05)]` 
                               : "border-border bg-card/25 hover:border-foreground/30 hover:bg-card/45"
                           }`}
                         >
-                          <span className="text-xl shrink-0 mt-0.5">{item.icon}</span>
+                          <span className="text-lg sm:text-xl shrink-0 mt-0.5">{item.icon}</span>
                           <div>
                             <p className={`text-xs font-bold leading-tight ${activeTrackIndex === idx ? 'text-foreground' : 'text-muted-foreground'}`}>
                               {item.category}
@@ -2052,14 +2857,14 @@ function Portfolio() {
                     </div>
 
                     {/* Playlist detail display */}
-                    <div className="rounded-3xl border border-border bg-card/25 p-6 flex flex-col gap-4">
+                    <div className="rounded-3xl border border-border bg-card/25 p-4 sm:p-6 flex flex-col gap-3 sm:gap-4">
                       <div>
                         <h5 className="text-xs uppercase tracking-wider text-primary font-semibold">Featured Playlist Artists</h5>
                         <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{musicProfile[activeTrackIndex].desc}</p>
                       </div>
 
                       {musicProfile[activeTrackIndex].category === "Hard Rock & Metal" ? (
-                        <div className="grid md:grid-cols-2 gap-4 text-left border-t border-border/20 pt-4 mt-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-left border-t border-border/20 pt-3 sm:pt-4 mt-1">
                           <div>
                             <p className="text-[11px] font-bold text-primary flex items-center gap-1">🤘 Classic Heavy Metal</p>
                             <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
@@ -2086,11 +2891,11 @@ function Portfolio() {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex flex-wrap gap-2 pt-2">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-1">
                           {musicProfile[activeTrackIndex].artists.map((artist) => (
                             <span
                               key={artist}
-                              className="px-3 py-1.5 rounded-xl border border-border/60 bg-secondary/15 text-xs text-foreground/90 font-medium select-none hover:border-primary/50 transition duration-200"
+                              className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl border border-border/60 bg-secondary/15 text-[11px] sm:text-xs text-foreground/90 font-medium select-none hover:border-primary/50 transition duration-200"
                             >
                               {artist}
                             </span>
@@ -2100,12 +2905,12 @@ function Portfolio() {
                     </div>
 
                     {/* Personality Quote */}
-                    <div className="rounded-3xl border border-border bg-gradient-to-r from-primary/5 to-transparent p-6 relative overflow-hidden">
-                      <div className="absolute right-4 bottom-2 text-6xl font-serif text-primary/10 select-none">“</div>
-                      <p className="text-sm font-semibold italic text-foreground leading-relaxed relative z-10">
+                    <div className="rounded-3xl border border-border bg-gradient-to-r from-primary/5 to-transparent p-4 sm:p-6 relative overflow-hidden">
+                      <div className="absolute right-4 bottom-2 text-5xl sm:text-6xl font-serif text-primary/10 select-none">“</div>
+                      <p className="text-xs sm:text-sm font-semibold italic text-foreground leading-relaxed relative z-10">
                         "A rich, curated soundscape spanning 60s to 90s classics—from vintage pop and timeless crooners of the Elvis Presley and Tom Jones eras, to energetic rock anthems, OPM legends, and modern chill vibes—with the occasional movie soundtrack."
                       </p>
-                      <div className="mt-4 flex flex-wrap gap-3 border-t border-border/40 pt-4">
+                      <div className="mt-3 sm:mt-4 flex flex-wrap gap-2 sm:gap-3 border-t border-border/40 pt-3 sm:pt-4">
                         <span className="text-[10px] bg-secondary/35 text-muted-foreground px-2.5 py-1 rounded-full font-medium">💻 Clean aesthetics</span>
                         <span className="text-[10px] bg-secondary/35 text-muted-foreground px-2.5 py-1 rounded-full font-medium">🏃 Workout fuel</span>
                         <span className="text-[10px] bg-secondary/35 text-muted-foreground px-2.5 py-1 rounded-full font-medium">🥊 Energetic rock</span>
@@ -2121,11 +2926,11 @@ function Portfolio() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3 }}
-                  className="grid lg:grid-cols-12 gap-8 items-start"
+                  className="grid lg:grid-cols-12 gap-6 sm:gap-8 items-start"
                 >
-                  {/* Personality Traits Grid (Column 1 - takes 5 cols on lg) */}
+                  {/* Personality Traits Grid */}
                   <div className="lg:col-span-5 flex flex-col gap-4">
-                    <h4 className="text-xs uppercase tracking-widest text-primary font-semibold">Core Traits</h4>
+                    <h4 className="text-xs uppercase tracking-widest text-primary font-semibold font-mono">Core Traits</h4>
                     <div className="flex flex-col gap-3">
                       {[
                         { trait: "Disciplined", icon: "💪", desc: "I value structure, intense training, and constant self-improvement." },
@@ -2134,31 +2939,31 @@ function Portfolio() {
                         { trait: "Curious", icon: "🧠", desc: "I am always exploring new frameworks and refining my engineering skills." },
                         { trait: "Grounded", icon: "🤝", desc: "I value authenticity over fleeting trends, looking for things that endure." }
                       ].map((t) => (
-                        <div key={t.trait} className="rounded-2xl border border-border bg-card/45 p-4 flex gap-4 hover:border-primary/50 hover:shadow-[0_0_15px_rgba(var(--color-primary),0.03)] transition duration-300">
-                          <span className="text-2xl mt-0.5">{t.icon}</span>
+                        <div key={t.trait} className="rounded-2xl border border-border bg-card/45 p-3.5 sm:p-4 flex gap-3.5 sm:gap-4 hover:border-primary/50 hover:shadow-[0_0_15px_rgba(var(--color-primary),0.03)] transition duration-300">
+                          <span className="text-xl sm:text-2xl mt-0.5">{t.icon}</span>
                           <div>
-                            <p className="text-sm font-bold text-foreground">{t.trait}</p>
-                            <p className="text-xs text-muted-foreground leading-relaxed mt-1">{t.desc}</p>
+                            <p className="text-xs sm:text-sm font-bold text-foreground">{t.trait}</p>
+                            <p className="text-[11px] sm:text-xs text-muted-foreground leading-relaxed mt-1">{t.desc}</p>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Sayings and Personality Profiles (Column 2 - takes 7 cols on lg) */}
-                  <div className="lg:col-span-7 flex flex-col gap-6">
+                  {/* Sayings and Personality Profiles */}
+                  <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-6">
                     {/* Philosophy Block */}
-                    <div className="rounded-3xl border border-border bg-card/25 p-6 flex flex-col gap-3">
-                      <h4 className="text-xs uppercase tracking-widest text-primary font-semibold">My Philosophy</h4>
-                      <p className="text-sm leading-relaxed text-foreground">
+                    <div className="rounded-3xl border border-border bg-card/25 p-4 sm:p-6 flex flex-col gap-3">
+                      <h4 className="text-xs uppercase tracking-widest text-primary font-semibold font-mono">My Philosophy</h4>
+                      <p className="text-xs sm:text-sm leading-relaxed text-foreground">
                         "I'm someone who values balance. I enjoy pushing myself through running, cycling, weightlifting, and martial arts, but I also appreciate slowing down with timeless music and meaningful stories. My taste in music ranges from 90s and 2000s rock to classic artists in the time of Elvis Presley to Tom Jones, and OPM legends—reflecting both my energetic side and my appreciation for authenticity. Whether I'm building software, training, or listening to my favorite playlists, I believe consistency, discipline, and curiosity are what drive personal growth."
                       </p>
                     </div>
 
                     {/* Personality Quote Banner */}
-                    <div className="rounded-3xl border border-border bg-gradient-to-r from-primary/10 to-transparent p-6 relative overflow-hidden">
-                      <div className="absolute right-4 bottom-2 text-7xl font-serif text-primary/10 select-none">“</div>
-                      <p className="text-sm font-bold italic text-foreground leading-relaxed relative z-10">
+                    <div className="rounded-3xl border border-border bg-gradient-to-r from-primary/10 to-transparent p-4 sm:p-6 relative overflow-hidden">
+                      <div className="absolute right-4 bottom-2 text-6xl sm:text-7xl font-serif text-primary/10 select-none">“</div>
+                      <p className="text-xs sm:text-sm font-bold italic text-foreground leading-relaxed relative z-10">
                         "I'm driven by discipline, inspired by creativity, and grounded by the timeless music and experiences that remind me to keep growing—both as a developer and as a person."
                       </p>
                     </div>
@@ -2171,65 +2976,92 @@ function Portfolio() {
       </section>
 
       {/* 8. Goals */}
-      <section id="goals" className="py-32 border-t border-border/40">
-        <div className="mx-auto max-w-6xl px-6">
+      <section id="goals" className="py-16 sm:py-24 md:py-32 relative">
+        <div className="gradient-divider w-full absolute top-0 left-0" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader eyebrow="08 — Goals" title="What I'm building toward." />
-          <ul className="space-y-6">
+          <ul className="space-y-4 sm:space-y-6">
             {goals.map((g, i) => (
               <motion.li
                 key={g}
-                initial={{ opacity: 0, x: 100, scale: 0.98 }}
+                initial={{ opacity: 0, x: 50, scale: 0.98 }}
                 whileInView={{ opacity: 1, x: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
-                className="flex gap-6 items-baseline border-b border-border/60 pb-6"
+                whileHover={{ x: 8 }}
+                className="group flex gap-4 sm:gap-6 items-baseline border-b border-border/60 pb-4 sm:pb-6 transition-colors duration-300 hover:border-primary/50"
               >
-                <span className="font-display text-2xl text-primary shrink-0 w-12">
+                <span className="font-display text-lg sm:text-2xl text-primary shrink-0 w-8 sm:w-12 font-bold group-hover:scale-110 transition-transform duration-300">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="font-display text-2xl md:text-3xl leading-snug">{g}</span>
+                <span className="font-display text-lg sm:text-2xl md:text-3xl leading-snug font-medium group-hover:text-primary transition-colors duration-300">{g}</span>
               </motion.li>
             ))}
           </ul>
         </div>
       </section>
 
-      {/* 8. Connect */}
-      <section id="connect" className="py-32 border-t border-border/40">
-        <div className="mx-auto max-w-4xl px-6">
+      {/* 9. Connect */}
+      <section id="connect" className="py-16 sm:py-24 md:py-32 relative">
+        <div className="gradient-divider w-full absolute top-0 left-0" />
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 relative z-10">
           <div className="text-center">
-            <p className="text-sm uppercase tracking-[0.3em] text-primary mb-3">08 — Connect</p>
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-xs sm:text-sm uppercase tracking-[0.3em] text-primary mb-2 sm:mb-3"
+            >
+              09 — Connect
+            </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="font-display text-5xl md:text-6xl font-semibold tracking-tight"
+              className="font-display text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight"
             >
               Have an idea?<br />
               <span className="italic text-primary">Let's build it.</span>
             </motion.h2>
-            <p className="mt-6 text-muted-foreground max-w-lg mx-auto">
+            <p className="mt-4 sm:mt-6 text-xs sm:text-base text-muted-foreground max-w-lg mx-auto">
               Drop a message below or reach me directly. I read every note.
             </p>
           </div>
 
-          <div className="mt-12 rounded-3xl border border-border bg-card p-8 md:p-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-8 sm:mt-12 rounded-3xl glass-strong p-5 sm:p-8 md:p-10 shadow-2xl hover:shadow-primary/5 transition-shadow duration-500"
+          >
             <ContactForm />
-          </div>
+          </motion.div>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm">
-            <a href="mailto:hi@nire.dev" className="hover:text-primary transition">hi@nire.dev</a>
+          <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm">
+            <a href="mailto:hi@nire.dev" className="hover:text-primary transition font-mono hover:scale-105 active:scale-95 inline-block">hi@nire.dev</a>
             <span className="text-muted-foreground">·</span>
-            <a href="https://github.com/Nire1317" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition">GitHub</a>
-            <a href="/cv" className="hover:text-primary transition">Read.cv</a>
-            <a href="https://www.linkedin.com/in/erin-tuzon-541038343" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition">LinkedIn</a>
+            <a href="https://github.com/Nire1317" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition font-mono hover:scale-105 active:scale-95 inline-block">GitHub</a>
+            <span className="text-muted-foreground">·</span>
+            <a href="/cv" className="hover:text-primary transition font-mono hover:scale-105 active:scale-95 inline-block">Read.cv</a>
+            <span className="text-muted-foreground">·</span>
+            <a href="https://www.linkedin.com/in/erin-tuzon-541038343" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition font-mono hover:scale-105 active:scale-95 inline-block">LinkedIn</a>
           </div>
         </div>
 
-        <footer className="mt-24 border-t border-border/40 pt-8 pb-6 mx-auto max-w-6xl px-6 flex flex-wrap justify-between gap-4 text-xs text-muted-foreground">
+        <footer className="mt-16 sm:mt-24 border-t border-border/40 pt-6 sm:pt-8 pb-6 mx-auto max-w-6xl px-4 sm:px-6 flex flex-wrap justify-between items-center gap-4 text-xs text-muted-foreground font-mono">
           <span>© 2026 Erin</span>
-          <span>Built with care in the Philippines</span>
+          <span className="inline-flex items-center gap-1.5">
+            Built with <Heart className="w-3.5 h-3.5 text-primary heartbeat fill-primary/30" /> in the Philippines
+          </span>
+          <a
+            href="#home"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border/60 bg-card/40 hover:border-primary hover:text-primary transition-all duration-300 hover:scale-105 active:scale-95"
+          >
+            <span>Back to top</span>
+            <ArrowUp className="w-3.5 h-3.5" />
+          </a>
         </footer>
       </section>
 
@@ -2242,7 +3074,7 @@ function Portfolio() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-xl flex items-center justify-center p-4 md:p-8"
+            className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 md:p-8"
             onClick={() => setModal(null)}
           >
             <motion.div
@@ -2252,13 +3084,13 @@ function Portfolio() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", stiffness: 220, damping: 26 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl bg-card"
+              className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-3xl bg-card shadow-2xl"
               style={{ 
                 border: `1px solid ${modal.themeColor}33`, 
                 boxShadow: `0 20px 50px rgba(0,0,0,0.8), 0 0 30px ${modal.themeColor}15` 
               }}
             >
-              <div className={`relative h-48 md:h-64 overflow-hidden rounded-t-3xl bg-gradient-to-br ${modal.color}`}>
+              <div className={`relative h-40 sm:h-56 md:h-64 overflow-hidden rounded-t-3xl bg-gradient-to-br ${modal.color}`}>
                 {modal.image && (
                   <img
                     src={modal.image}
@@ -2270,61 +3102,61 @@ function Portfolio() {
                 <div className="absolute inset-0 bg-gradient-to-t from-card via-card/45 to-transparent" />
                 <button
                   onClick={() => setModal(null)}
-                  className="absolute top-5 left-5 inline-flex items-center gap-2 rounded-full border border-border bg-background/70 backdrop-blur px-4 py-2 text-xs font-mono uppercase tracking-widest hover:bg-background"
+                  className="absolute top-3 sm:top-5 left-3 sm:left-5 inline-flex items-center gap-1.5 rounded-full border border-border bg-background/70 backdrop-blur px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-mono uppercase tracking-widest hover:bg-background transition"
                 >
                   <span aria-hidden>←</span> Back
                 </button>
                 <button
                   onClick={() => setModal(null)}
                   aria-label="Close"
-                  className="absolute top-5 right-5 h-9 w-9 inline-flex items-center justify-center rounded-full border border-border bg-background/70 backdrop-blur hover:bg-background"
+                  className="absolute top-3 sm:top-5 right-3 sm:right-5 h-8 w-8 sm:h-9 sm:w-9 inline-flex items-center justify-center rounded-full border border-border bg-background/70 backdrop-blur hover:bg-background transition text-xs sm:text-sm"
                 >
                   ✕
                 </button>
-                <div className="absolute bottom-5 left-6 right-6">
+                <div className="absolute bottom-3 sm:bottom-5 left-4 sm:left-6 right-4 sm:right-6">
                   <p 
-                    className="text-xs font-mono uppercase tracking-[0.3em]"
+                    className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em]"
                     style={{ color: modal.themeColor }}
                   >
                     {modal.tag}
                   </p>
-                  <h3 className="font-display text-3xl md:text-4xl font-semibold mt-2">{modal.title}</h3>
+                  <h3 className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold mt-1 sm:mt-2">{modal.title}</h3>
                 </div>
               </div>
 
-              <div className="p-6 md:p-8 space-y-8">
-                <div className="grid grid-cols-3 gap-4">
+              <div className="p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4">
                   {modal.metrics.map((m) => (
                     <div 
                       key={m.v} 
-                      className="rounded-2xl bg-background/40 p-4 text-center"
+                      className="rounded-2xl bg-background/40 p-3 sm:p-4 text-center"
                       style={{ border: `1px solid ${modal.themeColor}22` }}
                     >
                       <div 
-                        className="font-display text-xl md:text-2xl"
+                        className="font-display text-lg sm:text-xl md:text-2xl font-bold"
                         style={{ color: modal.themeColor, textShadow: `0 0 8px ${modal.themeColor}60` }}
                       >
                         {m.k}
                       </div>
-                      <div className="text-[10px] font-mono uppercase tracking-widest mt-1 text-muted-foreground">{m.v}</div>
+                      <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest mt-1 text-muted-foreground">{m.v}</div>
                     </div>
                   ))}
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                   <div>
-                    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Role</p>
-                    <p className="font-display text-base">{modal.role}</p>
+                    <p className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1.5 sm:mb-2">Role</p>
+                    <p className="font-display text-sm sm:text-base font-semibold">{modal.role}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Year</p>
-                    <p className="font-display text-base">{modal.year}</p>
+                    <p className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1.5 sm:mb-2">Year</p>
+                    <p className="font-display text-sm sm:text-base font-semibold">{modal.year}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">Stack</p>
+                    <p className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-muted-foreground mb-1.5 sm:mb-2">Stack</p>
                     <div className="flex flex-wrap gap-1.5">
                       {modal.stack.map((s) => (
-                        <span key={s} className="px-2.5 py-1 rounded-full border border-border text-xs font-mono">
+                        <span key={s} className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-border text-[10px] sm:text-xs font-mono">
                           {s}
                         </span>
                       ))}
@@ -2333,24 +3165,24 @@ function Portfolio() {
                 </div>
 
                 <div>
-                  <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-3">Overview</p>
-                  <p className="text-base md:text-lg text-foreground/90 leading-relaxed">{modal.details}</p>
+                  <p className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2 sm:mb-3">Overview</p>
+                  <p className="text-sm sm:text-base md:text-lg text-foreground/90 leading-relaxed">{modal.details}</p>
                 </div>
 
-                <div className="flex flex-wrap justify-between items-center gap-3 pt-4 border-t border-border">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-border">
                   <button
                     onClick={() => setModal(null)}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border hover:bg-secondary font-mono text-sm uppercase tracking-widest"
+                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-full border border-border hover:bg-secondary font-mono text-xs sm:text-sm uppercase tracking-widest"
                   >
                     <span aria-hidden>←</span> Back to work
                   </button>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     {modal.liveUrl && (
                       <a
                         href={modal.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-mono text-sm uppercase tracking-widest hover:opacity-90 transition-all"
+                        className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-full text-white font-mono text-xs sm:text-sm uppercase tracking-widest hover:opacity-90 transition-all"
                         style={{
                           backgroundColor: modal.themeColor,
                           boxShadow: `0 0 15px ${modal.themeColor}80`
@@ -2362,7 +3194,7 @@ function Portfolio() {
                     <a
                       href="#connect"
                       onClick={() => setModal(null)}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border text-muted-foreground font-mono text-sm uppercase tracking-widest hover:bg-secondary"
+                      className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-full border border-border text-muted-foreground font-mono text-xs sm:text-sm uppercase tracking-widest hover:bg-secondary"
                     >
                       Discuss project →
                     </a>
