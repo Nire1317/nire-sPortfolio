@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect, useRef, useMemo, type FormEvent } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback, type FormEvent } from "react";
+import { db } from "../firebase";
+import { collection, addDoc, getDocs, orderBy, query, serverTimestamp } from "firebase/firestore";
 import { motion, AnimatePresence } from "motion/react";
 import { Sun, Moon, Sparkles, ArrowUpRight, SkipForward, SkipBack, Menu, X, ChevronLeft, ChevronRight, ChevronDown, ArrowUp, Heart } from "lucide-react";
 import { useSound } from "../hooks/useSound";
@@ -23,7 +25,7 @@ export const Route = createFileRoute("/")({
 /* ---------- Profile toggle ---------- */
 
 function ProfileCard() {
-  const [formal, setFormal] = useState(false);
+  const [formal, setFormal] = useState(true);
   return (
     <div className="relative rounded-3xl border border-border/60 bg-card p-4 sm:p-6 w-full max-w-[320px] sm:max-w-[400px] mx-auto shadow-2xl">
       <div className="relative overflow-hidden rounded-2xl aspect-[3/4] bg-secondary">
@@ -642,7 +644,53 @@ function ContactForm() {
 
 /* ---------- Philosophy Data ---------- */
 
-const philosophyNotes = [
+const pageFlipVariants = {
+  initial: (dir: "next" | "prev") => ({
+    rotateY: dir === "next" ? 85 : -85,
+    rotateZ: dir === "next" ? 2 : -2,
+    opacity: 0,
+    scale: 0.94,
+    boxShadow: dir === "next" 
+      ? "-30px 10px 45px rgba(0,0,0,0.4)" 
+      : "30px 10px 45px rgba(0,0,0,0.4)",
+    transformOrigin: dir === "next" ? "left center" : "right center",
+  }),
+  animate: {
+    rotateY: 0,
+    rotateZ: 0,
+    opacity: 1,
+    scale: 1,
+    boxShadow: "0 0 0 rgba(0,0,0,0)",
+    transition: { duration: 0.5, ease: "easeOut" as const },
+  },
+  exit: (dir: "next" | "prev") => ({
+    rotateY: dir === "next" ? -85 : 85,
+    rotateZ: dir === "next" ? -2 : 2,
+    opacity: 0,
+    scale: 0.94,
+    boxShadow: dir === "next" 
+      ? "30px 10px 45px rgba(0,0,0,0.4)" 
+      : "-30px 10px 45px rgba(0,0,0,0.4)",
+    transformOrigin: dir === "next" ? "right center" : "left center",
+    transition: { duration: 0.4, ease: "easeIn" as const },
+  }),
+};
+
+export interface PhilosophyNote {
+  id?: string;
+  title: string;
+  quote: string;
+  author?: string;
+  isLatin?: boolean;
+  translation?: string;
+  isInteractive?: boolean;
+  isUserSubmitted?: boolean;
+  borderClass: string;
+  hoverColor: string;
+  rotate: number;
+}
+
+const defaultPhilosophyNotes: PhilosophyNote[] = [
   {
     title: "GROWTH",
     quote: "Obsessed with Growth, Addicted to Progress.",
@@ -711,21 +759,94 @@ const philosophyNotes = [
     rotate: 0.8,
   },
   {
-    title: "YOUR TURN",
-    quote: "",
-    isInteractive: true,
-    borderClass: "border-zinc-500/30",
-    hoverColor: "group-hover:border-zinc-400",
+    title: "FOCUS",
+    quote: "Simplicity is the ultimate sophistication.",
+    borderClass: "border-teal-400/40",
+    hoverColor: "group-hover:text-teal-400",
+    rotate: -1.1,
+  },
+  {
+    title: "COURAGE",
+    quote: "He who has a why to live can bear almost any how.",
+    borderClass: "border-amber-500/40",
+    hoverColor: "group-hover:text-amber-400",
+    rotate: 0.9,
+  },
+  {
+    title: "PURPOSE",
+    quote: "Small daily improvements over time lead to stunning results.",
+    borderClass: "border-blue-500/40",
+    hoverColor: "group-hover:text-blue-400",
+    rotate: -0.7,
+  },
+  {
+    title: "EXECUTION",
+    quote: "Fac si facis",
+    isLatin: true,
+    translation: "If you are going to do it, do it properly.",
+    borderClass: "border-emerald-500/40",
+    hoverColor: "group-hover:text-emerald-400",
+    rotate: 1.1,
+  },
+  {
+    title: "LIVING",
+    quote: "Memento Vivere",
+    isLatin: true,
+    translation: "Remember to live.",
+    borderClass: "border-rose-400/40",
+    hoverColor: "group-hover:text-rose-400",
+    rotate: -0.9,
+  },
+  {
+    title: "PERSEVERANCE",
+    quote: "Ad Astra Per Aspera",
+    isLatin: true,
+    translation: "Through hardships to the stars.",
+    borderClass: "border-cyan-500/40",
+    hoverColor: "group-hover:text-cyan-300",
+    rotate: 0.7,
+  },
+  {
+    title: "ACCEPTANCE",
+    quote: "Que Sera, Sera",
+    isLatin: true,
+    translation: "Whatever will be, will be.",
+    borderClass: "border-purple-400/40",
+    hoverColor: "group-hover:text-purple-300",
+    rotate: -1.3,
+  },
+  {
+    title: "REGRETLESS",
+    quote: "Vivere Senza Rimpianti",
+    isLatin: true,
+    translation: "Live without regrets.",
+    borderClass: "border-amber-400/40",
+    hoverColor: "group-hover:text-amber-300",
+    rotate: 0.5,
+  },
+  {
+    title: "ORIGIN",
+    quote: "We can't choose where we come from, but we can choose where we go from there.",
+    borderClass: "border-violet-500/40",
+    hoverColor: "group-hover:text-violet-400",
+    rotate: -1.0,
+    author: "The Perks of Being a Wallflower",
+  },
+  {
+    title: "FREEDOM",
+    quote: "You are bound by nothing.",
+    borderClass: "border-sky-400/40",
+    hoverColor: "group-hover:text-sky-300",
+    rotate: 1.3,
+    author: "Robin Williams — Good Will Hunting",
+  },
+  {
+    title: "PRIDE",
+    quote: "Remember, be proud of yourself.",
+    borderClass: "border-rose-500/40",
+    hoverColor: "group-hover:text-rose-400",
     rotate: -0.5,
   },
-];
-
-const notebookTabs = [
-  { label: "MINDSET", index: 0, color: "bg-primary text-black" },
-  { label: "RESOLVE", index: 1, color: "bg-cyan-500 text-black" },
-  { label: "ACTION", index: 2, color: "bg-purple-500 text-white" },
-  { label: "STORY", index: 3, color: "bg-pink-500 text-black" },
-  { label: "FUTURE", index: 4, color: "bg-indigo-500 text-white" },
 ];
 
 /* ---------- SkillIcon component for Tech stack Logos ---------- */
@@ -1789,7 +1910,7 @@ function Portfolio() {
     const diff = notebookTouchStartX.current - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 35) {
       if (diff > 0) {
-        setMobilePage((p) => Math.min(philosophyNotes.length - 1, p + 1));
+        setMobilePage((p) => Math.min(allPhilosophyNotes.length - 1, p + 1));
       } else {
         setMobilePage((p) => Math.max(0, p - 1));
       }
@@ -1880,21 +2001,152 @@ function Portfolio() {
 
   const [currentSpread, setCurrentSpread] = useState(0);
   const [mobilePage, setMobilePage] = useState(0);
-  const [customMantra, setCustomMantra] = useState(() => {
+  const [pageFlipDirection, setPageFlipDirection] = useState<"next" | "prev">("next");
+
+  const [communityNotes, setCommunityNotes] = useState<PhilosophyNote[]>(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("customMantra") || "";
+      try {
+        const saved = localStorage.getItem("communityNotebookQuotes");
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
     }
-    return "";
+    return [];
   });
 
+  // Load community notes from Firestore on mount
   useEffect(() => {
-    localStorage.setItem("customMantra", customMantra);
-  }, [customMantra]);
+    const fetchNotes = async () => {
+      try {
+        const q = query(collection(db, "communityNotes"), orderBy("createdAt", "asc"));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const notes: PhilosophyNote[] = snapshot.docs.map((doc) => {
+            const d = doc.data();
+            return {
+              id: doc.id,
+              title: d.title || "COMMUNITY QUOTE",
+              quote: d.quote,
+              author: d.author || "Visitor",
+              isUserSubmitted: true,
+              borderClass: "border-amber-400/50",
+              hoverColor: "group-hover:text-amber-400",
+              rotate: (Math.random() - 0.5) * 2.5,
+            };
+          });
+          setCommunityNotes(notes);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("communityNotebookQuotes", JSON.stringify(notes));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load community notes from Firestore:", err);
+      }
+    };
+    fetchNotes();
+  }, []);
+
+  const [newQuoteTitle, setNewQuoteTitle] = useState("");
+  const [newQuoteText, setNewQuoteText] = useState("");
+  const [newQuoteAuthor, setNewQuoteAuthor] = useState("");
+  const [quoteSuccessMsg, setQuoteSuccessMsg] = useState("");
+  const [isSavingQuote, setIsSavingQuote] = useState(false);
+
+  const interactiveNote: PhilosophyNote = {
+    title: "YOUR TURN",
+    quote: "",
+    isInteractive: true,
+    borderClass: "border-primary/50",
+    hoverColor: "group-hover:border-primary",
+    rotate: -0.5,
+  };
+
+  const allPhilosophyNotes = useMemo(() => {
+    return [...defaultPhilosophyNotes, ...communityNotes, interactiveNote];
+  }, [communityNotes]);
+
+  const totalSpreads = useMemo(() => {
+    return Math.max(1, Math.ceil(allPhilosophyNotes.length / 2));
+  }, [allPhilosophyNotes]);
+
+  const binderChapterTabs = useMemo(() => {
+    const lastSpreadIndex = Math.max(0, totalSpreads - 1);
+    return [
+      { label: "MINDSET", color: "bg-primary text-black", targetSpread: 0, activeRange: [0, 1] },
+      { label: "RESOLVE", color: "bg-cyan-500 text-black", targetSpread: 2, activeRange: [2, 3] },
+      { label: "ACTION", color: "bg-purple-500 text-white", targetSpread: 4, activeRange: [4, 5] },
+      { label: "CLASSICS", color: "bg-amber-500 text-black", targetSpread: 6, activeRange: [6, 7] },
+      { label: "YOUR TURN", color: "bg-emerald-500 text-black", targetSpread: lastSpreadIndex, activeRange: [8, 999] },
+    ];
+  }, [totalSpreads]);
+
+  const handleAddCommunityQuote = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!newQuoteText.trim() || isSavingQuote) return;
+
+    setIsSavingQuote(true);
+
+    const noteData = {
+      title: newQuoteTitle.trim() ? newQuoteTitle.trim().toUpperCase() : "COMMUNITY QUOTE",
+      quote: newQuoteText.trim(),
+      author: newQuoteAuthor.trim() || "Visitor",
+      createdAt: serverTimestamp(),
+    };
+
+    let firestoreId = `user-${Date.now()}`;
+    try {
+      const docRef = await addDoc(collection(db, "communityNotes"), noteData);
+      firestoreId = docRef.id;
+    } catch (err) {
+      console.error("Firestore save failed, falling back to local:", err);
+    }
+
+    const addedNote: PhilosophyNote = {
+      id: firestoreId,
+      title: noteData.title,
+      quote: noteData.quote,
+      author: noteData.author,
+      isUserSubmitted: true,
+      borderClass: "border-amber-400/50",
+      hoverColor: "group-hover:text-amber-400",
+      rotate: (Math.random() - 0.5) * 2.5,
+    };
+
+    const updated = [...communityNotes, addedNote];
+    setCommunityNotes(updated);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("communityNotebookQuotes", JSON.stringify(updated));
+    }
+
+    setNewQuoteTitle("");
+    setNewQuoteText("");
+    setNewQuoteAuthor("");
+    setIsSavingQuote(false);
+    setQuoteSuccessMsg("✓ Quote pinned to notebook!");
+    setTimeout(() => setQuoteSuccessMsg(""), 4000);
+
+    // Navigate to the spread where the new note was placed
+    const newNoteIdx = defaultPhilosophyNotes.length + updated.length - 1;
+    const targetSpread = Math.floor(newNoteIdx / 2);
+    setPageFlipDirection("next");
+    setCurrentSpread(targetSpread);
+    setMobilePage(newNoteIdx);
+  }, [newQuoteText, newQuoteTitle, newQuoteAuthor, communityNotes, isSavingQuote]);
 
   const [modal, setModal] = useState<Project | null>(null);
   const [projectCategory, setProjectCategory] = useState<string>("all");
 
-  const renderNoteCard = (note: typeof philosophyNotes[0]) => {
+  const renderNoteCard = (note?: PhilosophyNote) => {
+    if (!note) {
+      return (
+        <div className="relative rounded-2xl border border-dashed border-border/40 p-4 sm:p-8 opacity-40 max-w-full sm:max-w-[340px] mx-auto w-full flex flex-col items-center justify-center min-h-[180px]">
+          <span className="font-mono text-xs text-muted-foreground uppercase tracking-widest">Blank Page</span>
+        </div>
+      );
+    }
+
     if (note.isInteractive) {
       return (
         <motion.div
@@ -1902,29 +2154,68 @@ function Portfolio() {
           dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
           dragElastic={0.25}
           dragTransition={{ bounceStiffness: 400, bounceDamping: 18 }}
-          whileHover={{ scale: 1.03, rotate: 0, y: -5, boxShadow: isDark ? "0 15px 30px rgba(0,0,0,0.6)" : "0 15px 30px rgba(0,0,0,0.1)" }}
-          whileDrag={{ scale: 1.05, zIndex: 50, boxShadow: isDark ? "0 30px 60px rgba(0,0,0,0.8)" : "0 30px 60px rgba(0,0,0,0.2)" }}
+          whileHover={{ scale: 1.02, rotate: 0, y: -4, boxShadow: isDark ? "0 15px 30px rgba(0,0,0,0.6)" : "0 15px 30px rgba(0,0,0,0.1)" }}
+          whileDrag={{ scale: 1.04, zIndex: 50, boxShadow: isDark ? "0 30px 60px rgba(0,0,0,0.8)" : "0 30px 60px rgba(0,0,0,0.2)" }}
           initial={{ scale: 0.95, opacity: 0, rotate: note.rotate, boxShadow: isDark ? "0 8px 16px rgba(0,0,0,0.4)" : "0 8px 16px rgba(0,0,0,0.06)" }}
           animate={{ scale: 1, opacity: 1 }}
-          className="relative rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 overflow-hidden cursor-grab active:cursor-grabbing group select-none max-w-full sm:max-w-[340px] mx-auto w-full"
+          className="relative rounded-2xl border border-black/5 dark:border-white/5 p-3.5 sm:p-5 overflow-hidden cursor-grab active:cursor-grabbing group select-none max-w-full sm:max-w-[340px] mx-auto w-full"
           style={{
             background: `${currentNotebook.lines}, ${currentNotebook.pageBg}`,
             transformStyle: "preserve-3d",
           }}
         >
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 backdrop-blur-sm rotate-1 origin-center shadow-sm pointer-events-none" />
-          <div className={`pl-4 sm:pl-6 border-l-2 ${note.borderClass} relative`}>
-            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-primary/80 font-semibold">{note.title}</span>
-            <div className="mt-3 sm:mt-4 relative">
-              <textarea
-                value={customMantra}
-                onChange={(e) => setCustomMantra(e.target.value)}
-                onMouseDown={(e) => e.stopPropagation()}
-                onTouchStart={(e) => e.stopPropagation()}
-                placeholder="Type your own philosophy here..."
-                className="w-full bg-transparent border-none outline-none font-mono text-xs sm:text-sm text-foreground resize-none h-[90px] sm:h-[110px] focus:ring-0 placeholder:text-muted-foreground/30 placeholder:italic select-text cursor-text"
-              />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-4 bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 backdrop-blur-sm rotate-1 origin-center shadow-sm pointer-events-none" />
+          <div className={`pl-3 sm:pl-4 border-l-2 ${note.borderClass} relative`}>
+            <div className="flex items-center justify-between gap-1 mb-2">
+              <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
+                <Sparkles size={11} className="text-primary animate-pulse" />
+                {note.title}
+              </span>
+              <span className="text-[9px] font-mono text-muted-foreground uppercase">Add Your Note</span>
             </div>
+
+            <form
+              onSubmit={handleAddCommunityQuote}
+              className="space-y-2 select-text cursor-text"
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <input
+                type="text"
+                value={newQuoteTitle}
+                onChange={(e) => { e.stopPropagation(); setNewQuoteTitle(e.target.value); }}
+                placeholder="Topic e.g. AMBITION (Optional)"
+                className="w-full bg-secondary/30 border border-border/50 rounded-lg px-2.5 py-1 font-mono text-[11px] text-foreground focus:outline-none focus:border-primary/60 placeholder:text-muted-foreground/40"
+              />
+              <textarea
+                value={newQuoteText}
+                onChange={(e) => { e.stopPropagation(); setNewQuoteText(e.target.value); }}
+                required
+                placeholder="Type your quote or personal philosophy here..."
+                className="w-full bg-secondary/30 border border-border/50 rounded-lg p-2 font-mono text-xs text-foreground resize-none h-[60px] sm:h-[70px] focus:outline-none focus:border-primary/60 placeholder:text-muted-foreground/40 placeholder:italic"
+              />
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={newQuoteAuthor}
+                  onChange={(e) => { e.stopPropagation(); setNewQuoteAuthor(e.target.value); }}
+                  placeholder="Your Name (Optional)"
+                  className="flex-1 bg-secondary/30 border border-border/50 rounded-lg px-2.5 py-1 font-mono text-[11px] text-foreground focus:outline-none focus:border-primary/60 placeholder:text-muted-foreground/40"
+                />
+                <button
+                  type="submit"
+                  disabled={isSavingQuote}
+                  onClick={(e) => e.stopPropagation()}
+                  className="px-3 py-1 rounded-lg bg-primary text-primary-foreground font-mono text-[11px] font-bold hover:brightness-110 active:scale-95 transition shadow-sm shrink-0 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {isSavingQuote ? "Saving..." : "Pin Note"}
+                </button>
+              </div>
+              {quoteSuccessMsg && (
+                <p className="text-[10px] font-mono text-emerald-400 font-semibold animate-fade-in">{quoteSuccessMsg}</p>
+              )}
+            </form>
           </div>
         </motion.div>
       );
@@ -1948,7 +2239,15 @@ function Portfolio() {
       >
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 backdrop-blur-sm -rotate-1 origin-center shadow-sm pointer-events-none" />
         <div className={`pl-4 sm:pl-6 border-l-2 ${note.borderClass} relative`}>
-          <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-primary/80 font-semibold">{note.title}</span>
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-primary/80 font-semibold">{note.title}</span>
+            {note.isUserSubmitted && (
+              <span className="px-2 py-0.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 font-mono text-[9px] font-bold">
+                COMMUNITY
+              </span>
+            )}
+          </div>
+
           {note.isLatin ? (
             <>
               <blockquote style={{ fontFamily: "'Caveat', cursive" }} className={`mt-2 text-2xl sm:text-3xl text-foreground ${note.hoverColor} transition-colors duration-300`}>
@@ -1961,6 +2260,12 @@ function Portfolio() {
             <blockquote className={`mt-3 sm:mt-4 font-mono text-sm sm:text-base font-semibold leading-relaxed text-foreground ${note.hoverColor} transition-colors duration-300`}>
               "{note.quote}"
             </blockquote>
+          )}
+
+          {note.author && (
+            <p className="mt-3 text-right font-mono text-[10px] sm:text-xs text-muted-foreground italic">
+              — {note.author}
+            </p>
           )}
         </div>
       </motion.div>
@@ -2180,25 +2485,31 @@ function Portfolio() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader eyebrow="02 — Philosophy" title={<span>Personal <span className="text-primary italic">Philosophy</span></span>} />
           {/* Notebook Container - Desktop (Side-by-Side Pages) */}
-          <div className="hidden md:flex justify-center mt-12 select-none relative max-w-4xl mx-auto px-4 lg:px-0">
-            {/* Index Tabs sticking out the right side */}
-            <div className="absolute right-[-35px] lg:right-[-45px] top-12 flex flex-col gap-2 z-0">
-              {notebookTabs.map((tab) => (
-                <button
-                  key={tab.label}
-                  onClick={() => setCurrentSpread(tab.index)}
-                  className={`px-2.5 py-4 text-[10px] font-mono font-bold tracking-widest rounded-r-md transition-all duration-300 origin-left shadow-md ${tab.color} ${
-                    currentSpread === tab.index ? "translate-x-2 pl-4" : "hover:translate-x-1"
-                  }`}
-                  style={{ writingMode: "vertical-lr" }}
-                >
-                  {tab.label}
-                </button>
-              ))}
+          <div className="hidden md:flex justify-center mt-12 select-none relative max-w-4xl mx-auto px-4 lg:px-0 pt-12">
+            {/* Index Tabs sticking out the top edge */}
+            <div className="absolute top-0 left-6 sm:left-10 right-6 sm:right-10 flex flex-row items-end justify-start gap-1.5 sm:gap-3 z-20 pointer-events-auto overflow-x-auto no-scrollbar">
+              {binderChapterTabs.map((tab) => {
+                const isActive = currentSpread >= tab.activeRange[0] && currentSpread <= tab.activeRange[1];
+                return (
+                  <button
+                    key={tab.label}
+                    onClick={() => {
+                      playClick('medium');
+                      setPageFlipDirection(tab.targetSpread > currentSpread ? "next" : "prev");
+                      setCurrentSpread(Math.min(totalSpreads - 1, tab.targetSpread));
+                    }}
+                    className={`px-3 sm:px-4 py-2 sm:py-2.5 text-[10px] sm:text-xs font-mono font-bold tracking-wider rounded-t-xl transition-all duration-300 origin-bottom shadow-md cursor-pointer whitespace-nowrap ${tab.color} ${
+                      isActive ? "-translate-y-1 pb-3 shadow-lg ring-1 ring-white/20 z-10 font-black" : "hover:-translate-y-0.5 opacity-85 hover:opacity-100"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
 
             {/* The Notebook itself */}
-            <div className={`w-full aspect-[16/10] rounded-3xl border p-4 sm:p-6 relative z-10 flex gap-6 overflow-hidden transition-all duration-300 ${currentNotebook.cover}`}>
+            <div className={`w-full aspect-[16/10] min-h-[380px] rounded-3xl border p-4 sm:p-6 relative z-10 flex gap-6 overflow-hidden transition-all duration-300 ${currentNotebook.cover}`}>
               
               {/* Spiral Ring Binder down the center */}
               <div className="absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-4 flex flex-col justify-between py-6 pointer-events-none z-30">
@@ -2214,47 +2525,135 @@ function Portfolio() {
                 ))}
               </div>
 
-              {/* AnimatePresence for Spread Flipping */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentSpread}
-                  initial={{ rotateY: -10, opacity: 0 }}
-                  animate={{ rotateY: 0, opacity: 1 }}
-                  exit={{ rotateY: 10, opacity: 0 }}
-                  transition={{ duration: 0.35, ease: "easeInOut" }}
-                  style={{ perspective: 1000 }}
-                  className="w-full h-full grid grid-cols-2 gap-4 sm:gap-8"
-                >
-                  {/* Left Page */}
-                  <div 
-                    className="relative w-full h-full rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 flex flex-col justify-center overflow-hidden transition-colors duration-300"
+              {/* Page Grid - Stable container, only individual pages animate */}
+              <div
+                className="w-full h-full grid grid-cols-2 gap-4 sm:gap-8 relative z-10"
+                style={{ perspective: 1600 }}
+              >
+                {/* Left Page - keyed so only it flips when spread changes */}
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.div
+                    key={`left-${currentSpread}`}
+                    initial={pageFlipDirection === "prev"
+                      ? { rotateY: -60, opacity: 0, scale: 0.97 }
+                      : { opacity: 1, rotateY: 0, scale: 1 }}
+                    animate={{ rotateY: 0, opacity: 1, scale: 1 }}
+                    exit={pageFlipDirection === "next"
+                      ? { rotateY: -12, opacity: 0, scale: 0.97, transition: { duration: 0.25, ease: "easeIn" } }
+                      : { rotateY: -60, opacity: 0, scale: 0.97, transition: { duration: 0.25, ease: "easeIn" } }}
+                    transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                    onClick={() => {
+                      if (currentSpread > 0) {
+                        playClick('low');
+                        setPageFlipDirection("prev");
+                        setCurrentSpread((s) => s - 1);
+                      }
+                    }}
+                    className="relative w-full h-full rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 flex flex-col justify-center overflow-hidden cursor-pointer group/leftpage shadow-sm"
                     style={{
+                      transformOrigin: "right center",
                       background: `${currentNotebook.lines}, ${currentNotebook.pageBg}`,
+                      transformStyle: "preserve-3d",
+                      backfaceVisibility: "hidden",
+                      WebkitBackfaceVisibility: "hidden",
+                      willChange: "transform, opacity",
                     }}
                   >
-                    {/* Left Margin Line */}
                     <div className={`absolute left-6 sm:left-8 top-0 bottom-0 w-[1px] ${currentNotebook.margin}`} />
-                    
-                    {/* Render Note A of Spread */}
-                    {renderNoteCard(philosophyNotes[currentSpread * 2])}
-                  </div>
+                    <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/10 via-black/3 to-transparent pointer-events-none" />
+                    {renderNoteCard(allPhilosophyNotes[currentSpread * 2])}
+                    {currentSpread > 0 && (
+                      <div className="absolute bottom-2.5 left-3.5 opacity-40 group-hover/leftpage:opacity-100 transition-opacity flex items-center gap-1 font-mono text-[9px] text-muted-foreground uppercase pointer-events-none">
+                        <ChevronLeft size={10} /> Flip Page
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
 
-                  {/* Right Page */}
-                  <div 
-                    className="relative w-full h-full rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 flex flex-col justify-center overflow-hidden transition-colors duration-300"
+                {/* Right Page - keyed so only it flips when spread changes */}
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.div
+                    key={`right-${currentSpread}`}
+                    initial={pageFlipDirection === "next"
+                      ? { rotateY: 60, opacity: 0, scale: 0.97 }
+                      : { opacity: 1, rotateY: 0, scale: 1 }}
+                    animate={{ rotateY: 0, opacity: 1, scale: 1 }}
+                    exit={pageFlipDirection === "prev"
+                      ? { rotateY: 12, opacity: 0, scale: 0.97, transition: { duration: 0.25, ease: "easeIn" } }
+                      : { rotateY: 60, opacity: 0, scale: 0.97, transition: { duration: 0.25, ease: "easeIn" } }}
+                    transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                    onClick={() => {
+                      if (currentSpread < totalSpreads - 1) {
+                        playClick('low');
+                        setPageFlipDirection("next");
+                        setCurrentSpread((s) => s + 1);
+                      }
+                    }}
+                    className="relative w-full h-full rounded-2xl border border-black/5 dark:border-white/5 p-4 sm:p-8 flex flex-col justify-center overflow-hidden cursor-pointer group/rightpage shadow-sm"
                     style={{
+                      transformOrigin: "left center",
                       background: `${currentNotebook.lines}, ${currentNotebook.pageBg}`,
+                      transformStyle: "preserve-3d",
+                      backfaceVisibility: "hidden",
+                      WebkitBackfaceVisibility: "hidden",
+                      willChange: "transform, opacity",
                     }}
                   >
-                    {/* Right Margin Line */}
                     <div className={`absolute right-6 sm:right-8 top-0 bottom-0 w-[1px] ${currentNotebook.margin}`} />
-                    
-                    {/* Render Note B of Spread */}
-                    {renderNoteCard(philosophyNotes[currentSpread * 2 + 1])}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                    <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-black/10 via-black/3 to-transparent pointer-events-none" />
+                    {renderNoteCard(allPhilosophyNotes[currentSpread * 2 + 1])}
+                    {currentSpread < totalSpreads - 1 && (
+                      <div className="absolute bottom-2.5 right-3.5 opacity-40 group-hover/rightpage:opacity-100 transition-opacity flex items-center gap-1 font-mono text-[9px] text-muted-foreground uppercase pointer-events-none">
+                        Flip Page <ChevronRight size={10} />
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
+          </div>
+
+          {/* Desktop Navigation & Jump Controls */}
+          <div className="hidden md:flex items-center justify-between mt-6 max-w-4xl mx-auto px-4">
+            <button
+              onClick={() => {
+                playClick('low');
+                setPageFlipDirection("prev");
+                setCurrentSpread((s) => Math.max(0, s - 1));
+              }}
+              disabled={currentSpread === 0}
+              className="px-4 py-2 rounded-full border border-border text-xs font-mono font-medium bg-card/80 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none flex items-center gap-2 shadow-sm cursor-pointer"
+            >
+              <ChevronLeft size={14} /> Prev Spread
+            </button>
+
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-xs text-muted-foreground uppercase tracking-widest font-semibold">
+                Spread {currentSpread + 1} of {totalSpreads}
+              </span>
+              <button
+                onClick={() => {
+                  playClick('medium');
+                  setPageFlipDirection("next");
+                  setCurrentSpread(totalSpreads - 1);
+                }}
+                className="px-3.5 py-1.5 rounded-full border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 transition text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm cursor-pointer"
+              >
+                <Sparkles size={13} /> + Add Your Quote
+              </button>
+            </div>
+
+            <button
+              onClick={() => {
+                playClick('low');
+                setPageFlipDirection("next");
+                setCurrentSpread((s) => Math.min(totalSpreads - 1, s + 1));
+              }}
+              disabled={currentSpread === totalSpreads - 1}
+              className="px-4 py-2 rounded-full border border-border text-xs font-mono font-medium bg-card/80 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none flex items-center gap-2 shadow-sm cursor-pointer"
+            >
+              Next Spread <ChevronRight size={14} />
+            </button>
           </div>
 
           {/* Notebook Container - Mobile (Single Page View) */}
@@ -2290,29 +2689,38 @@ function Portfolio() {
                   transition={{ duration: 0.25 }}
                   className="w-full h-full flex flex-col justify-center relative z-10"
                 >
-                  {renderNoteCard(philosophyNotes[mobilePage])}
+                  {renderNoteCard(allPhilosophyNotes[mobilePage])}
                 </motion.div>
               </AnimatePresence>
             </div>
 
             {/* Mobile Navigation Controls */}
-            <div className="flex items-center justify-between mt-5 px-2">
+            <div className="flex flex-col items-center gap-3 mt-5 px-2">
+              <div className="flex items-center justify-between w-full">
+                <button
+                  onClick={() => setMobilePage((p) => Math.max(0, p - 1))}
+                  disabled={mobilePage === 0}
+                  className="px-4 py-2 rounded-full border border-border text-xs font-medium bg-secondary/40 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none min-h-[40px] flex items-center gap-1 cursor-pointer"
+                >
+                  <ChevronLeft size={14} /> Prev
+                </button>
+                <span className="font-mono text-xs text-muted-foreground">
+                  Note {mobilePage + 1} of {allPhilosophyNotes.length}
+                </span>
+                <button
+                  onClick={() => setMobilePage((p) => Math.min(allPhilosophyNotes.length - 1, p + 1))}
+                  disabled={mobilePage === allPhilosophyNotes.length - 1}
+                  className="px-4 py-2 rounded-full border border-border text-xs font-medium bg-secondary/40 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none min-h-[40px] flex items-center gap-1 cursor-pointer"
+                >
+                  Next <ChevronRight size={14} />
+                </button>
+              </div>
+
               <button
-                onClick={() => setMobilePage((p) => Math.max(0, p - 1))}
-                disabled={mobilePage === 0}
-                className="px-4 py-2 rounded-full border border-border text-xs font-medium bg-secondary/40 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none min-h-[40px] flex items-center gap-1"
+                onClick={() => setMobilePage(allPhilosophyNotes.length - 1)}
+                className="w-full py-2.5 rounded-full border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 transition text-xs font-mono font-bold flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
               >
-                <ChevronLeft size={14} /> Prev
-              </button>
-              <span className="font-mono text-xs text-muted-foreground">
-                Note {mobilePage + 1} of {philosophyNotes.length}
-              </span>
-              <button
-                onClick={() => setMobilePage((p) => Math.min(philosophyNotes.length - 1, p + 1))}
-                disabled={mobilePage === philosophyNotes.length - 1}
-                className="px-4 py-2 rounded-full border border-border text-xs font-medium bg-secondary/40 hover:bg-secondary transition disabled:opacity-30 disabled:pointer-events-none min-h-[40px] flex items-center gap-1"
-              >
-                Next <ChevronRight size={14} />
+                <Sparkles size={13} /> + Add Your Quote to Notebook
               </button>
             </div>
           </div>
@@ -2572,7 +2980,7 @@ function Portfolio() {
 
             {/* Right Column: Stacked Cards Deck */}
             <div className="flex flex-col items-center shrink-0 mt-4 lg:mt-0 w-full lg:w-auto">
-              <div className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[440px] h-[330px] sm:h-[360px] mx-auto">
+              <div className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[440px] h-[360px] sm:h-[390px] mx-auto">
                 <AnimatePresence initial={false}>
                   {renderedHobbyCards.map((h) => {
                     const isTop = h.stackIndex === 0;
@@ -2632,7 +3040,7 @@ function Portfolio() {
                         onDragEnd={isTop ? handleHobbyDragEnd : undefined}
                         whileDrag={isTop ? { scale: 1.03, rotate: 2 } : undefined}
                         transition={{ type: "spring", stiffness: 280, damping: 24 }}
-                        className={`w-full h-full rounded-3xl border bg-card/95 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between shadow-2xl relative overflow-hidden transition-colors duration-300 ${
+                        className={`w-full h-full rounded-3xl border bg-card/95 backdrop-blur-xl p-5 sm:p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden transition-colors duration-300 ${
                           isTop ? `${h.borderClass} cursor-grab active:cursor-grabbing border-primary/40 shadow-[0_20px_50px_rgba(0,0,0,0.35)]` : "border-border/70 shadow-md pointer-events-none"
                         }`}
                       >
@@ -2642,7 +3050,7 @@ function Portfolio() {
                         <div className="relative z-10 flex flex-col justify-between h-full w-full">
                           {/* Top Header: Node Category Label & Icon */}
                           <div>
-                            <div className="flex items-center justify-between gap-3 mb-3">
+                            <div className="flex items-center justify-between gap-3 mb-2.5">
                               <span className="text-xs sm:text-sm uppercase tracking-[0.2em] font-bold text-primary font-mono flex items-center gap-2">
                                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                                 {h.label}
@@ -2657,7 +3065,7 @@ function Portfolio() {
                           </div>
 
                           {/* Telemetry Capacity Progress Bar */}
-                          <div className="my-2.5 p-3 rounded-2xl bg-secondary/15 border border-border/40">
+                          <div className="my-2 p-2.5 sm:p-3 rounded-2xl bg-secondary/15 border border-border/40">
                             <div className="flex items-center justify-between text-xs font-mono mb-1.5">
                               <span className="text-muted-foreground uppercase tracking-widest font-semibold text-[10px] sm:text-xs">Active Output</span>
                               <span className="font-bold text-primary">{progress}% Logged</span>
@@ -2673,7 +3081,7 @@ function Portfolio() {
                           </div>
 
                           {/* Bottom Badges */}
-                          <div className="border-t border-border/30 pt-3.5 mt-auto">
+                          <div className="border-t border-border/30 pt-3 mt-auto">
                             <span className="text-[10px] sm:text-xs uppercase tracking-wider font-bold font-mono text-muted-foreground block mb-2">
                               {h.sub}
                             </span>
@@ -2681,7 +3089,7 @@ function Portfolio() {
                               {h.val.split(', ').map((valItem) => (
                                 <span 
                                   key={valItem} 
-                                  className="px-3 py-1 sm:py-1.5 rounded-full border border-border/80 text-[10px] sm:text-[11px] bg-secondary/25 text-foreground font-semibold select-none shadow-2xs"
+                                  className="px-2.5 py-1 rounded-full border border-border/80 text-[10px] sm:text-[11px] bg-secondary/25 text-foreground font-semibold select-none shadow-2xs"
                                 >
                                   {valItem}
                                 </span>
@@ -3053,7 +3461,7 @@ function Portfolio() {
         <footer className="mt-16 sm:mt-24 border-t border-border/40 pt-6 sm:pt-8 pb-6 mx-auto max-w-6xl px-4 sm:px-6 flex flex-wrap justify-between items-center gap-4 text-xs text-muted-foreground font-mono">
           <span>© 2026 Erin</span>
           <span className="inline-flex items-center gap-1.5">
-            Built with <Heart className="w-3.5 h-3.5 text-primary heartbeat fill-primary/30" /> in the Philippines
+            Full-Stack Software Engineer • Philippines
           </span>
           <a
             href="#home"
