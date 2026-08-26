@@ -847,6 +847,21 @@ const defaultPhilosophyNotes: PhilosophyNote[] = [
     hoverColor: "group-hover:text-rose-400",
     rotate: -0.5,
   },
+  {
+    title: "RESILIENCE",
+    quote: "Rise and rise again, until lambs become lions.",
+    borderClass: "border-red-600/40",
+    hoverColor: "group-hover:text-red-400",
+    rotate: 1.1,
+  },
+  {
+    title: "THE RIVER",
+    quote: "A river that winds, a river that meanders, a river that changes its form, and a river whose flow continues without knowing where it will go — it is much like the life we are living.\n\nOur future is unknown, just like the destination of a river. We may not know where the current will take us, but that is what makes the journey meaningful.\n\nSo cherish every moment you have. Enjoy the little things, create beautiful memories, and fill your youth with moments of laughter, adventure, and happiness. Because just like a river, life keeps moving forward, and we never truly know where it will lead us.",
+    borderClass: "border-blue-400/40",
+    hoverColor: "group-hover:text-blue-300",
+    rotate: -0.8,
+    author: "— Original",
+  },
 ];
 
 /* ---------- SkillIcon component for Tech stack Logos ---------- */
@@ -2257,7 +2272,7 @@ function Portfolio() {
               <p className="mt-1 font-mono text-xs sm:text-sm text-muted-foreground">"{note.translation}"</p>
             </>
           ) : (
-            <blockquote className={`mt-3 sm:mt-4 font-mono text-sm sm:text-base font-semibold leading-relaxed text-foreground ${note.hoverColor} transition-colors duration-300`}>
+            <blockquote className={`mt-3 sm:mt-4 font-mono text-sm sm:text-base font-semibold leading-relaxed text-foreground whitespace-pre-line ${note.hoverColor} transition-colors duration-300`}>
               "{note.quote}"
             </blockquote>
           )}
