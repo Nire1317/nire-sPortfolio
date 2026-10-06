@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useRef, useMemo, useCallback, type FormEvent } from "react";
 import { db } from "../firebase";
 import { collection, addDoc, getDocs, orderBy, query, serverTimestamp } from "firebase/firestore";
-import { motion, AnimatePresence, MotionConfig, useReducedMotion } from "motion/react";
+import { motion, AnimatePresence, MotionConfig, useReducedMotion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { Sun, Moon, Sparkles, ArrowUpRight, SkipForward, SkipBack, Menu, X, ChevronLeft, ChevronRight, ChevronDown, ArrowUp, Heart } from "lucide-react";
 import { useSound } from "../hooks/useSound";
 import profileCasual from "../assets/profile-casual.jpg";
@@ -31,12 +31,43 @@ function PortfolioPage() {
   );
 }
 
+/* ---------- 3D tilt ---------- */
+
+// Tilts a card toward the mouse pointer; skipped for touch and reduced motion
+function useTilt(maxDeg = 6) {
+  const reduceMotion = useReducedMotion();
+  const px = useMotionValue(0);
+  const py = useMotionValue(0);
+  const spring = { stiffness: 180, damping: 20 };
+  const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [maxDeg, -maxDeg]), spring);
+  const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [-maxDeg, maxDeg]), spring);
+
+  const onPointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (reduceMotion || e.pointerType !== "mouse") return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    px.set((e.clientX - rect.left) / rect.width - 0.5);
+    py.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+  const onPointerLeave = () => {
+    px.set(0);
+    py.set(0);
+  };
+
+  return { style: { rotateX, rotateY, transformPerspective: 1000 }, onPointerMove, onPointerLeave };
+}
+
 /* ---------- Profile toggle ---------- */
 
 function ProfileCard() {
   const [formal, setFormal] = useState(true);
+  const tilt = useTilt(5);
   return (
-    <div className="relative rounded-3xl border border-border/60 bg-card p-4 sm:p-6 w-full max-w-[320px] sm:max-w-[400px] mx-auto shadow-2xl">
+    <motion.div
+      onPointerMove={tilt.onPointerMove}
+      onPointerLeave={tilt.onPointerLeave}
+      style={tilt.style}
+      className="relative rounded-3xl border border-border/60 bg-card p-4 sm:p-6 w-full max-w-[320px] sm:max-w-[400px] mx-auto shadow-2xl"
+    >
       <div className="relative overflow-hidden rounded-2xl aspect-[3/4] bg-secondary">
         <AnimatePresence>
           <motion.img
@@ -75,7 +106,7 @@ function ProfileCard() {
           />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -1150,6 +1181,7 @@ function ProjectSpotlightCard({
 }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  const tilt = useTilt(4);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -1170,8 +1202,11 @@ function ProjectSpotlightCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onPointerMove={tilt.onPointerMove}
+      onPointerLeave={tilt.onPointerLeave}
       className="group rounded-3xl border border-border bg-card/60 backdrop-blur-xl overflow-hidden flex flex-col justify-between transition-[translate,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl relative"
       style={{
+        ...tilt.style,
         borderColor: isHovered ? `${p.themeColor}88` : undefined,
         boxShadow: isHovered 
           ? `0 20px 40px -15px ${p.themeColor}33, 0 0 25px ${p.themeColor}15`
