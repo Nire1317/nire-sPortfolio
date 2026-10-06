@@ -84,7 +84,7 @@
 
 @media (max-width: 880px) {
   .nav__links,
-  .nav__cta {
+  .nav .nav__cta {
     display: none;
   }
   .nav__toggle {

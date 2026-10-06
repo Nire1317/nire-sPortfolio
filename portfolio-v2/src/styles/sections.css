@@ -261,6 +261,7 @@
 }
 .projects__item {
   position: relative;
+  min-width: 0;
 }
 .projects__item--wide {
   grid-column: 1 / -1;
@@ -436,13 +437,14 @@
 
 @media (max-width: 860px) {
   .projects {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .projects__item--wide .project-card {
     display: flex;
   }
   .projects__item--wide .project-media {
     aspect-ratio: 16 / 10;
+    min-height: 0;
     border-right: 0;
     border-bottom: 1px solid var(--border);
   }

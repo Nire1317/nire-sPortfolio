@@ -34,7 +34,8 @@ function useActiveSection(ids: string[]) {
   return active;
 }
 
-const ids = links.map((l) => l.id);
+// "top" (the hero) is observed too, so no link is highlighted before About
+const ids = ["top", ...links.map((l) => l.id)];
 
 export function Nav() {
   const active = useActiveSection(ids);

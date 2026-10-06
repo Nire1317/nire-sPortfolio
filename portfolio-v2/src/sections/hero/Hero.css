@@ -4,6 +4,7 @@
   align-items: center;
   padding: calc(var(--nav-h) + 48px) 0 72px;
   position: relative;
+  overflow-x: clip;
 }
 .hero__grid {
   display: grid;

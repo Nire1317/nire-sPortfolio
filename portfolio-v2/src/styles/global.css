@@ -20,7 +20,7 @@
   --radius-sm: 10px;
   --max-w: 1120px;
   --gutter: clamp(16px, 4vw, 32px);
-  --section-y: clamp(80px, 12vw, 144px);
+  --section-y: clamp(72px, 10vw, 120px);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-h: 64px;
 
@@ -94,6 +94,8 @@ p {
 .section {
   padding: var(--section-y) 0;
   position: relative;
+  /* keeps slide-in offsets from causing sideways scroll; clip (unlike hidden) keeps sticky working */
+  overflow-x: clip;
 }
 
 .mono {
