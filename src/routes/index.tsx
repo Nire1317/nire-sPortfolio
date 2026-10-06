@@ -15,6 +15,7 @@ import projLumen from "../assets/project-lumen.jpg";
 import projPrism from "../assets/project-prism.jpg";
 import projLeavely from "../assets/project-leavely.png";
 import projBarangay from "../assets/project-barangay.png";
+import HeroWorld from "../components/hero/HeroWorld";
 
 
 
@@ -212,6 +213,9 @@ const projects = [
 ];
 
 type Project = (typeof projects)[number];
+
+// Projects that float in the hero's 3D world
+const worldProjects = projects.slice(0, 4).map(({ title, tag, themeColor, isLive }) => ({ title, tag, themeColor, isLive }));
 
 
 
@@ -2222,6 +2226,37 @@ function Portfolio() {
   }, [newQuoteText, newQuoteTitle, newQuoteAuthor, communityNotes, isSavingQuote]);
 
   const [modal, setModal] = useState<Project | null>(null);
+
+  // "Enter the World": fly the 3D camera into the globe, then land on Projects
+  const reduceMotion = useReducedMotion();
+  const [worldReady, setWorldReady] = useState(false);
+  const [enteringWorld, setEnteringWorld] = useState(false);
+  const enterTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const finishEnterWorld = useCallback(() => {
+    if (enterTimeout.current) clearTimeout(enterTimeout.current);
+    enterTimeout.current = null;
+    const target = document.getElementById("projects");
+    target?.scrollIntoView({ behavior: "auto" });
+    target?.focus({ preventScroll: true });
+    setEnteringWorld(false);
+  }, []);
+
+  const enterWorld = () => {
+    playClick("medium");
+    const nearTop = window.scrollY < window.innerHeight * 0.5;
+    if (!worldReady || reduceMotion || !nearTop) {
+      document.getElementById("projects")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      return;
+    }
+    setEnteringWorld(true);
+    // never leave the visitor stuck if the scene stalls
+    enterTimeout.current = setTimeout(finishEnterWorld, 2600);
+  };
+
+  useEffect(() => () => {
+    if (enterTimeout.current) clearTimeout(enterTimeout.current);
+  }, []);
   const [projectCategory, setProjectCategory] = useState<string>("all");
 
   const renderNoteCard = (note?: PhilosophyNote) => {
@@ -2483,78 +2518,139 @@ function Portfolio() {
         </AnimatePresence>
       </motion.nav>
 
-      {/* 1. Landing / Hero */}
-      <section id="home" className="min-h-screen pt-24 sm:pt-28 pb-16 sm:pb-20 relative overflow-hidden">
-        {/* Animated gradient blob background */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div
-            className="absolute -top-1/4 -left-1/4 w-[60vw] h-[60vw] rounded-full opacity-[0.07] gradient-shift"
-            style={{
-              background: "radial-gradient(circle, var(--color-primary), transparent 70%)",
-              filter: "blur(80px)",
+      {/* 1. Landing / Hero — "World of Innovation" */}
+      <section id="home" className="relative overflow-hidden">
+        <div className="relative min-h-[100svh] flex items-center pt-24 sm:pt-28 pb-24">
+          {/* 3D world (lazy-loaded, decorative) */}
+          <HeroWorld
+            theme={theme}
+            projects={worldProjects}
+            entering={enteringWorld}
+            onReady={setWorldReady}
+            onEntered={finishEnterWorld}
+            onSelectProject={(title) => {
+              const proj = projects.find((p) => p.title === title);
+              if (proj) {
+                playClick("low");
+                setModal(proj);
+              }
             }}
           />
-          <div
-            className="absolute -bottom-1/4 -right-1/4 w-[50vw] h-[50vw] rounded-full opacity-[0.05] gradient-shift"
-            style={{
-              background: "radial-gradient(circle, var(--color-accent), transparent 70%)",
-              filter: "blur(100px)",
-              animationDelay: "4s",
-            }}
-          />
-        </div>
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-10 sm:gap-16 items-center relative z-10">
-          <div>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-xs sm:text-sm uppercase tracking-[0.3em] text-primary mb-4 sm:mb-6 flex items-center gap-2"
-            >
-              Portfolio — 2026
-              <span className="inline-block w-[2px] h-4 bg-primary typewriter-blink" />
-            </motion.p>
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.2 }}
-              className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold uppercase leading-[1.08] tracking-tight grid grid-cols-[auto_1fr] gap-x-2 sm:gap-x-4 md:gap-x-6 gap-y-1 sm:gap-y-2"
-            >
-              {[
-                { letter: "E", word: "Evolve", delay: 0.3 },
-                { letter: "R", word: "Relentlessly", delay: 0.4 },
-                { letter: "I", word: "Innovate", delay: 0.5 },
-                { letter: "N", word: "Never Settle", delay: 0.6 },
-              ].map((item) => (
-                <motion.div key={item.letter} className="contents"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: item.delay }}
+          {/* Readability scrim: keeps the headline dominant over the scene */}
+          <div className="absolute inset-0 pointer-events-none bg-background/55 lg:bg-transparent lg:bg-gradient-to-r lg:from-background lg:from-20% lg:via-background/70 lg:via-40% lg:to-transparent lg:to-60%" />
+          <div className="absolute inset-x-0 bottom-0 h-40 pointer-events-none bg-gradient-to-t from-background to-transparent" />
+
+          <div
+            className={`mx-auto max-w-7xl w-full px-4 sm:px-6 relative z-10 pointer-events-none transition-opacity duration-700 ${
+              enteringWorld ? "opacity-0" : ""
+            }`}
+          >
+            <div className="max-w-2xl pointer-events-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="inline-flex items-center gap-2.5 rounded-full border border-border/70 bg-card/60 backdrop-blur-md pl-1 pr-3.5 py-1 mb-6 sm:mb-8"
+              >
+                <img src={profileFormal} alt="" width={28} height={28} className="w-7 h-7 rounded-full object-cover" />
+                <span className="text-xs sm:text-sm text-muted-foreground">
+                  <span className="text-foreground font-semibold">Erin</span> · Frontend & Backend Engineer
+                </span>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.15 }}
+                className="text-[11px] sm:text-xs uppercase tracking-[0.3em] text-primary mb-4 sm:mb-5 flex items-center gap-2 font-mono"
+              >
+                Welcome to my world of innovation
+                <span className="inline-block w-[2px] h-4 bg-primary typewriter-blink" />
+              </motion.p>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.9, delay: 0.2 }}
+                className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.04] tracking-tight text-foreground"
+              >
+                A New Era of <span className="text-primary">Coding</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.35 }}
+                className="mt-5 sm:mt-6 text-lg sm:text-xl md:text-2xl text-foreground/90 font-medium leading-snug"
+              >
+                Building software in a world where ideas move faster.
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.45 }}
+                className="mt-4 max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed"
+              >
+                I build, experiment, solve problems, and ship software using modern engineering practices and AI-assisted development.
+              </motion.p>
+
+              <motion.ol
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                aria-label="How ideas become products"
+                className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                {["Code", "Ideas", "AI", "Innovation", "Real Products"].map((step, i, all) => (
+                  <li key={step} className="flex items-center gap-2">
+                    <span className={i === all.length - 1 ? "text-primary font-semibold" : ""}>{step}</span>
+                    {i < all.length - 1 && <span aria-hidden="true" className="text-primary/60">→</span>}
+                  </li>
+                ))}
+              </motion.ol>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+                className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3"
+              >
+                <a
+                  href="#projects"
+                  onClick={() => playClick("medium")}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3 text-sm font-semibold shadow-lg shadow-primary/20 hover:opacity-90 transition active:scale-[0.98]"
                 >
-                  <div className="text-primary font-black whitespace-nowrap">{item.letter} —</div>
-                  <div className="text-foreground">{item.word}</div>
-                </motion.div>
-              ))}
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="mt-6 sm:mt-8 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed"
-            >
-              I'm <span className="text-foreground font-semibold">Erin</span> — a Frontend & Backend Engineer building <span className="italic text-primary">modern</span> web and mobile applications. I believe great software comes from clean code, continuous learning, and never settling for yesterday's best.
-            </motion.p>
+                  Explore My Work
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={enterWorld}
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/40 bg-card/50 backdrop-blur-md text-foreground px-6 py-3 text-sm font-semibold hover:border-primary hover:bg-primary/10 transition active:scale-[0.98]"
+                >
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  Enter the World
+                </button>
+              </motion.div>
+            </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="justify-self-center lg:justify-self-end w-full max-w-[400px]"
-          >
-            <ProfileCard />
-          </motion.div>
+          {/* Discovery hint, only when the interactive scene is running */}
+          <AnimatePresence>
+            {worldReady && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 1.5, duration: 0.8 }}
+                className="hidden lg:block absolute bottom-8 right-6 z-10 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground pointer-events-none"
+              >
+                Hover the world · click a project to open it
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Hero Interactive Terminal Console */}
@@ -2862,7 +2958,9 @@ function Portfolio() {
                 By channeling consistency, discipline, and clear goal alignment, I can achieve any target or milestone I set my mind to plan.
               </motion.p>
             </div>
-            <div className="md:col-span-2 grid grid-cols-2 gap-3 sm:gap-4">
+            <div className="md:col-span-2 space-y-4 sm:space-y-6">
+            <ProfileCard />
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               {[
                 { k: "Philippines", v: "Based in" },
                 { k: "1 yr", v: "Experience" },
@@ -2882,6 +2980,7 @@ function Portfolio() {
                   <div className="text-[10px] sm:text-xs uppercase tracking-widest mt-1.5 text-muted-foreground">{s.v}</div>
                 </motion.div>
               ))}
+            </div>
             </div>
           </div>
 
@@ -2958,7 +3057,7 @@ function Portfolio() {
       </section>
 
       {/* 5. Projects */}
-      <section id="projects" className="py-16 sm:py-24 md:py-32 relative">
+      <section id="projects" tabIndex={-1} className="py-16 sm:py-24 md:py-32 relative outline-none">
         <div className="gradient-divider w-full absolute top-0 left-0" />
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <SectionHeader 
@@ -3715,6 +3814,19 @@ function Portfolio() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Veil that covers the jump from the 3D world to Projects */}
+      <AnimatePresence>
+        {enteringWorld && (
+          <motion.div
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { delay: 1.25, duration: 0.6 } }}
+            exit={{ opacity: 0, transition: { duration: 0.7 } }}
+            className="fixed inset-0 z-[70] bg-background pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
+
       <CustomCursor isDark={isDark} />
     </main>
   );
