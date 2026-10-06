@@ -38,11 +38,6 @@ export function ProfileCard() {
           </AnimatePresence>
           <div className="pcard__shade" aria-hidden="true" />
 
-          <span className="pcard__status mono">
-            <span className="pcard__pulse" aria-hidden="true" />
-            Building at Inovers
-          </span>
-
           <div className="pcard__name">
             <p className="pcard__title">{profile.shortName} Tuzon</p>
             <p className="pcard__role mono">{profile.role}</p>

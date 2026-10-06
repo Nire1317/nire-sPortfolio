@@ -46,37 +46,6 @@
   pointer-events: none;
   background: linear-gradient(0deg, rgba(5, 6, 5, 0.92) 0%, rgba(5, 6, 5, 0.2) 38%, transparent 60%);
 }
-.pcard__status {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 11px;
-  color: var(--text);
-  background: rgba(5, 6, 5, 0.65);
-  border: 1px solid rgba(118, 185, 0, 0.35);
-  backdrop-filter: blur(8px);
-}
-.pcard__pulse {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent-2);
-  box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.6);
-  animation: pcard-pulse 2s ease-out infinite;
-}
-@keyframes pcard-pulse {
-  70% {
-    box-shadow: 0 0 0 8px rgba(163, 230, 53, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(163, 230, 53, 0);
-  }
-}
 .pcard__name {
   position: absolute;
   left: 20px;
@@ -132,8 +101,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pcard,
-  .pcard__pulse {
+  .pcard {
     animation: none;
   }
 }
