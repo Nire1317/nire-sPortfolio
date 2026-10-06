@@ -12,18 +12,18 @@ const WorldCanvas = lazy(() => import("./HeroScene.world"));
 
 // Matches the tokens in styles/global.css (three.js can't read CSS variables)
 const PALETTE: WorldPalette = {
-  primary: "#2dd047",
-  highlight: "#3fd99b",
-  secondary: "#6b7a72",
+  primary: "#76b900",
+  highlight: "#a3e635",
+  secondary: "#6f7a63",
   ink: "#e8eaf0",
-  bg: "#030507",
+  bg: "#050605",
   light: false,
 };
 
 const worldProjects: WorldProject[] = projects.slice(0, 3).map((p) => ({
   title: p.title,
   tag: `${p.kind} · ${p.year}`,
-  themeColor: "#2dd047",
+  themeColor: "#76b900",
   isLive: Boolean(p.liveUrl),
 }));
 
@@ -75,7 +75,12 @@ function scrollToProjects() {
   document.getElementById("projects")?.scrollIntoView({ behavior: "instant" as ScrollBehavior });
 }
 
-export function HeroScene() {
+type HeroSceneProps = {
+  // "background" fills the whole hero behind the copy; "column" keeps it in its own box
+  layout?: "column" | "background";
+};
+
+export function HeroScene({ layout = "column" }: HeroSceneProps) {
   const box = useRef<HTMLDivElement>(null);
   const tooltip = useRef<HTMLDivElement>(null);
   const pointer = useRef({ x: 0, y: 0 });
@@ -171,7 +176,7 @@ export function HeroScene() {
   const fail = () => setFailed(true);
 
   return (
-    <div ref={box} className="scene">
+    <div ref={box} className={`scene scene--${layout}`}>
       {/* The canvas is decorative: everything in it is also in the page as real content */}
       <div className="scene__stage" aria-hidden="true">
         {(!active || !shown) && <StaticWorld />}
@@ -192,6 +197,7 @@ export function HeroScene() {
                   onSelectProject={(title) => setSelected(projects.find((p) => p.title === title) ?? null)}
                   onContextLost={fail}
                   onCreated={() => setShown(true)}
+                  layout={layout}
                 />
               </Suspense>
             </SceneBoundary>

@@ -20,9 +20,9 @@ export const profile = {
 export const about = {
   // Written in Erin's voice from facts in the old site; edit freely.
   paragraphs: [
-    "I'm Erin, a full-stack developer from the Philippines. Right now I work on the DORX logistics platform at Inovers: eleven connected systems that move parcels from booking to doorstep. Most days that means REST APIs, SQL that has to stay fast, and tracking that has to stay accurate.",
-    "Before that I built Leavely and an E-Barangay system on my own, and shipped React Native features for a food delivery app during my internship. I like the moment an app stops being a demo and real people start depending on it.",
-    "I use AI every day. It drafts, explains and explores faster than I can type. But I'm the one who reads the diff, traces the bug and decides whether it ships.",
+    "I'm Erin, a full-stack developer from Isabela, Philippines. I build web and mobile apps end to end, from the database schema and API to the screen people tap on, and I care about how they hold up once real users depend on them.",
+    "By day I'm an Associate Software Engineer at Inovers, working on the DORX logistics platform. On my own I built and shipped Leavely and an E-Barangay system, and during my internship at Dory Delivery I wrote React Native features for the customer and rider apps.",
+    "What I enjoy most is the part between the idea and the release: reading code I didn't write, tracing a bug to its cause, and making something work properly. AI helps me move faster. Understanding the code is still my job.",
   ],
   enjoys: [
     { title: "Building real applications", note: "Leavely and E-Barangay are both live." },
@@ -34,11 +34,12 @@ export const about = {
   ],
   learning:
     "Growing into DevOps and cloud over the next two years, on the way to becoming a senior full-stack engineer who can design and scale systems end to end.",
-  stats: [
-    { value: "11", label: "Systems on DORX" },
-    { value: "2", label: "Live products" },
-    { value: "3", label: "Roles since 2025" },
-    { value: "EN · FIL", label: "Languages" },
+  // Quick facts shown under the portrait
+  facts: [
+    { label: "Now", value: "Associate Software Engineer at Inovers" },
+    { label: "Stack", value: "React · TypeScript · Node.js · MySQL" },
+    { label: "Studied", value: "BS Information Technology, Saint Ferdinand College" },
+    { label: "Based in", value: "Isabela, Philippines" },
   ],
 };
 

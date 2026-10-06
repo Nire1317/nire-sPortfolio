@@ -12,11 +12,14 @@ const enter = (delay: number) => ({
   transition: { duration: 0.8, ease, delay },
 });
 
-// Hero copy and actions. The visual on the right is HeroScene, a self-contained slot
-// that can be swapped for a richer (e.g. 3D) scene without touching this file.
+// Hero copy and actions over HeroScene, the 3D world that fills the hero's background.
 export function Hero() {
   return (
     <section className="hero" id="top" aria-labelledby="hero-title">
+      <motion.div className="hero__bg" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }}>
+        <HeroScene layout="background" />
+      </motion.div>
+      <div className="hero__scrim" aria-hidden="true" />
       <div className="container hero__grid">
         <div className="hero__copy">
           <motion.p className="hero__intro mono" {...enter(0.05)}>
@@ -59,10 +62,6 @@ export function Hero() {
             ))}
           </motion.ul>
         </div>
-
-        <motion.div className="hero__visual" {...enter(0.3)}>
-          <HeroScene />
-        </motion.div>
       </div>
     </section>
   );
