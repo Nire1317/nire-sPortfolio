@@ -53,6 +53,7 @@
 
 .scene__tooltip {
   position: absolute;
+  z-index: 2;
   top: 0;
   left: 0;
   padding: 4px 12px;
@@ -142,6 +143,17 @@
 .scene--background .scene__stage::before {
   inset: 10% 0 10% 45%;
 }
+/* Scrim over the canvas (under the footer) that keeps the hero copy readable */
+.scene--background .scene__stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--bg) 0%, rgba(5, 6, 5, 0.9) 32%, rgba(5, 6, 5, 0.4) 50%, transparent 62%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 18%);
+}
 .scene--background .scene__static {
   inset: 10% 0 10% 45%;
 }
@@ -151,13 +163,30 @@
   bottom: 28px;
   margin: 0;
   gap: 20px;
-  z-index: 2;
+  z-index: 3;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.scene--background .scene__enter {
+  color: var(--accent-2);
+  border-color: rgba(118, 185, 0, 0.55);
+  background: rgba(5, 6, 5, 0.6);
+  backdrop-filter: blur(6px);
+  padding: 10px 18px;
+}
+.scene--background .scene__enter:hover {
+  color: #0b1200;
+  background: var(--accent);
+  border-color: var(--accent);
 }
 @media (max-width: 900px) {
   .scene--background .scene__stage {
     margin: 0;
     max-width: none;
     opacity: 0.55;
+  }
+  .scene--background .scene__stage::after {
+    background: linear-gradient(0deg, var(--bg) 0%, rgba(5, 6, 5, 0.55) 40%, rgba(5, 6, 5, 0.35) 100%);
   }
   .scene--background .scene__stage::before,
   .scene--background .scene__static {

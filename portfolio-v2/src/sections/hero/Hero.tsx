@@ -19,7 +19,6 @@ export function Hero() {
       <motion.div className="hero__bg" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.2, delay: 0.2 }}>
         <HeroScene layout="background" />
       </motion.div>
-      <div className="hero__scrim" aria-hidden="true" />
       <div className="container hero__grid">
         <div className="hero__copy">
           <motion.p className="hero__intro mono" {...enter(0.05)}>

@@ -22,18 +22,39 @@ export const about = {
   paragraphs: [
     "I'm Erin, a full-stack developer from Isabela, Philippines. I build web and mobile apps end to end, from the database schema and API to the screen people tap on, and I care about how they hold up once real users depend on them.",
     "By day I'm an Associate Software Engineer at Inovers, working on the DORX logistics platform. On my own I built and shipped Leavely and an E-Barangay system, and during my internship at Dory Delivery I wrote React Native features for the customer and rider apps.",
-    "What I enjoy most is the part between the idea and the release: reading code I didn't write, tracing a bug to its cause, and making something work properly. AI helps me move faster. Understanding the code is still my job.",
+    "What I enjoy most is turning an idea into something that works properly: designing it, building it, and tracing every bug to its real cause. AI helps me move faster, but I know the code I ship inside out.",
   ],
   enjoys: [
     { title: "Building real applications", note: "Leavely and E-Barangay are both live." },
     { title: "Solving difficult problems", note: "Keeping 11 logistics systems in sync." },
-    { title: "Debugging existing systems", note: "Reading code I didn't write until it makes sense." },
+    { title: "Debugging and improving systems", note: "Finding the real cause, then fixing it properly." },
     { title: "Learning new technologies", note: "Currently pushing into DevOps and cloud." },
     { title: "Using AI to move faster", note: "Claude Code, ChatGPT and the Gemini API." },
     { title: "Knowing how things work", note: "Not just that it runs, but why." },
   ],
   learning:
     "Growing into DevOps and cloud over the next two years, on the way to becoming a senior full-stack engineer who can design and scale systems end to end.",
+  // Erin's own motto and pillars, carried over from the old site
+  motto: {
+    quote: "I live by goals, not dreams.",
+    sub: "Anyone can do the job, but not anyone can be me.",
+  },
+  pillars: [
+    {
+      title: "Consistency",
+      desc: "Showing up day after day to build, test and refine. Small daily improvements compound into solid, scalable systems.",
+    },
+    {
+      title: "Discipline",
+      desc: "Focusing on what matters most and keeping code quality high, even when a shortcut would be easier.",
+    },
+    {
+      title: "Goal",
+      desc: "Setting clear, structured milestones. Dreams are ideas; goals are roadmaps that lead to real results.",
+    },
+  ],
+  pillarsLine: "With these three, I can achieve any goal I plan.",
+  closing: "The only consequence is failure.",
   // Quick facts shown under the portrait
   facts: [
     { label: "Now", value: "Associate Software Engineer at Inovers" },

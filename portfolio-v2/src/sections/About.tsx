@@ -1,8 +1,9 @@
 import { ArrowUpRight, FileText } from "lucide-react";
+import { motion } from "motion/react";
+import { ProfileCard } from "../components/ProfileCard";
 import { Reveal } from "../components/Reveal";
 import { SectionHeader } from "../components/SectionHeader";
 import { about, profile } from "../data/profile";
-import portrait from "../assets/profile.webp";
 
 export function About() {
   return (
@@ -12,9 +13,7 @@ export function About() {
 
         <div className="about">
           <Reveal className="about__portrait">
-            <div className="about__frame">
-              <img src={portrait} alt={`Portrait of ${profile.name}`} width={681} height={1024} loading="lazy" />
-            </div>
+            <ProfileCard />
             <dl className="about__facts">
               {about.facts.map((f) => (
                 <div key={f.label}>
@@ -26,6 +25,17 @@ export function About() {
           </Reveal>
 
           <div className="about__body">
+            <Reveal>
+              <blockquote className="about__motto">
+                <p className="about__quote">
+                  <span aria-hidden="true">“</span>
+                  {about.motto.quote}
+                  <span aria-hidden="true">”</span>
+                </p>
+                <footer className="about__quote-sub">{about.motto.sub}</footer>
+              </blockquote>
+            </Reveal>
+
             {about.paragraphs.map((p, i) => (
               <Reveal key={i} delay={i * 0.06}>
                 <p className={i === 0 ? "about__lead" : "about__p"}>{p}</p>
@@ -58,6 +68,32 @@ export function About() {
               </a>
             </Reveal>
           </div>
+        </div>
+
+        <div className="pillars">
+          <Reveal>
+            <p className="pillars__label mono">// three things I live by</p>
+          </Reveal>
+          <ol className="pillars__grid">
+            {about.pillars.map((p, i) => (
+              <motion.li
+                key={p.title}
+                className="pillar"
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <span className="pillar__num mono">0{i + 1}</span>
+                <h3 className="pillar__title">{p.title}</h3>
+                <p className="pillar__desc">{p.desc}</p>
+              </motion.li>
+            ))}
+          </ol>
+          <Reveal delay={0.1} className="pillars__outro">
+            <p>{about.pillarsLine}</p>
+            <p className="pillars__closing">{about.closing}</p>
+          </Reveal>
         </div>
       </div>
     </section>
