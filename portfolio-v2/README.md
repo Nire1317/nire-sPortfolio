@@ -18,4 +18,4 @@ npm run build    # type-check and build to dist/
 
 ## Deploying
 
-On Vercel or Netlify, set the project root directory to `portfolio-v2`, build command `npm run build`, output `dist`.
+The repo-root `vercel.json` builds this folder on Vercel, so no project settings are needed.
