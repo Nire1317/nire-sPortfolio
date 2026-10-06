@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useRef, useMemo, useCallback, type FormEvent } from "react";
 import { db } from "../firebase";
 import { collection, addDoc, getDocs, orderBy, query, serverTimestamp } from "firebase/firestore";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { Sun, Moon, Sparkles, ArrowUpRight, SkipForward, SkipBack, Menu, X, ChevronLeft, ChevronRight, ChevronDown, ArrowUp, Heart } from "lucide-react";
 import { useSound } from "../hooks/useSound";
 import profileCasual from "../assets/profile-casual.jpg";
@@ -19,8 +19,17 @@ import projBarangay from "../assets/project-barangay.png";
 
 
 export const Route = createFileRoute("/")({
-  component: Portfolio,
+  component: PortfolioPage,
 });
+
+// Motion animations follow the visitor's prefers-reduced-motion setting
+function PortfolioPage() {
+  return (
+    <MotionConfig reducedMotion="user">
+      <Portfolio />
+    </MotionConfig>
+  );
+}
 
 /* ---------- Profile toggle ---------- */
 
@@ -1153,14 +1162,15 @@ function ProjectSpotlightCard({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 30, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.92, y: 20 }}
-      transition={{ type: "spring", stiffness: 90, damping: 20, delay: index * 0.05 }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      exit={{ opacity: 0, scale: 0.96, y: 12 }}
+      transition={{ type: "spring", stiffness: 110, damping: 22, delay: (index % 3) * 0.06 }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group rounded-3xl border border-border bg-card/60 backdrop-blur-xl overflow-hidden flex flex-col justify-between transition-all duration-500 hover:shadow-2xl relative"
+      className="group rounded-3xl border border-border bg-card/60 backdrop-blur-xl overflow-hidden flex flex-col justify-between transition-[translate,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:shadow-2xl relative"
       style={{
         borderColor: isHovered ? `${p.themeColor}88` : undefined,
         boxShadow: isHovered 
@@ -1184,7 +1194,7 @@ function ProjectSpotlightCard({
           <img
             src={p.image}
             alt={p.title}
-            className="absolute inset-0 h-full w-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-85 transition-all duration-700 pointer-events-none"
+            className="absolute inset-0 h-full w-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-85 transition-[scale,opacity] duration-500 ease-out pointer-events-none"
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-card via-card/25 to-transparent" />
@@ -1913,6 +1923,22 @@ function Portfolio() {
   const [activeHobbyIndex, setActiveHobbyIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<"left" | "right">("left");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+
+  // Track which section is under the middle of the viewport for the nav indicator
+  useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>("main section[id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 
   const notebookTouchStartX = useRef<number | null>(null);
 
@@ -2315,13 +2341,24 @@ function Portfolio() {
           
           {/* Desktop Navigation Links */}
           <div className="hidden lg:flex items-center gap-6 text-sm text-muted-foreground">
-            <a href="#philosophy" className="hover:text-foreground transition">Philosophy</a>
-            <a href="#about" className="hover:text-foreground transition">About</a>
-            <a href="#experience" className="hover:text-foreground transition">Experience</a>
-            <a href="#projects" className="hover:text-foreground transition">Projects</a>
-            <a href="#skills" className="hover:text-foreground transition">Skills</a>
-            <a href="#hobbies" className="hover:text-foreground transition">Hobbies</a>
-            <a href="#goals" className="hover:text-foreground transition">Goals</a>
+            {[
+              { id: "philosophy", label: "Philosophy" },
+              { id: "about", label: "About" },
+              { id: "experience", label: "Experience" },
+              { id: "projects", label: "Projects" },
+              { id: "skills", label: "Skills" },
+              { id: "hobbies", label: "Hobbies" },
+              { id: "goals", label: "Goals" },
+            ].map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                aria-current={activeSection === item.id ? "location" : undefined}
+                className={`nav-link hover:text-foreground transition ${activeSection === item.id ? "text-foreground" : ""}`}
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
@@ -2367,13 +2404,18 @@ function Portfolio() {
                     { href: "#skills", label: "Skills", num: "06" },
                     { href: "#hobbies", label: "Hobbies", num: "07" },
                     { href: "#goals", label: "Goals", num: "08" },
-                    { href: "#connect", label: "Connect", num: "08" },
+                    { href: "#connect", label: "Connect", num: "09" },
                   ].map((item) => (
                     <a
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center justify-between p-3 rounded-2xl border border-border/50 bg-card/40 hover:bg-primary/10 hover:border-primary/40 text-foreground transition active:scale-[0.98]"
+                      aria-current={activeSection === item.href.slice(1) ? "location" : undefined}
+                      className={`flex items-center justify-between p-3 rounded-2xl border hover:bg-primary/10 hover:border-primary/40 text-foreground transition active:scale-[0.98] ${
+                        activeSection === item.href.slice(1)
+                          ? "border-primary/40 bg-primary/10"
+                          : "border-border/50 bg-card/40"
+                      }`}
                     >
                       <span className="font-display font-semibold text-sm">{item.label}</span>
                       <span className="text-[10px] font-mono text-primary font-bold">{item.num}</span>
@@ -2847,10 +2889,10 @@ function Portfolio() {
             {experience.map((e, i) => (
               <motion.li
                 key={e.role}
-                initial={{ opacity: 0, x: 100, scale: 0.98 }}
-                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
-                transition={{ type: "spring", stiffness: 70, damping: 18, mass: 1.1, delay: i * 0.08 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
                 className="pl-5 sm:pl-8 pb-8 sm:pb-10 relative group"
               >
                 {/* Pulsing timeline dot */}

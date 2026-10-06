@@ -214,6 +214,11 @@
     scroll-behavior: smooth;
   }
 
+  /* Keep anchored sections clear of the fixed nav bar */
+  section[id] {
+    scroll-margin-top: 4rem;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -394,4 +399,43 @@
     transparent
   );
   height: 1px;
+}
+
+/* Nav link underline: grows on hover, stays on the active section */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1.5px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-link:hover::after,
+.nav-link[aria-current]::after {
+  transform: scaleX(1);
+}
+
+/* Respect users who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
