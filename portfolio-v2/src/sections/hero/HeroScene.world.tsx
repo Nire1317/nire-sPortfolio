@@ -1062,6 +1062,74 @@ function Rig({
   return null;
 }
 
+/* ---------- Drag to spin: grab the world and throw it, it keeps turning and slows down ---------- */
+
+function useDragSpin(spin: MutableRefObject<THREE.Group | null>, animate: boolean) {
+  const { gl } = useThree();
+  const state = useRef({ down: false, lastX: 0, lastY: 0, vx: 0, vy: 0, moved: 0 });
+
+  useEffect(() => {
+    const el = gl.domElement;
+    // Let phones still scroll the page vertically; horizontal swipes spin the world
+    el.style.touchAction = "pan-y";
+    el.style.cursor = "grab";
+    const s = state.current;
+    const onDown = (e: PointerEvent) => {
+      s.down = true;
+      s.moved = 0;
+      s.lastX = e.clientX;
+      s.lastY = e.clientY;
+      s.vx = 0;
+      s.vy = 0;
+      el.style.cursor = "grabbing";
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!s.down || !spin.current) return;
+      const dx = e.clientX - s.lastX;
+      const dy = e.clientY - s.lastY;
+      s.lastX = e.clientX;
+      s.lastY = e.clientY;
+      s.moved += Math.abs(dx) + Math.abs(dy);
+      const k = 0.006;
+      spin.current.rotation.y += dx * k;
+      spin.current.rotation.x = THREE.MathUtils.clamp(spin.current.rotation.x + dy * k * 0.6, -0.5, 0.5);
+      s.vx = dx * k;
+      s.vy = dy * k * 0.6;
+    };
+    const onUp = () => {
+      s.down = false;
+      el.style.cursor = "grab";
+    };
+    el.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      el.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, [gl, spin]);
+
+  useFrame((_, dt) => {
+    const g = spin.current;
+    const s = state.current;
+    if (!g || s.down) return;
+    // Momentum after letting go, then ease the tilt back to level
+    const step = Math.min(dt * 60, 3);
+    g.rotation.y += s.vx * step;
+    g.rotation.x = THREE.MathUtils.clamp(g.rotation.x + s.vy * step, -0.5, 0.5);
+    const decay = Math.pow(0.94, step);
+    s.vx *= decay;
+    s.vy *= decay;
+    g.rotation.x = animate ? THREE.MathUtils.damp(g.rotation.x, 0, 1.5, dt) : g.rotation.x;
+  });
+
+  // True right after a drag, so a drag that ends on a project card doesn't open it
+  return () => state.current.moved > 6;
+}
+
 /* ---------- Root ---------- */
 
 function World(props: SceneProps & { fontsReady: boolean }) {
@@ -1079,6 +1147,8 @@ function World(props: SceneProps & { fontsReady: boolean }) {
   } = props;
   const [hovered, setHovered] = useState<string | null>(null);
   const world = useRef<THREE.Group>(null);
+  const spin = useRef<THREE.Group>(null);
+  const wasDrag = useDragSpin(spin, animate);
 
   useEffect(() => () => setCursor(false), []);
 
@@ -1095,31 +1165,34 @@ function World(props: SceneProps & { fontsReady: boolean }) {
       <Dust palette={palette} animate={animate} count={compact ? 120 : 260} />
       <group ref={world}>
         {!compact && <CodeFragments palette={palette} animate={animate} fontsReady={fontsReady} />}
-        <Globe palette={palette} animate={animate} compact={compact} />
-        {!compact && <Developer palette={palette} animate={animate} />}
-        <Orbit
-          radius={2.05}
-          tilt={[0.35, 0, 0.25]}
-          speed={0.12}
-          palette={palette}
-          animate={animate}
-          phase={0}
-        />
-        <Orbit
-          radius={2.4}
-          tilt={[-0.25, 0, -0.4]}
-          speed={-0.08}
-          palette={palette}
-          animate={animate}
-          phase={2}
-        />
-        <Network palette={palette} animate={animate} hovered={hovered} setHovered={setHovered} tooltip={props.tooltip} />
-        <FlowPath
-          palette={palette}
-          animate={animate}
-          fontsReady={fontsReady}
-          showLabels={!compact}
-        />
+        {/* Only the globe and what's attached to it spins; the project cards stay readable */}
+        <group ref={spin}>
+          <Globe palette={palette} animate={animate} compact={compact} />
+          {!compact && <Developer palette={palette} animate={animate} />}
+          <Orbit
+            radius={2.05}
+            tilt={[0.35, 0, 0.25]}
+            speed={0.12}
+            palette={palette}
+            animate={animate}
+            phase={0}
+          />
+          <Orbit
+            radius={2.4}
+            tilt={[-0.25, 0, -0.4]}
+            speed={-0.08}
+            palette={palette}
+            animate={animate}
+            phase={2}
+          />
+          <Network palette={palette} animate={animate} hovered={hovered} setHovered={setHovered} tooltip={props.tooltip} />
+          <FlowPath
+            palette={palette}
+            animate={animate}
+            fontsReady={fontsReady}
+            showLabels={!compact}
+          />
+        </group>
         {!compact && (
           <ProjectCards
             projects={projects}
@@ -1128,7 +1201,9 @@ function World(props: SceneProps & { fontsReady: boolean }) {
             fontsReady={fontsReady}
             hovered={hovered}
             setHovered={setHovered}
-            onSelect={onSelectProject}
+            onSelect={(title) => {
+              if (!wasDrag()) onSelectProject(title);
+            }}
           />
         )}
       </group>
