@@ -25,7 +25,7 @@
   height: 8px;
   border-radius: 50%;
   background: var(--accent-2);
-  box-shadow: 0 0 0 4px rgba(94, 224, 196, 0.12);
+  box-shadow: 0 0 0 4px rgba(63, 217, 155, 0.12);
 }
 .hero__title {
   font-size: clamp(44px, 8vw, 84px);

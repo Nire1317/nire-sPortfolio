@@ -5,7 +5,7 @@
   display: grid;
   place-items: center;
   padding: 24px 16px;
-  background: rgba(5, 6, 9, 0.72);
+  background: rgba(1, 2, 4, 0.72);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   overflow-y: auto;
@@ -36,12 +36,12 @@
   height: 36px;
   border-radius: 50%;
   border: 1px solid var(--border-strong);
-  background: rgba(10, 11, 15, 0.75);
+  background: rgba(3, 5, 7, 0.75);
   cursor: pointer;
   transition: background 0.2s var(--ease);
 }
 .modal__close:hover {
-  background: rgba(10, 11, 15, 0.95);
+  background: rgba(3, 5, 7, 0.95);
 }
 .modal__content {
   padding: clamp(22px, 4vw, 36px);

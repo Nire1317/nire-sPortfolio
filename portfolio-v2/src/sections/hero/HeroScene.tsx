@@ -12,18 +12,18 @@ const WorldCanvas = lazy(() => import("./HeroScene.world"));
 
 // Matches the tokens in styles/global.css (three.js can't read CSS variables)
 const PALETTE: WorldPalette = {
-  primary: "#7c9cff",
-  highlight: "#5ee0c4",
-  secondary: "#6f7896",
+  primary: "#2dd047",
+  highlight: "#3fd99b",
+  secondary: "#6b7a72",
   ink: "#e8eaf0",
-  bg: "#0a0b0f",
+  bg: "#030507",
   light: false,
 };
 
 const worldProjects: WorldProject[] = projects.slice(0, 3).map((p) => ({
   title: p.title,
   tag: `${p.kind} · ${p.year}`,
-  themeColor: "#7c9cff",
+  themeColor: "#2dd047",
   isLive: Boolean(p.liveUrl),
 }));
 
