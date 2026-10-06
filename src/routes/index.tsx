@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useRef, useMemo, useCallback, type FormEvent } from "react";
 import { db } from "../firebase";
 import { collection, addDoc, getDocs, orderBy, query, serverTimestamp } from "firebase/firestore";
-import { motion, AnimatePresence, MotionConfig } from "motion/react";
+import { motion, AnimatePresence, MotionConfig, useReducedMotion } from "motion/react";
 import { Sun, Moon, Sparkles, ArrowUpRight, SkipForward, SkipBack, Menu, X, ChevronLeft, ChevronRight, ChevronDown, ArrowUp, Heart } from "lucide-react";
 import { useSound } from "../hooks/useSound";
 import profileCasual from "../assets/profile-casual.jpg";
@@ -1320,6 +1320,7 @@ function ProjectSpotlightCard({
 function SkillsWheel() {
   const [activeGroup, setActiveGroup] = useState<string>("all");
   const [paused, setPaused] = useState(false);
+  const reduceMotion = useReducedMotion();
   const [progress, setProgress] = useState(0);
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
   const progressRef = useRef(0);
@@ -1347,9 +1348,9 @@ function SkillsWheel() {
     status: "Production Tech",
   };
 
-  // Continuous smooth wheel loop animation
+  // Continuous smooth wheel loop animation (off when the visitor prefers reduced motion)
   useEffect(() => {
-    if (paused || count === 0) return;
+    if (paused || reduceMotion || count === 0) return;
     let frameId: number;
     let lastTime = performance.now();
 
@@ -1366,7 +1367,7 @@ function SkillsWheel() {
 
     frameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frameId);
-  }, [paused, count]);
+  }, [paused, reduceMotion, count]);
 
   // Touch Swipe Support
   const touchStartX = useRef<number | null>(null);
@@ -1622,6 +1623,7 @@ function HeroConsole() {
   const [cmdInput, setCmdInput] = useState("");
   const [terminalLog, setTerminalLog] = useState<string | null>(null);
   const { playClick } = useSound();
+  const reduceMotion = useReducedMotion();
 
   const handleCommandSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -1742,8 +1744,16 @@ function HeroConsole() {
                   {[40, 75, 55, 90, 65, 80, 45, 95, 70].map((h, i) => (
                     <motion.span
                       key={i}
-                      animate={{ height: [`${h * 0.35}%`, `${h}%`, `${h * 0.45}%`] }}
-                      transition={{ repeat: Infinity, duration: 1.2 + i * 0.1, ease: "easeInOut" }}
+                      animate={
+                        reduceMotion
+                          ? { height: `${h * 0.6}%` }
+                          : { height: [`${h * 0.35}%`, `${h}%`, `${h * 0.45}%`] }
+                      }
+                      transition={
+                        reduceMotion
+                          ? { duration: 0 }
+                          : { repeat: Infinity, duration: 1.2 + i * 0.1, ease: "easeInOut" }
+                      }
                       className="w-0.5 rounded-full bg-primary/80 inline-block h-full"
                     />
                   ))}
