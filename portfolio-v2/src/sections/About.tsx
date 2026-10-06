@@ -15,11 +15,11 @@ export function About() {
             <div className="about__frame">
               <img src={portrait} alt={`Portrait of ${profile.name}`} width={681} height={1024} loading="lazy" />
             </div>
-            <dl className="about__stats">
-              {about.stats.map((s) => (
-                <div key={s.label}>
-                  <dt>{s.label}</dt>
-                  <dd>{s.value}</dd>
+            <dl className="about__facts">
+              {about.facts.map((f) => (
+                <div key={f.label}>
+                  <dt className="mono">{f.label}</dt>
+                  <dd>{f.value}</dd>
                 </div>
               ))}
             </dl>

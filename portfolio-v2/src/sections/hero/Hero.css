@@ -6,11 +6,30 @@
   position: relative;
   overflow-x: clip;
 }
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+/* Keeps the copy readable where it overlaps the world */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--bg) 0%, rgba(5, 6, 5, 0.9) 32%, rgba(5, 6, 5, 0.4) 50%, transparent 62%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 18%);
+}
 .hero__grid {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: clamp(32px, 6vw, 72px);
-  align-items: center;
+  position: relative;
+  z-index: 2;
+  /* lets the world behind stay hoverable outside the copy */
+  pointer-events: none;
+}
+.hero__copy {
+  max-width: 620px;
+  pointer-events: auto;
 }
 .hero__intro {
   display: inline-flex;
@@ -25,7 +44,7 @@
   height: 8px;
   border-radius: 50%;
   background: var(--accent-2);
-  box-shadow: 0 0 0 4px rgba(63, 217, 155, 0.12);
+  box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.12);
 }
 .hero__title {
   font-size: clamp(44px, 8vw, 84px);
@@ -59,16 +78,13 @@
   padding: 0;
   margin: 32px 0 0;
 }
-.hero__visual {
-  min-width: 0;
-}
 
 @media (max-width: 900px) {
-  .hero__grid {
-    grid-template-columns: 1fr;
-  }
   .hero {
-    min-height: auto;
+    padding-bottom: 120px;
+  }
+  .hero__scrim {
+    background: linear-gradient(0deg, var(--bg) 0%, rgba(5, 6, 5, 0.55) 40%, rgba(5, 6, 5, 0.35) 100%);
   }
 }
 @media (max-width: 480px) {

@@ -40,6 +40,8 @@ type SceneProps = {
   onContextLost: () => void;
   onCreated: () => void;
   tooltip: MutableRefObject<HTMLDivElement | null>;
+  // "background": the canvas spans the whole hero, so on wide screens the world sits to the right of the copy
+  layout?: "column" | "background";
 };
 
 const GLOBE_R = 1.6;
@@ -147,7 +149,7 @@ function projectCardTexture(p: WorldProject, palette: WorldPalette) {
   ctx.fillText(p.tag, 36, 170);
   ctx.globalAlpha = 1;
   if (p.isLive) {
-    ctx.fillStyle = "#34d399";
+    ctx.fillStyle = "#a3e635";
     ctx.beginPath();
     ctx.arc(44, 236, 7, 0, Math.PI * 2);
     ctx.fill();
@@ -987,12 +989,14 @@ function Rig({
   pointer,
   onEntered,
   world,
+  layout,
 }: {
   animate: boolean;
   entering: boolean;
   pointer: PointerRef;
   onEntered: () => void;
   world: MutableRefObject<THREE.Group | null>;
+  layout: "column" | "background";
 }) {
   const { camera, size } = useThree();
   const enter = useRef(0);
@@ -1009,10 +1013,13 @@ function Rig({
   useFrame((state, dt) => {
     const t = state.clock.elapsedTime;
     const aspect = size.width / size.height;
-    // The scene has its own column, so the world stays centred; shrink it a little when the box is tall
-    const offsetX = 0;
-    const offsetY = 0;
-    const scale = size.width < 480 ? 1.12 : aspect < 0.95 ? 0.9 : 1.05;
+    // In its own column the world stays centred. As a full-width background on a wide screen it moves
+    // right of the copy (half the visible width at the camera distance, times a factor).
+    const wide = layout === "background" && aspect > 1.15;
+    const halfWidth = Math.tan(THREE.MathUtils.degToRad(20)) * 9 * aspect;
+    const offsetX = wide ? Math.min(halfWidth * 0.4, 3.2) : 0;
+    const offsetY = wide ? -0.3 : 0;
+    const scale = wide ? 0.95 : size.width < 480 ? 1.12 : aspect < 0.95 ? 0.9 : 1.05;
     if (world.current) {
       world.current.position.set(offsetX, offsetY, 0);
       world.current.scale.setScalar(scale);
@@ -1026,7 +1033,9 @@ function Rig({
     let x = drift + p.x * 0.55;
     let y = 0.5 + bob - p.y * 0.3 + scroll * 1.1;
     let z = 9 + scroll * 2.2;
-    look.set(offsetX, offsetY + scroll * 0.4, 0);
+    // Aim at the middle of the frame, not at the world, so a background-layout world stays off to the right
+    const aimX = wide ? 0 : offsetX;
+    look.set(aimX, offsetY + scroll * 0.4, 0);
 
     if (entering) {
       enter.current = Math.min(1, enter.current + dt / 1.9);
@@ -1066,6 +1075,7 @@ function World(props: SceneProps & { fontsReady: boolean }) {
     onEntered,
     onSelectProject,
     fontsReady,
+    layout = "column",
   } = props;
   const [hovered, setHovered] = useState<string | null>(null);
   const world = useRef<THREE.Group>(null);
@@ -1080,6 +1090,7 @@ function World(props: SceneProps & { fontsReady: boolean }) {
         pointer={pointer}
         onEntered={onEntered}
         world={world}
+        layout={layout}
       />
       <Dust palette={palette} animate={animate} count={compact ? 120 : 260} />
       <group ref={world}>
