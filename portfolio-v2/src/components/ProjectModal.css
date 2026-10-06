@@ -1,0 +1,128 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: rgba(5, 6, 9, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  overflow-y: auto;
+}
+.modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  max-height: calc(100svh - 48px);
+  overflow-y: auto;
+  border-radius: 20px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-raised);
+  box-shadow: 0 40px 120px -40px rgba(0, 0, 0, 0.9);
+  outline: none;
+}
+.modal__panel .project-media {
+  aspect-ratio: 16 / 8;
+}
+.modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: rgba(10, 11, 15, 0.75);
+  cursor: pointer;
+  transition: background 0.2s var(--ease);
+}
+.modal__close:hover {
+  background: rgba(10, 11, 15, 0.95);
+}
+.modal__content {
+  padding: clamp(22px, 4vw, 36px);
+}
+.modal__kind {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.modal__title {
+  margin-top: 8px;
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+.modal__summary {
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: 17px;
+}
+.modal__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.modal__links:empty {
+  display: none;
+}
+.modal__grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 32px;
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+.modal__story {
+  display: grid;
+  gap: 22px;
+}
+.modal h4 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin: 0 0 6px;
+}
+.modal__story p {
+  color: var(--text-muted);
+}
+.modal__aside h4:not(:first-child) {
+  margin-top: 24px;
+}
+.modal__features {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--text-muted);
+}
+.modal__features li::before {
+  content: "·";
+  color: var(--accent-2);
+  margin-right: 8px;
+  font-weight: 700;
+}
+.modal__stack {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media (max-width: 720px) {
+  .modal__grid {
+    grid-template-columns: 1fr;
+  }
+}

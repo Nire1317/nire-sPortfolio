@@ -1,0 +1,106 @@
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  transition:
+    background 0.3s var(--ease),
+    border-color 0.3s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+.nav--scrolled {
+  background: rgba(10, 11, 15, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--border);
+}
+.nav__inner {
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-right: auto;
+}
+.nav__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  font-size: 11px;
+  color: var(--accent);
+}
+.nav__links {
+  display: flex;
+  gap: 2px;
+}
+.nav__link {
+  position: relative;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: color 0.2s var(--ease);
+}
+.nav__link:hover,
+.nav__link.is-active {
+  color: var(--text);
+}
+.nav__pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+}
+.nav__label {
+  position: relative;
+}
+.nav__cta {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+.nav__toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+}
+.nav__mobile {
+  display: none;
+}
+
+@media (max-width: 880px) {
+  .nav__links,
+  .nav .nav__cta {
+    display: none;
+  }
+  .nav__toggle {
+    display: grid;
+  }
+  .nav__mobile {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 16px;
+  }
+  .nav__mobile a {
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .nav__mobile a.is-active {
+    color: var(--text);
+  }
+}
