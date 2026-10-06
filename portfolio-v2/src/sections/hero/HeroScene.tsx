@@ -207,7 +207,7 @@ export function HeroScene({ layout = "column" }: HeroSceneProps) {
       </div>
 
       <div className={`scene__footer mono ${entering ? "is-hidden" : ""}`}>
-        <span className="scene__hint">{live && !compact ? "Hover the world · click a project" : "Code → Ideas → AI → Products"}</span>
+        <span className="scene__hint">{live && !compact ? "Drag to spin the world · click a project" : "Code → Ideas → AI → Products"}</span>
         <button type="button" className="scene__enter" onClick={enterWorld}>
           Enter the world <span aria-hidden="true">→</span>
         </button>
