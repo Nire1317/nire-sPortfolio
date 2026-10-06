@@ -11,7 +11,7 @@
   content: "";
   position: absolute;
   inset: 8%;
-  background: radial-gradient(closest-side, rgba(124, 156, 255, 0.12), transparent);
+  background: radial-gradient(closest-side, rgba(45, 208, 71, 0.12), transparent);
   filter: blur(24px);
   pointer-events: none;
 }
@@ -35,9 +35,9 @@
   position: absolute;
   inset: 26%;
   border-radius: 50%;
-  border: 1px solid rgba(124, 156, 255, 0.25);
-  background: radial-gradient(circle at 35% 30%, rgba(124, 156, 255, 0.28), rgba(94, 224, 196, 0.06) 55%, transparent 70%);
-  box-shadow: inset 0 0 60px rgba(124, 156, 255, 0.18);
+  border: 1px solid rgba(45, 208, 71, 0.25);
+  background: radial-gradient(circle at 35% 30%, rgba(45, 208, 71, 0.28), rgba(63, 217, 155, 0.06) 55%, transparent 70%);
+  box-shadow: inset 0 0 60px rgba(45, 208, 71, 0.18);
 }
 .scene__ring {
   position: absolute;
@@ -57,8 +57,8 @@
   left: 0;
   padding: 4px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(124, 156, 255, 0.4);
-  background: rgba(10, 11, 15, 0.85);
+  border: 1px solid rgba(45, 208, 71, 0.4);
+  background: rgba(3, 5, 7, 0.85);
   backdrop-filter: blur(8px);
   color: var(--text);
   font-size: 11px;
