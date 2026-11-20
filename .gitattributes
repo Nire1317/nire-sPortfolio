@@ -1,0 +1,6 @@
+# Keep binary assets byte-for-byte (some PDFs are ASCII-only and would otherwise get line-ending conversion)
+*.pdf binary
+*.webp binary
+*.png binary
+*.jpg binary
+*.woff2 binary
