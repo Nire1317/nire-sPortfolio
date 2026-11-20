@@ -112,7 +112,22 @@ src/
 
 The build is fully static (`base: './'`), so `dist/` works from any host or sub-path.
 
-**Vercel** (the existing `nire-s-portfolio` project): pushing to `main` deploys automatically. [`vercel.json`](vercel.json) runs `npm ci` and `npm run build` and serves `dist/` (Node 22, pinned in `package.json`). The previous site is kept in [`portfolio-v2/`](portfolio-v2/). To deploy that one again, point `vercel.json` back at it (`npm ci --prefix portfolio-v2`, `npm run build --prefix portfolio-v2`, output `portfolio-v2/dist`). The serverless contact endpoint in `api/` (Firestore + Resend) is left in place and still deploys, though the new page doesn't call it.
+**CI/CD (GitHub Actions → Vercel).** Only `main` deploys. [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs on every push to `main` and every pull request into `main`:
+
+1. **Type-check and build:** `npm ci` then `npm run build`. Pull requests stop here, so they're checked but never deployed.
+2. **Deploy:** only for pushes to `main` (or a manual *Run workflow* on `main`), and only if step 1 passed. It runs `vercel pull`, `vercel build --prod` and `vercel deploy --prebuilt --prod` to production.
+
+Vercel's own Git deployments are switched off in [`vercel.json`](vercel.json) (`git.deploymentEnabled: false`), so no other branch can deploy and every deploy goes through the checks. `vercel.json` builds the project root (`npm ci`, `npm run build`, output `dist/`), and Node 22 is pinned in `package.json`.
+
+One-time setup: add three repository secrets under GitHub → Settings → Secrets and variables → Actions:
+
+| Secret | Where to get it |
+|---|---|
+| `VERCEL_TOKEN` | Vercel → Account Settings → Tokens → Create |
+| `VERCEL_ORG_ID` | `orgId` in `.vercel/project.json` after `vercel link` (or Vercel → Team Settings → Team ID) |
+| `VERCEL_PROJECT_ID` | `projectId` in `.vercel/project.json` (or Vercel → Project Settings → Project ID) |
+
+The previous site is kept in [`portfolio-v2/`](portfolio-v2/). To deploy that one instead, point `vercel.json` back at it (`npm ci --prefix portfolio-v2`, `npm run build --prefix portfolio-v2`, output `portfolio-v2/dist`). The serverless contact endpoint in `api/` (Firestore + Resend) is left in place and still deploys, though the new page doesn't call it.
 
 **Any static host** (Netlify, Cloudflare Pages, GitHub Pages): run `npm run build` and publish `dist/`.
 
