@@ -112,7 +112,7 @@ src/
 
 The build is fully static (`base: './'`), so `dist/` works from any host or sub-path.
 
-**Vercel** (the existing `nire-s-portfolio` project): import or push the branch. Vercel detects Vite automatically. Build command `npm run build`, output directory `dist`. The serverless contact endpoint in `api/` (Firestore + Resend) is left in place and still deploys, though the new page doesn't call it.
+**Vercel** (the existing `nire-s-portfolio` project): pushing to `main` deploys automatically. [`vercel.json`](vercel.json) runs `npm ci` and `npm run build` and serves `dist/` (Node 22, pinned in `package.json`). The previous site is kept in [`portfolio-v2/`](portfolio-v2/). To deploy that one again, point `vercel.json` back at it (`npm ci --prefix portfolio-v2`, `npm run build --prefix portfolio-v2`, output `portfolio-v2/dist`). The serverless contact endpoint in `api/` (Firestore + Resend) is left in place and still deploys, though the new page doesn't call it.
 
 **Any static host** (Netlify, Cloudflare Pages, GitHub Pages): run `npm run build` and publish `dist/`.
 
