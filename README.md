@@ -127,10 +127,10 @@ One-time setup: add three repository secrets under GitHub → Settings → Secre
 | `VERCEL_ORG_ID` | `orgId` in `.vercel/project.json` after `vercel link` (or Vercel → Team Settings → Team ID) |
 | `VERCEL_PROJECT_ID` | `projectId` in `.vercel/project.json` (or Vercel → Project Settings → Project ID) |
 
-The previous site is kept in [`portfolio-v2/`](portfolio-v2/). To deploy that one instead, point `vercel.json` back at it (`npm ci --prefix portfolio-v2`, `npm run build --prefix portfolio-v2`, output `portfolio-v2/dist`). The serverless contact endpoint in `api/` (Firestore + Resend) is left in place and still deploys, though the new page doesn't call it.
+Earlier versions of the site (the TanStack app, `portfolio-v2/`, and the `api/` contact endpoint) were removed from the working tree and live in git history.
 
 **Any static host** (Netlify, Cloudflare Pages, GitHub Pages): run `npm run build` and publish `dist/`.
 
 After deploying to a new domain, update `site.url` in `content.ts`. Canonical and Open Graph image URLs must be absolute.
 
-> This repo is connected to Lovable. This tour lives on the `3d-tour` branch. Merging it into the Lovable-connected branch replaces the Lovable (TanStack) app with this one.
+> This repo is connected to Lovable. The tour is on `main`, which replaced the Lovable (TanStack) app.
