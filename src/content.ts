@@ -80,12 +80,40 @@ export const intro = {
   hintSuffix: 'to start the tour',
 };
 
+/**
+ * Software engineering roles as 'YYYY-MM' (start, end); `null` end = still there.
+ * Months count inclusively, the way LinkedIn does, so the total matches LinkedIn.
+ * Dates follow LinkedIn's Experience section. Keep in sync with `journey` below.
+ */
+const softwareRoles: [string, string | null][] = [
+  ['2025-11', null], // Software Engineer, full-time
+];
+
+/** Total software engineering experience, e.g. "1 year and 6 months". */
+function softwareExperience(): string {
+  const toIndex = (ym: string | null) => {
+    if (!ym) {
+      const now = new Date();
+      return now.getFullYear() * 12 + now.getMonth();
+    }
+    const [y, m] = ym.split('-').map(Number);
+    return y * 12 + (m - 1);
+  };
+  const months = softwareRoles.reduce((sum, [start, end]) => sum + toIndex(end) - toIndex(start) + 1, 0);
+  const yrs = Math.floor(months / 12);
+  const mos = months % 12;
+  return [yrs > 0 ? `${yrs} year${yrs > 1 ? 's' : ''}` : '', mos > 0 ? `${mos} month${mos > 1 ? 's' : ''}` : '']
+    .filter(Boolean)
+    .join(' and ');
+}
+
 export const about = {
   chapter: 'About',
   label: 'About me',
   heading: 'I’m Erin, a software engineer from Isabela, Philippines.',
   intro: 'I build software that holds up, from the database schema and API all the way to the screen people tap on.',
   bio: [
+    `I have **${softwareExperience()}** of software engineering experience.`,
     'My favorite part is turning an idea into something that works properly and chasing every bug to **its real cause**.',
     'AI makes me faster, but I know the code I ship **inside out**. I am **obsessed with growth** and **addicted to progress**.',
   ],
@@ -151,7 +179,7 @@ export const work = {
       id: 'dorx',
       title: 'DORX',
       category: 'Parcel logistics',
-      status: 'In development',
+      status: 'Pre-production',
       blurb:
         'Eleven interconnected systems that move parcels through Hub, Provincial and Regional warehouses. I designed the Return-to-Shipper flow and built bulk QR generation and the mid-mile QR handshake.',
       role: 'Top backend and web contributor, 700+ commits',
@@ -243,7 +271,7 @@ export const journey = {
       detail: 'Invoices, billing and service reports, maintenance records and parts tracking.',
     },
     {
-      date: 'Oct 2025 to now',
+      date: 'Nov 2025 to now',
       title: 'Software Engineer',
       place: 'Dory Delivery',
       detail: 'Back on DORY and DORX: MySQL schemas, REST APIs, Redis queues and deployments.',

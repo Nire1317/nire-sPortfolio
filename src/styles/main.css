@@ -13,6 +13,9 @@
   --ink-rgb: 6, 7, 11;
   --text-rgb: 237, 239, 245;
   --ember-rgb: 255, 107, 61;
+  /* "Now" / "Currently" status dots and tags. Change both lines to recolor them. */
+  --status: var(--ember);
+  --status-rgb: var(--ember-rgb);
   --line: rgba(var(--text-rgb), 0.14);
   --text-2: rgba(var(--text-rgb), 0.8);
 
@@ -932,7 +935,7 @@ strong {
 }
 
 .meta__k {
-  color: var(--green);
+  color: var(--status);
   font-weight: 750;
 }
 
@@ -948,8 +951,8 @@ strong {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 10px rgba(198, 243, 107, 0.7);
+  background: var(--status);
+  box-shadow: 0 0 10px rgba(var(--status-rgb), 0.7);
 }
 
 .status-dot::after {
@@ -957,7 +960,7 @@ strong {
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 1px solid var(--green);
+  border: 1px solid var(--status);
   animation: ping 2.2s var(--ease-out) infinite;
 }
 
@@ -1334,8 +1337,8 @@ strong {
   gap: 0.45em;
   margin-left: 0.3em;
   padding: 0.15em 0.45em;
-  background: rgba(198, 243, 107, 0.12);
-  color: var(--green);
+  background: rgba(var(--status-rgb), 0.12);
+  color: var(--status);
   font: 800 0.72rem/1.2 var(--font-body);
   letter-spacing: 0.1em;
 }
@@ -1579,7 +1582,7 @@ strong {
 }
 
 .currently__k {
-  color: var(--green);
+  color: var(--status);
   font-weight: 750;
 }
 
